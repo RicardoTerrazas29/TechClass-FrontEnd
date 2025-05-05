@@ -34,7 +34,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<Login />} />
-        {/*  aqui pones diferentes principales para que no haya confucion con otros principales, por eso se le crea otra clase como principalPro, principalAdm y Est*/}
+        {/*  aqui pones diferentes principales para que no haya confucion con otros principales, por eso se le crea otra clase como principalPro, principalAdm y Est, etc*/}
 
         {/* Token */}
         <Route path="/clave-olvidada" element={<ClaveOlvidada />} />
