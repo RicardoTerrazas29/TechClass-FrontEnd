@@ -129,6 +129,8 @@ const EstudiantesAdm: React.FC = () => {
           {estudiantes.map((estudiante) => (
             <tr key={estudiante.idEstudiante}>
               <td>{estudiante.idEstudiante}</td>
+
+              {/* nombre */}
               <td>
                 {editando?.idEstudiante === estudiante.idEstudiante ? (
                   <input className="form-control" value={editando.name}
@@ -137,6 +139,8 @@ const EstudiantesAdm: React.FC = () => {
                   estudiante.name
                 )}
               </td>
+
+              {/* dni */}
               <td>
                 {editando?.idEstudiante === estudiante.idEstudiante ? (
                   <input className="form-control" value={editando.dni}
@@ -145,6 +149,8 @@ const EstudiantesAdm: React.FC = () => {
                   estudiante.dni
                 )}
               </td>
+
+              {/* genero */}
               <td>
                 {editando?.idEstudiante === estudiante.idEstudiante ? (
                   <select className="form-control" value={editando.genero}
@@ -156,6 +162,8 @@ const EstudiantesAdm: React.FC = () => {
                   estudiante.genero
                 )}
               </td>
+
+              {/* direccion */}
               <td>
                 {editando?.idEstudiante === estudiante.idEstudiante ? (
                   <input className="form-control" value={editando.address}
@@ -164,6 +172,8 @@ const EstudiantesAdm: React.FC = () => {
                   estudiante.address
                 )}
               </td>
+              
+              {/* correo */}
               <td>
                 {editando?.idEstudiante === estudiante.idEstudiante ? (
                   <input className="form-control" value={editando.mail}
@@ -172,14 +182,25 @@ const EstudiantesAdm: React.FC = () => {
                   estudiante.mail
                 )}
               </td>
+              
+              {/* Clave */}
               <td>
                 {editando?.idEstudiante === estudiante.idEstudiante ? (
-                  <input className="form-control" type="password" value={editando.clave}
-                    onChange={(e) => setEditando({ ...editando, clave: e.target.value })} />
+                  <>
+                    <input
+                      className="form-control mb-1"
+                      type="password"
+                      value={editando.clave}
+                      onChange={(e) => setEditando({ ...editando, clave: e.target.value })}
+                    />
+                    <small className="text-danger">⚠️ Importante: actualice la contraseña</small>
+                  </>
                 ) : (
                   "••••••"
                 )}
               </td>
+
+              {/* Botones */}
               <td>
                 {editando?.idEstudiante === estudiante.idEstudiante ? (
                   <>

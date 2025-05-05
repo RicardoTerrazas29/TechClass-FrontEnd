@@ -143,19 +143,23 @@ const AdministradorPage: React.FC = () => {
                   )}
                 </td>
 
-                {/* Clave */}
-                <td>
-                  {editando?.idAdministrador === admin.idAdministrador ? (
-                    <input
-                      type="password"
-                      className="form-control"
-                      value={editando.clave}
-                      onChange={(e) => setEditando({ ...editando, clave: e.target.value })}
-                    />
-                  ) : (
-                    <span>********</span> // Mostramos la clave oculta
-                  )}
-                </td>
+                  {/* Clave */}
+                  <td>
+                    {editando?.idAdministrador === admin.idAdministrador ? (
+                      <>
+                        <input
+                          type="password"
+                          className="form-control mb-1"
+                          value={editando.clave}
+                          onChange={(e) => setEditando({ ...editando, clave: e.target.value })}
+                        />
+                        <small className="text-danger">⚠️ Importante: también actualice la contraseña</small>
+                      </>
+                    ) : (
+                      <span>********</span>
+                    )}
+                  </td>
+
 
                 {/* Botones */}
                 <td>

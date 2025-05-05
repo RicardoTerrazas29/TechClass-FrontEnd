@@ -176,12 +176,15 @@ const ProfesoresAdm: React.FC = () => {
                 {/* Clave */}
                 <td>
                   {editando?.idProfesor === profesor.idProfesor ? (
-                    <input
-                      type="password"
-                      className="form-control"
-                      value={editando.clave}
-                      onChange={(e) => setEditando({ ...editando, clave: e.target.value })}
-                    />
+                    <>
+                      <input
+                        type="password"
+                        className="form-control mb-1"
+                        value={editando.clave}
+                        onChange={(e) => setEditando({ ...editando, clave: e.target.value })}
+                      />
+                      <small className="text-danger">⚠️ Importante: también actualice la contraseña</small>
+                    </>
                   ) : (
                     <span>********</span>
                   )}
