@@ -1,4 +1,3 @@
-// src/navegador/Login.tsx
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -25,8 +24,20 @@ const Login = () => {
 
     if (res.ok) {
       const data = await res.json();
+      console.log(data); // Verifica los datos que recibes del backend
+
       localStorage.setItem("role", data.role);
       localStorage.setItem("name", data.name);
+
+      // ✅ GUARDAR idProfesor si existe
+      if (data.idProfesor) {
+        localStorage.setItem("idProfesor", data.idProfesor);
+      }
+
+      if (data.idEstudiante) {
+        localStorage.setItem("idEstudiante", data.idEstudiante);
+      }
+      
 
       if (data.role === "ADMIN") navigate("/admin");
       else if (data.role === "PROFESOR") navigate("/profesor");
@@ -40,12 +51,25 @@ const Login = () => {
     <div className="container mt-5">
       <h4>Iniciar Sesión</h4>
       <form onSubmit={handleSubmit}>
-        <input className="form-control mb-2" type="text" placeholder="Correo" value={email} onChange={e => setEmail(e.target.value)} />
-        <input className="form-control mb-2" type="password" placeholder="Contraseña" value={password} onChange={e => setPassword(e.target.value)} />
-        <button className="btn btn-primary w-100" type="submit">Entrar</button>
+        <input
+          className="form-control mb-2"
+          type="text"
+          placeholder="Correo"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+        />
+        <input
+          className="form-control mb-2"
+          type="password"
+          placeholder="Contraseña"
+          value={password}
+          onChange={e => setPassword(e.target.value)}
+        />
+        <button className="btn btn-primary w-100" type="submit">
+          Entrar
+        </button>
       </form>
 
-      {/* Link para recuperar clave */}
       <div className="mt-3 text-center">
         <Link to="/clave-olvidada">¿Olvidaste tu contraseña?</Link>
       </div>

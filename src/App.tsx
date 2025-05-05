@@ -3,20 +3,28 @@ import Login from './navegador/Login';
 import MenuAdmin from './navegador/menuAdmin';
 import MenuProfesor from './navegador/menuProfesor';
 import MenuEstudiante from './navegador/menuEstudiante';
+
 // importar el menuAdmin
 import PrincipalAdm from './navegador/menuAdmin/principal';
 import AdministradorPage from './navegador/menuAdmin/administrador';
 import ProfesoresAdm from './navegador/menuAdmin/profesores';
 import EstudiantesAdm from './navegador/menuAdmin/estudiantes';
+
 //importar el menuProfesor
 import PrincipalPro from './navegador/menuProfesor/principal';
+import CursoProfesor from './navegador/menuProfesor/cursoProfesor';
+import EstudiantesPro from './navegador/menuProfesor/estudiantesPro';
+import PerfilProfesor from './navegador/menuProfesor/perfilPro';
+import GraficoEstudiantes from './navegador/menuProfesor/grafico';
+
 //importar el menuEstudiante
 import PrincipalEst from './navegador/menuEstudiante/principal';
+import PerfilEstudiante from './navegador/menuEstudiante/perfilEstu';
+
 //importar el token
 import ClaveOlvidada from './navegador/token/claveOlvidada';
 import IngresarToken from './navegador/token/ingresarToken';
 import CambiarClave from './navegador/token/cambiarClave';
-
 
 import { Navigate } from 'react-router-dom';
 
@@ -46,12 +54,17 @@ function App() {
         <Route path="/profesor" element={<MenuProfesor />}>
         <Route index element={<Navigate to="principal" replace />} /> {/* al momento de iniciar sesion redirige automaticamente a principal.tsx, */}
         <Route path="principal" element={<PrincipalPro />} />
+        <Route path="estudiantes" element={<EstudiantesPro />} />
+        <Route path="cursos" element={<CursoProfesor />} />
+        <Route path="perfil" element={<PerfilProfesor />} />
+        <Route path="grafico" element={<GraficoEstudiantes />} />
         </Route>
 
         {/* Menu Estudiante */}
         <Route path="/estudiante" element={<MenuEstudiante />}>
         <Route index element={<Navigate to="principal" replace />} /> {/* al momento de iniciar sesion redirige automaticamente a principal.tsx */}
         <Route path="principal" element={<PrincipalEst />} />
+        <Route path="perfil" element={<PerfilEstudiante />} />
         </Route>
 
       </Routes>
