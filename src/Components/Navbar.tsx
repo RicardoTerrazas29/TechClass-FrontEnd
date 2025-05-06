@@ -1,19 +1,43 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { Bell, LogOut } from "lucide-react";
+import { Bell, LogOut, Target } from "lucide-react";
 import { NotificationsDropdown } from "./NotificationsDropdown";
 export const Navbar = () => {
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const navigate = useNavigate();
+  const notificationRef = useRef<HTMLDivElement>(null);
+  const profileRef = useRef<HTMLDivElement>(null);
   const cerrarSesion = () => {
     localStorage.clear();
     navigate("/");
   };
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Node;
+      // Cierra las notificaciones si el clic fue fuera de su contenedor
+      if (
+        notificationRef.current &&
+        !notificationRef.current.contains(target)
+      ) {
+        setShowNotifications(false);
+      }
+      // Cierra el menú de perfil si el clic fue fuera de su contenedor
+      if (profileRef.current && !profileRef.current.contains(target)) {
+        setShowProfileMenu(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
-    <nav className="h-16 bg-white border-b fixed top-0 right-0 left-64 z-10 ">
-      <div className="h-full px-6 flex items-center justify-end gap-4 bg-[#343a40]">
-        <div className="relative">
+    <nav className="h-16 bg-[#343a40] fixed top-0 right-0 left-64 z-10 ">
+      <div className="h-full px-6 flex items-center justify-end gap-4 ">
+        <div className="relative" ref={notificationRef}>
           <button
             className="relative flex items-center gap-2 text-white"
             onClick={() => setShowNotifications(!showNotifications)}
@@ -29,7 +53,7 @@ export const Navbar = () => {
             />
           )}
         </div>
-        <div className="relative pr-4">
+        <div className="relative pr-4" ref={profileRef}>
           <button
             onClick={() => setShowProfileMenu(!showProfileMenu)}
             className="flex items-center gap-2"

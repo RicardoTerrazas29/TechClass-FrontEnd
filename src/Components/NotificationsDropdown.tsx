@@ -35,6 +35,7 @@ export const NotificationsDropdown = ({ onClose }: { onClose: () => void }) => {
     navigate("/notifications");
     onClose();
   };
+
   return (
     <div className="absolute top-full right-0 mt-2 w-80 bg-white rounded-md shadow-lg border py-2">
       <div className="px-4 py-2 border-b">
