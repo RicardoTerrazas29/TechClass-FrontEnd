@@ -7,7 +7,9 @@ import {
   BookOpen,
   Users,
   Bell,
-  HelpCircle,
+  GraduationCap,
+  UserRound,
+  Monitor,
 } from "lucide-react";
 
 const adminNavigation = [
@@ -19,16 +21,16 @@ const adminNavigation = [
 
 const professorNavigation = [
   { name: "Dashboard", icon: LayoutDashboard, path: "principal" },
-  { name: "Students", icon: LayoutDashboard, path: "estudiantes" },
+  { name: "Students", icon: GraduationCap, path: "estudiantes" },
   { name: "Courses", icon: BookOpen, path: "cursos" },
-  { name: "Monitor", icon: HelpCircle, path: "grafico" },
-  { name: "Profile", icon: HelpCircle, path: "perfil" },
+  { name: "Monitor", icon: Monitor, path: "grafico" },
+  { name: "Profile", icon: UserRound, path: "perfil" },
 ];
 
 const studentNavigation = [
   { name: "Dashboard", icon: LayoutDashboard, path: "principal" },
   { name: "Courses", icon: BookOpen, path: "cursos" },
-  { name: "Profile", icon: HelpCircle, path: "perfil" },
+  { name: "Profile", icon: UserRound, path: "perfil" },
 ];
 
 // Lógica de rol:

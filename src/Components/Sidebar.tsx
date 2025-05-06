@@ -21,7 +21,7 @@ export const Sidebar = ({ navigation }: SidebarProps) => {
           <BookOpen className="h-6 w-6 text-primary" />
           <span className="text-xl font-semibold">
             <Link to="/" className="text-white text-decoration-none">
-              EduSchool
+              TechClass
             </Link>
           </span>
         </div>

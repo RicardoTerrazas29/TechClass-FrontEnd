@@ -1,7 +1,7 @@
-import React from 'react';
+import React from "react";
 
 const PrincipalEst = () => {
-  const nombreUsuario = localStorage.getItem('name') || 'Usuario';
+  const nombreUsuario = localStorage.getItem("name") || "Usuario";
 
   return (
     <div style={containerStyle}>
@@ -12,12 +12,12 @@ const PrincipalEst = () => {
 };
 
 const containerStyle: React.CSSProperties = {
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  justifyContent: 'center',
-  height: '80vh',
-  textAlign: 'center',
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  justifyContent: "center",
+  height: "80vh",
+  textAlign: "center",
 };
 
 export default PrincipalEst;
