@@ -1,7 +1,5 @@
 import { BookOpen } from "lucide-react";
-import { use } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { useUser } from "../Providers/UserProvider";
 
 type NavItem = {
   name: string;
