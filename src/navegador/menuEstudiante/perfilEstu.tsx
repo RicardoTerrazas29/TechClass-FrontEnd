@@ -124,6 +124,7 @@ const PerfilEstudiante = () => {
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
               placeholder="Obligatorio cambiar clave"
+              required
             />
           </div>
 

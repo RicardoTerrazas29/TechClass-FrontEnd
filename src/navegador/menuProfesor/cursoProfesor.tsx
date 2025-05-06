@@ -22,7 +22,7 @@ const CursoProfesor: React.FC = () => {
 
   // Cargar cursos y profesores
   useEffect(() => {
-    cargarCursos(); // ✅ Usar función para cargar cursos
+    cargarCursos();
     axios.get('http://localhost:8080/profesor')
       .then(res => setProfesores(res.data.map((prof: any) => ({
         id: prof.idProfesor,
@@ -30,7 +30,7 @@ const CursoProfesor: React.FC = () => {
       })))).catch(err => console.error('Error al obtener profesores:', err));
   }, []);
 
-  // ✅ Extrae la lógica en una función
+  // Cargar cursos desde la API
   const cargarCursos = () => {
     axios.get('http://localhost:8080/api/cursos')
       .then(res => setCursos(res.data))
@@ -51,7 +51,7 @@ const CursoProfesor: React.FC = () => {
 
     axios.post('http://localhost:8080/api/cursos', formData)
       .then(() => {
-        cargarCursos(); // ✅ Refresca desde el backend
+        cargarCursos();
         resetForm();
       })
       .catch(err => console.error('Error al crear curso:', err));
@@ -88,7 +88,7 @@ const CursoProfesor: React.FC = () => {
 
     axios.put(`http://localhost:8080/api/cursos/${cursoId}`, formData)
       .then(() => {
-        cargarCursos(); // ✅ Refresca desde el backend
+        cargarCursos();
         resetForm();
       })
       .catch(err => console.error('Error al actualizar curso:', err));
@@ -159,18 +159,33 @@ const CursoProfesor: React.FC = () => {
       </div>
 
       <h3>Lista de Cursos</h3>
-      <div className="list-group">
-        {cursos.map((curso) => (
-          <div className="list-group-item" key={curso.idCurso}>
-            <h5>{curso.nombre}</h5>
-            <p>{curso.descripcion}</p>
-            {curso.foto && <img src={`http://localhost:8080/${curso.foto}`} alt={curso.nombre} width={100} />}
-            <p><strong>Profesor:</strong> {curso.nombreProfesor}</p>
-            <button className="btn btn-warning me-2" onClick={() => editarCurso(curso)}>Editar</button>
-            <button className="btn btn-danger" onClick={() => eliminarCurso(curso.idCurso)}>Eliminar</button>
-          </div>
-        ))}
-      </div>
+      <table className="table table-striped">
+        <thead>
+          <tr>
+            <th>Nombre del Curso</th>
+            <th>Descripción</th>
+            <th>Profesor</th>
+            <th>Foto</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {cursos.map((curso) => (
+            <tr key={curso.idCurso}>
+              <td>{curso.nombre}</td>
+              <td>{curso.descripcion}</td>
+              <td>{curso.nombreProfesor}</td>
+              <td>
+                {curso.foto && <img src={`http://localhost:8080/${curso.foto}`} alt={curso.nombre} width={100} />}
+              </td>
+              <td>
+                <button className="btn btn-warning me-2" onClick={() => editarCurso(curso)}>Editar</button>
+                <button className="btn btn-danger" onClick={() => eliminarCurso(curso.idCurso)}>Eliminar</button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };

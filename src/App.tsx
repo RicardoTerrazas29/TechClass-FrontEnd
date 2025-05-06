@@ -7,8 +7,8 @@ import MenuEstudiante from './navegador/menuEstudiante';
 // importar el menuAdmin
 import PrincipalAdm from './navegador/menuAdmin/principal';
 import AdministradorPage from './navegador/menuAdmin/administrador';
-import ProfesoresAdm from './navegador/menuAdmin/profesores';
-import EstudiantesAdm from './navegador/menuAdmin/estudiantes';
+import ProfesoresAdm from './navegador/menuAdmin/profesoresAdm';
+import EstudiantesAdm from './navegador/menuAdmin/estudiantesAdm';
 
 //importar el menuProfesor
 import PrincipalPro from './navegador/menuProfesor/principal';
