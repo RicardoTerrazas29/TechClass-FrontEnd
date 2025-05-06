@@ -1,5 +1,7 @@
 import { BookOpen } from "lucide-react";
+import { use } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { useUser } from "../Providers/UserProvider";
 
 type NavItem = {
   name: string;
@@ -27,7 +29,7 @@ export const Sidebar = ({ navigation }: SidebarProps) => {
         </div>
         <nav className="space-y-2">
           {navigation.map((item) => {
-            const isActive = location.pathname.split("/")[2] === item.path;
+            const isActive = location.pathname === item.path;
 
             const Icon = item.icon;
             return (

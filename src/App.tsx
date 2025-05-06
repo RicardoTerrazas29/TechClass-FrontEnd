@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./navegador/Login";
-import MenuAdmin from "./navegador/MenuPrincipal";
-
+import MenuPrincipal from "./navegador/MenuPrincipal";
+import ProtectedRoute from "./navegador/ProtectedRoute";
 // importar el menuAdmin
 import PrincipalAdm from "./navegador/menuAdmin/principal";
 import AdministradorPage from "./navegador/menuAdmin/administrador";
@@ -25,7 +25,6 @@ import IngresarToken from "./navegador/token/ingresarToken";
 import CambiarClave from "./navegador/token/cambiarClave";
 
 import { Navigate } from "react-router-dom";
-import MenuPrincipal from "./navegador/MenuPrincipal";
 
 function App() {
   return (
@@ -40,32 +39,35 @@ function App() {
         <Route path="/cambiar-clave" element={<CambiarClave />} />
 
         {/* Menu Administrador */}
-        <Route path="/admin" element={<MenuPrincipal />}>
-          <Route index element={<Navigate to="principal" replace />} />{" "}
-          {/* al momento de iniciar sesion redirige automaticamente a principal.tsx */}
-          <Route path="principal" element={<PrincipalAdm />} />
-          <Route path="administrador" element={<AdministradorPage />} />
-          <Route path="profesores" element={<ProfesoresAdm />} />
-          <Route path="estudiantes" element={<EstudiantesAdm />} />
+        <Route element={<ProtectedRoute allowedRoles={["ADMIN"]} />}>
+          <Route path="/admin" element={<MenuPrincipal />}>
+            <Route index element={<Navigate to="principal" replace />} />
+            <Route path="principal" element={<PrincipalAdm />} />
+            <Route path="administrador" element={<AdministradorPage />} />
+            <Route path="profesores" element={<ProfesoresAdm />} />
+            <Route path="estudiantes" element={<EstudiantesAdm />} />
+          </Route>
         </Route>
 
         {/* Menu Profesor */}
-        <Route path="/profesor" element={<MenuPrincipal />}>
-          <Route index element={<Navigate to="principal" replace />} />{" "}
-          {/* al momento de iniciar sesion redirige automaticamente a principal.tsx, */}
-          <Route path="principal" element={<PrincipalPro />} />
-          <Route path="estudiantes" element={<EstudiantesPro />} />
-          <Route path="cursos" element={<CursoProfesor />} />
-          <Route path="perfil" element={<PerfilProfesor />} />
-          <Route path="grafico" element={<GraficoEstudiantes />} />
+        <Route element={<ProtectedRoute allowedRoles={["PROFESOR"]} />}>
+          <Route path="/profesor" element={<MenuPrincipal />}>
+            <Route index element={<Navigate to="principal" replace />} />
+            <Route path="principal" element={<PrincipalPro />} />
+            <Route path="estudiantes" element={<EstudiantesPro />} />
+            <Route path="cursos" element={<CursoProfesor />} />
+            <Route path="perfil" element={<PerfilProfesor />} />
+            <Route path="grafico" element={<GraficoEstudiantes />} />
+          </Route>
         </Route>
 
         {/* Menu Estudiante */}
-        <Route path="/estudiante" element={<MenuPrincipal />}>
-          <Route index element={<Navigate to="principal" replace />} />{" "}
-          {/* al momento de iniciar sesion redirige automaticamente a principal.tsx */}
-          <Route path="principal" element={<PrincipalEst />} />
-          <Route path="perfil" element={<PerfilEstudiante />} />
+        <Route element={<ProtectedRoute allowedRoles={["ESTUDIANTE"]} />}>
+          <Route path="/estudiante" element={<MenuPrincipal />}>
+            <Route index element={<Navigate to="principal" replace />} />
+            <Route path="principal" element={<PrincipalEst />} />
+            <Route path="perfil" element={<PerfilEstudiante />} />
+          </Route>
         </Route>
       </Routes>
     </Router>

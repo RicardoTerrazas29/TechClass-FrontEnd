@@ -1,15 +1,20 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { Bell, LogOut, Target } from "lucide-react";
+import { Bell, LogOut } from "lucide-react";
 import { NotificationsDropdown } from "./NotificationsDropdown";
+import { useUser } from "../Providers/UserProvider";
+
 export const Navbar = () => {
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const navigate = useNavigate();
+  const { setRole } = useUser();
   const notificationRef = useRef<HTMLDivElement>(null);
   const profileRef = useRef<HTMLDivElement>(null);
+
   const cerrarSesion = () => {
     localStorage.clear();
+    setRole(null);
     navigate("/");
   };
   useEffect(() => {

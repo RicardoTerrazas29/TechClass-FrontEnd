@@ -11,12 +11,13 @@ import {
   UserRound,
   Monitor,
 } from "lucide-react";
+import { useUser } from "../Providers/UserProvider";
 
 const adminNavigation = [
-  { name: "Principal", icon: LayoutDashboard, path: "principal" },
-  { name: "Admins", icon: BookOpen, path: "administrador" },
-  { name: "Teachers", icon: Users, path: "Profesores" },
-  { name: "Students", icon: Bell, path: "Estudiantes" },
+  { name: "Principal", icon: LayoutDashboard, path: "/admin/principal" },
+  { name: "Admins", icon: BookOpen, path: "/admin/administrador" },
+  { name: "Teachers", icon: Users, path: "/admin/profesores" },
+  { name: "Students", icon: Bell, path: "/admin/estudiantes" },
 ];
 
 const professorNavigation = [
@@ -33,19 +34,19 @@ const studentNavigation = [
   { name: "Profile", icon: UserRound, path: "perfil" },
 ];
 
-// Lógica de rol:
-const role = localStorage.getItem("role");
-
-const navigation =
-  role === "ADMIN"
-    ? adminNavigation
-    : role === "PROFESOR"
-    ? professorNavigation
-    : role === "ESTUDIANTE"
-    ? studentNavigation
-    : [];
-
 const MenuBar = () => {
+  // Lógica de rol:
+  const { role } = useUser();
+
+  const navigation =
+    role === "ADMIN"
+      ? adminNavigation
+      : role === "PROFESOR"
+      ? professorNavigation
+      : role === "ESTUDIANTE"
+      ? studentNavigation
+      : [];
+
   return (
     <div>
       {/* Barra superior */}
