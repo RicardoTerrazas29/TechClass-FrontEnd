@@ -18,6 +18,7 @@ import GraficoEstudiantes from "./navegador/menuProfesor/grafico";
 //importar el menuEstudiante
 import PrincipalEst from "./navegador/menuEstudiante/principal";
 import PerfilEstudiante from "./navegador/menuEstudiante/perfilEstu";
+import CursoEstudiante from "./navegador/menuEstudiante/cursoEstudiante";
 
 //importar el token
 import ClaveOlvidada from "./navegador/token/claveOlvidada";
@@ -25,6 +26,7 @@ import IngresarToken from "./navegador/token/ingresarToken";
 import CambiarClave from "./navegador/token/cambiarClave";
 
 import { Navigate } from "react-router-dom";
+import { CursoEstudianteContenido } from "./navegador/menuEstudiante/cursoEstudianteContenido";
 
 function App() {
   return (
@@ -67,6 +69,8 @@ function App() {
             <Route index element={<Navigate to="principal" replace />} />
             <Route path="principal" element={<PrincipalEst />} />
             <Route path="perfil" element={<PerfilEstudiante />} />
+            <Route path="cursos" element={<CursoEstudiante />} />
+            <Route path="cursos/:id" element={<CursoEstudianteContenido />} />
           </Route>
         </Route>
       </Routes>

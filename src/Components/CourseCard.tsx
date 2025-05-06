@@ -1,42 +1,35 @@
-import { Clock, Users } from "lucide-react";
-interface CourseCardProps {
+import { useNavigate } from "react-router-dom";
+
+type CourseCardProps = {
+  id: string;
   title: string;
-  instructor: string;
-  progress: number;
-  students: number;
-  duration: string;
-}
+  description: string;
+  icon: any;
+  color: string;
+};
+
 export const CourseCard = ({
+  id,
   title,
-  instructor,
-  progress,
-  students,
-  duration,
+  description,
+  icon: Icon,
+  color,
 }: CourseCardProps) => {
+  const navigate = useNavigate();
+
   return (
-    <div className="bg-white rounded-lg border p-6 hover:shadow-lg transition-shadow">
-      <h3 className="text-lg font-semibold mb-2">{title}</h3>
-      <p className="text-muted-foreground mb-4">{instructor}</p>
-      <div className="space-y-4">
-        <div className="w-full bg-secondary rounded-full h-2">
-          <div
-            className="bg-primary h-2 rounded-full"
-            style={{
-              width: `${progress}%`,
-            }}
-          />
-        </div>
-        <div className="flex items-center justify-between text-sm text-muted-foreground">
-          <div className="flex items-center gap-1">
-            <Users className="h-4 w-4" />
-            <span>{students} students</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <Clock className="h-4 w-4" />
-            <span>{duration}</span>
-          </div>
-        </div>
+    <button
+      key={id}
+      onClick={() => navigate(`/estudiante/cursos/${id}`)}
+      className="bg-white p-6 rounded-lg border hover:shadow-lg transition-shadow text-left"
+    >
+      <div
+        className={`${color} w-12 h-12 rounded-lg flex items-center justify-center mb-4`}
+      >
+        <Icon className="h-6 w-6 text-white" />
       </div>
-    </div>
+      <h3 className="font-semibold mb-2">{title}</h3>
+      <p className="text-sm text-muted-foreground">{description}</p>
+    </button>
   );
 };
