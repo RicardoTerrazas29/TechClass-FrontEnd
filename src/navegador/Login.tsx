@@ -1,22 +1,27 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useUser } from "../Providers/UserProvider"; // Asegúrate de tener el import correcto
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from "framer-motion";
 
 // Importación de íconos desde Heroicons
-import { EnvelopeIcon, LockClosedIcon, EyeIcon, EyeSlashIcon } from '@heroicons/react/24/solid';
+import {
+  EnvelopeIcon,
+  LockClosedIcon,
+  EyeIcon,
+  EyeSlashIcon,
+} from "@heroicons/react/24/solid";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const { setRole } = useUser(); // 👈 obtenemos el setRole del contexto
   const [showPassword, setShowPassword] = useState(false);
-  // Imágenes de fondo 
+  // Imágenes de fondo
   const bgImages = [
-    '/imagenes/background.jpg',
-    '/imagenes/fondo2.jpg',
-    '/imagenes/fondo3.jpg',
-    '/imagenes/fondo4.jpg', 
+    "/imagenes/background.jpg",
+    "/imagenes/fondo2.jpg",
+    "/imagenes/fondo3.jpg",
+    "/imagenes/fondo4.jpg",
   ];
   // Estado local para la imagen de fondo actual
   const [currentBg, setCurrentBg] = useState(0);
@@ -39,11 +44,11 @@ const Login = () => {
       scale: 1,
       transition: {
         duration: 0.8,
-        ease: 'easeOut',
+        ease: "easeOut",
         when: "beforeChildren", // Animar hijos después de que el padre sea visible
-        staggerChildren: 0.15 // Tiempo de desfase entre animaciones de hijos
-      }
-    }
+        staggerChildren: 0.15, // Tiempo de desfase entre animaciones de hijos
+      },
+    },
   };
 
   const formItemVariants = {
@@ -51,8 +56,8 @@ const Login = () => {
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.5, ease: 'easeOut' }
-    }
+      transition: { duration: 0.5, ease: "easeOut" },
+    },
   };
   useEffect(() => {
     const role = localStorage.getItem("role");
@@ -98,7 +103,9 @@ const Login = () => {
   return (
     <div className="min-h-screen flex items-center justify-center relative overflow-hidden p-4 bg-gradient-to-br from-gray-900 to-gray-800">
       {/* Slideshow de imágenes de fondo */}
-      <AnimatePresence mode="wait"> {/* mode="wait" puede ayudar a transiciones más limpias */}
+      <AnimatePresence mode="wait">
+        {" "}
+        {/* mode="wait" puede ayudar a transiciones más limpias */}
         <motion.img
           key={currentBg}
           src={bgImages[currentBg]}
@@ -107,7 +114,7 @@ const Login = () => {
           initial={{ opacity: 0, scale: 1.05 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 1.05 }}
-          transition={{ duration: 1.5, ease: 'easeInOut' }}
+          transition={{ duration: 1.5, ease: "easeInOut" }}
         />
       </AnimatePresence>
 
@@ -115,7 +122,9 @@ const Login = () => {
       <div className="absolute inset-0 bg-black opacity-40"></div>
 
       {/* Formas decorativas animadas mejoradas */}
-      <div className="absolute inset-0 overflow-hidden"> {/* Añadido overflow-hidden para contener las formas */}
+      <div className="absolute inset-0 overflow-hidden">
+        {" "}
+        {/* Añadido overflow-hidden para contener las formas */}
         <motion.div
           className="absolute w-72 h-72 sm:w-96 sm:h-96 bg-purple-600 opacity-20 rounded-full filter blur-3xl"
           animate={{
@@ -127,9 +136,9 @@ const Login = () => {
           transition={{
             duration: 35,
             repeat: Infinity,
-            ease: 'linear'
+            ease: "linear",
           }}
-          style={{ top: '5%', left: '5%' }}
+          style={{ top: "5%", left: "5%" }}
         />
         <motion.div
           className="absolute w-60 h-60 sm:w-80 sm:h-80 bg-teal-500 opacity-15 rounded-full filter blur-3xl"
@@ -142,12 +151,12 @@ const Login = () => {
           transition={{
             duration: 40,
             repeat: Infinity,
-            ease: 'linear',
-            delay: 7
+            ease: "linear",
+            delay: 7,
           }}
-          style={{ bottom: '10%', right: '10%' }}
+          style={{ bottom: "10%", right: "10%" }}
         />
-          <motion.div
+        <motion.div
           className="absolute w-40 h-40 sm:w-56 sm:h-56 bg-pink-500 opacity-25 rounded-full filter blur-2xl"
           animate={{
             x: ["5vw", "-5vw", "5vw"],
@@ -157,10 +166,10 @@ const Login = () => {
           transition={{
             duration: 25,
             repeat: Infinity,
-            ease: 'easeInOut',
-            delay: 3
+            ease: "easeInOut",
+            delay: 3,
           }}
-          style={{ top: '40%', left: '40%' }}
+          style={{ top: "40%", left: "40%" }}
         />
       </div>
 
@@ -171,6 +180,7 @@ const Login = () => {
         variants={formContainerVariants}
         initial="hidden"
         animate="visible"
+        onSubmit={handleSubmit}
       >
         {/* Logo institucional */}
         <motion.div
@@ -178,11 +188,11 @@ const Login = () => {
           variants={formItemVariants}
           whileHover={{
             scale: 1.15,
-            rotate: [0, 8, -8, 8, 0] // Keyframes para la sacudida
+            rotate: [0, 8, -8, 8, 0], // Keyframes para la sacudida
           }}
           transition={{
             duration: 0.6,
-            type: "tween" // <-- CORREGIDO: Usar 'tween' para múltiples keyframes
+            type: "tween", // <-- CORREGIDO: Usar 'tween' para múltiples keyframes
           }}
         >
           <img
@@ -203,34 +213,38 @@ const Login = () => {
         {/* Formulario */}
         <form className="space-y-6">
           {/* Correo electrónico */}
-          <motion.div
-            className="relative"
-            variants={formItemVariants}
-          >
+          <motion.div className="relative" variants={formItemVariants}>
             <EnvelopeIcon className="w-5 h-5 text-gray-400 absolute top-1/2 left-4 transform -translate-y-1/2 pointer-events-none" />
             <motion.input
               type="email"
               placeholder="Correo electrónico"
               // Borde visible por defecto (border-gray-500)
               className="pl-12 pr-4 w-full py-3 rounded-lg bg-white bg-opacity-10 placeholder-gray-400 text-gray-900 border border-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 focus:bg-opacity-20 transition-all duration-300"
-              whileFocus={{ scale: 1.02, boxShadow: "0px 0px 10px rgba(192, 132, 252, 0.4)" }}
+              whileFocus={{
+                scale: 1.02,
+                boxShadow: "0px 0px 10px rgba(192, 132, 252, 0.4)",
+              }}
               transition={{ duration: 0.2 }}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </motion.div>
 
           {/* Contraseña */}
-          <motion.div
-            className="relative"
-            variants={formItemVariants}
-          >
+          <motion.div className="relative" variants={formItemVariants}>
             <LockClosedIcon className="w-5 h-5 text-gray-400 absolute top-1/2 left-4 transform -translate-y-1/2 pointer-events-none" />
             <motion.input
-              type={showPassword ? 'text' : 'password'}
+              type={showPassword ? "text" : "password"}
               placeholder="Contraseña"
               // Borde visible por defecto (border-gray-500)
               className="pl-12 pr-10 w-full py-3 rounded-lg bg-white bg-opacity-10 placeholder-gray-400 text-gray-900 border border-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 focus:bg-opacity-20 transition-all duration-300"
-              whileFocus={{ scale: 1.02, boxShadow: "0px 0px 10px rgba(192, 132, 252, 0.4)" }}
+              whileFocus={{
+                scale: 1.02,
+                boxShadow: "0px 0px 10px rgba(192, 132, 252, 0.4)",
+              }}
               transition={{ duration: 0.2 }}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
             <motion.button
               type="button"
@@ -281,8 +295,9 @@ const Login = () => {
             variants={formItemVariants}
             whileHover={{
               scale: 1.03,
-              boxShadow: "0px 0px 15px rgba(236, 72, 153, 0.5), 0px 0px 15px rgba(168, 85, 247, 0.5)", // Glow de ambos colores del gradiente
-              transition: { duration: 0.3, type: "spring", stiffness: 300 }
+              boxShadow:
+                "0px 0px 15px rgba(236, 72, 153, 0.5), 0px 0px 15px rgba(168, 85, 247, 0.5)", // Glow de ambos colores del gradiente
+              transition: { duration: 0.3, type: "spring", stiffness: 300 },
             }}
             whileTap={{ scale: 0.97 }}
             className="w-full py-3 rounded-lg bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 transition-all duration-300 font-semibold text-white text-lg shadow-md hover:shadow-lg"
@@ -292,22 +307,21 @@ const Login = () => {
         </form>
 
         {/* Enlace de Registro (opcional) */}
-        <motion.p
+        {/* <motion.p
           // Color del texto "¿No tienes una cuenta?" se mantiene en gris oscuro (text-gray-700)
           className="mt-8 text-center text-sm text-gray-700"
           variants={formItemVariants}
         >
-          ¿No tienes una cuenta?{' '}
+          ¿No tienes una cuenta?{" "}
           <motion.a
             href="#"
             className="font-medium text-purple-400 hover:text-purple-300 hover:underline"
             whileHover={{ y: -1, scale: 1.05 }}
-            transition={{ type: "spring", stiffness: 300}}
+            transition={{ type: "spring", stiffness: 300 }}
           >
             Regístrate aquí
           </motion.a>
-        </motion.p>
-
+        </motion.p> */}
       </motion.div>
     </div>
   );
