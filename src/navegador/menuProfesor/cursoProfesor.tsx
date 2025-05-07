@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
 type Curso = {
   idCurso: number;
@@ -12,57 +12,68 @@ type Curso = {
 
 const CursoProfesor: React.FC = () => {
   const [cursos, setCursos] = useState<Curso[]>([]);
-  const [nombre, setNombre] = useState('');
-  const [descripcion, setDescripcion] = useState('');
+  const [nombre, setNombre] = useState("");
+  const [descripcion, setDescripcion] = useState("");
   const [foto, setFoto] = useState<File | null>(null);
   const [nombreProfesor, setNombreProfesor] = useState<number | null>(null);
-  const [profesores, setProfesores] = useState<{ id: number, name: string }[]>([]);
+  const [profesores, setProfesores] = useState<{ id: number; name: string }[]>(
+    []
+  );
   const [editando, setEditando] = useState<boolean>(false);
   const [cursoId, setCursoId] = useState<number | null>(null);
 
   // Cargar cursos y profesores
   useEffect(() => {
-    cargarCursos();
-    axios.get('http://localhost:8080/profesor')
-      .then(res => setProfesores(res.data.map((prof: any) => ({
-        id: prof.idProfesor,
-        name: prof.name
-      })))).catch(err => console.error('Error al obtener profesores:', err));
+    cargarCursos(); // ✅ Usar función para cargar cursos
+    axios
+      .get("http://localhost:8080/profesor")
+      .then((res) =>
+        setProfesores(
+          res.data.map((prof: any) => ({
+            id: prof.idProfesor,
+            name: prof.name,
+          }))
+        )
+      )
+      .catch((err) => console.error("Error al obtener profesores:", err));
   }, []);
 
   // Cargar cursos desde la API
   const cargarCursos = () => {
-    axios.get('http://localhost:8080/api/cursos')
-      .then(res => setCursos(res.data))
-      .catch(err => console.error('Error al obtener cursos:', err));
+    axios
+      .get("http://localhost:8080/api/cursos")
+      .then((res) => setCursos(res.data))
+      .catch((err) => console.error("Error al obtener cursos:", err));
   };
 
   const crearCurso = () => {
     if (!nombreProfesor) {
-      alert('Por favor selecciona un profesor');
+      alert("Por favor selecciona un profesor");
       return;
     }
 
     const formData = new FormData();
-    formData.append('nombre', nombre);
-    formData.append('descripcion', descripcion);
-    if (foto) formData.append('foto', foto);
-    formData.append('idProfesor', String(nombreProfesor));
+    formData.append("nombre", nombre);
+    formData.append("descripcion", descripcion);
+    if (foto) formData.append("foto", foto);
+    formData.append("idProfesor", String(nombreProfesor));
 
-    axios.post('http://localhost:8080/api/cursos', formData)
+    axios
+      .post("http://localhost:8080/api/cursos", formData)
       .then(() => {
         cargarCursos();
         resetForm();
       })
-      .catch(err => console.error('Error al crear curso:', err));
+      .catch((err) => console.error("Error al crear curso:", err));
   };
 
   const eliminarCurso = (id: number) => {
-    axios.delete(`http://localhost:8080/api/cursos/${id}`)
+    axios
+      .delete(`http://localhost:8080/api/cursos/${id}`)
       .then(() => {
-        setCursos(cursos.filter(curso => curso.idCurso !== id));
+        setCursos(cursos.filter((curso) => curso.idCurso !== id));
       })
-      .catch(err => console.error('Error al eliminar curso:', err));
+      .catch((err) => console.error("Error al eliminar curso:", err));
   };
 
   const editarCurso = (curso: Curso) => {
@@ -76,29 +87,30 @@ const CursoProfesor: React.FC = () => {
 
   const actualizarCurso = () => {
     if (!cursoId || !nombreProfesor) {
-      alert('Faltan datos para actualizar');
+      alert("Faltan datos para actualizar");
       return;
     }
 
     const formData = new FormData();
-    formData.append('nombre', nombre);
-    formData.append('descripcion', descripcion);
-    if (foto) formData.append('foto', foto);
-    formData.append('idProfesor', String(nombreProfesor));
+    formData.append("nombre", nombre);
+    formData.append("descripcion", descripcion);
+    if (foto) formData.append("foto", foto);
+    formData.append("idProfesor", String(nombreProfesor));
 
-    axios.put(`http://localhost:8080/api/cursos/${cursoId}`, formData)
+    axios
+      .put(`http://localhost:8080/api/cursos/${cursoId}`, formData)
       .then(() => {
         cargarCursos();
         resetForm();
       })
-      .catch(err => console.error('Error al actualizar curso:', err));
+      .catch((err) => console.error("Error al actualizar curso:", err));
   };
 
   const resetForm = () => {
     setEditando(false);
     setCursoId(null);
-    setNombre('');
-    setDescripcion('');
+    setNombre("");
+    setDescripcion("");
     setFoto(null);
     setNombreProfesor(null);
   };
@@ -107,7 +119,7 @@ const CursoProfesor: React.FC = () => {
     <div className="container mt-4">
       <h2>Cursos y Profesores</h2>
       <div className="card p-4 mb-4">
-        <h3>{editando ? 'Editar Curso' : 'Nuevo Curso'}</h3>
+        <h3>{editando ? "Editar Curso" : "Nuevo Curso"}</h3>
         <form>
           <div className="form-group mb-3">
             <label>Nombre del Curso</label>
@@ -132,15 +144,19 @@ const CursoProfesor: React.FC = () => {
             <input
               type="file"
               className="form-control"
-              onChange={(e) => setFoto(e.target.files ? e.target.files[0] : null)}
+              onChange={(e) =>
+                setFoto(e.target.files ? e.target.files[0] : null)
+              }
             />
           </div>
           <div className="form-group mb-3">
             <label>Profesor</label>
             <select
               className="form-control"
-              value={nombreProfesor ?? ''}
-              onChange={(e) => setNombreProfesor(Number(e.target.value) || null)}
+              value={nombreProfesor ?? ""}
+              onChange={(e) =>
+                setNombreProfesor(Number(e.target.value) || null)
+              }
             >
               <option value="">Selecciona un profesor</option>
               {profesores.map((profesor) => (
@@ -151,41 +167,56 @@ const CursoProfesor: React.FC = () => {
             </select>
           </div>
           {editando ? (
-            <button type="button" className="btn btn-primary" onClick={actualizarCurso}>Actualizar Curso</button>
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={actualizarCurso}
+            >
+              Actualizar Curso
+            </button>
           ) : (
-            <button type="button" className="btn btn-success" onClick={crearCurso}>Crear Curso</button>
+            <button
+              type="button"
+              className="btn btn-success"
+              onClick={crearCurso}
+            >
+              Crear Curso
+            </button>
           )}
         </form>
       </div>
 
       <h3>Lista de Cursos</h3>
-      <table className="table table-striped">
-        <thead>
-          <tr>
-            <th>Nombre del Curso</th>
-            <th>Descripción</th>
-            <th>Profesor</th>
-            <th>Foto</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {cursos.map((curso) => (
-            <tr key={curso.idCurso}>
-              <td>{curso.nombre}</td>
-              <td>{curso.descripcion}</td>
-              <td>{curso.nombreProfesor}</td>
-              <td>
-                {curso.foto && <img src={`http://localhost:8080/${curso.foto}`} alt={curso.nombre} width={100} />}
-              </td>
-              <td>
-                <button className="btn btn-warning me-2" onClick={() => editarCurso(curso)}>Editar</button>
-                <button className="btn btn-danger" onClick={() => eliminarCurso(curso.idCurso)}>Eliminar</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <div className="list-group">
+        {cursos.map((curso) => (
+          <div className="list-group-item" key={curso.idCurso}>
+            <h5>{curso.nombre}</h5>
+            <p>{curso.descripcion}</p>
+            {curso.foto && (
+              <img
+                src={`http://localhost:8080/${curso.foto}`}
+                alt={curso.nombre}
+                width={100}
+              />
+            )}
+            <p>
+              <strong>Profesor:</strong> {curso.nombreProfesor}
+            </p>
+            <button
+              className="btn btn-warning me-2"
+              onClick={() => editarCurso(curso)}
+            >
+              Editar
+            </button>
+            <button
+              className="btn btn-danger"
+              onClick={() => eliminarCurso(curso.idCurso)}
+            >
+              Eliminar
+            </button>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
