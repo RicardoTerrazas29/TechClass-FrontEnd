@@ -40,7 +40,7 @@ export const Navbar = () => {
   }, []);
 
   return (
-    <nav className="h-16 bg-[#343a40] fixed top-0 right-0 left-64 z-10 ">
+    <nav className="h-16 bg-[#70A1FF]  p-4 shadow-md fixed top-0 right-0 left-64 z-10 ">
       <div className="h-full px-6 flex items-center justify-end gap-4 ">
         <div className="relative" ref={notificationRef}>
           <button

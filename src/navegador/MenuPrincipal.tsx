@@ -55,7 +55,7 @@ const MenuBar = () => {
       <Sidebar navigation={navigation} />
 
       {/* Contenido de las páginas */}
-      <main style={{ marginLeft: "250px", marginTop: "60px", padding: "20px" }}>
+      <main style={{ marginLeft: "250px", marginTop: "60px" }}>
         <Outlet />
       </main>
     </div>

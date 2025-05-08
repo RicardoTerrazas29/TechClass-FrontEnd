@@ -6,5 +6,12 @@
   ],
   "compilerOptions": {
     "allowSyntheticDefaultImports": true
+  },
+  "theme": {
+    "extend": {
+      "fontFamily": {
+        "primary": ["\"Fredoka\"", "sans-serif"]
+      }
+    }
   }
 }
