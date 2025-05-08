@@ -1,1 +1,22 @@
 @import "tailwindcss";
+@keyframes bounce-slow {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+  }
+  @keyframes bounce-fast {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-40px); }
+  }
+  @keyframes float {
+    0% { transform: translateY(0px) rotate(0deg); }
+    100% { transform: translateY(-30px) rotate(10deg); }
+  }
+  @keyframes float-slow {
+    0% { transform: translateY(0px); }
+    100% { transform: translateY(-15px); }
+  }
+  
+  .animate-bounce-slow { animation: bounce-slow 4s ease-in-out infinite; }
+  .animate-bounce-fast { animation: bounce-fast 2s ease-in-out infinite; }
+  .animate-float { animation: float 6s ease-in-out infinite alternate; }
+  .animate-float-slow { animation: float-slow 8s ease-in-out infinite alternate; }
