@@ -2,12 +2,7 @@ import Lottie from "lottie-react";
 import { BookOpen } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import studyAnimation from "../assets/lotties/study-boy.json";
-
-type NavItem = {
-  name: string;
-  icon: React.ElementType;
-  path: string;
-};
+import { NavItem } from "../const/profile";
 
 type SidebarProps = {
   navigation: NavItem[];
