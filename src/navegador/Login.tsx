@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../Providers/UserProvider"; // Asegúrate de tener el import correcto
 import { motion, AnimatePresence } from "framer-motion";
+import { Link } from "react-router-dom";
+
 
 // Importación de íconos desde Heroicons
 import {
@@ -279,14 +281,15 @@ const Login = () => {
                 Recuérdame
               </motion.span>
             </label>
-            <motion.a
-              href="#"
-              // Color "¿Olvidaste..." es negro (text-black)
-              className="text-black hover:underline hover:text-purple-300 transition-colors"
-              whileHover={{ y: -1, color: "#d8b4fe" }} // purple-300
-            >
-              ¿Olvidaste tu contraseña?
-            </motion.a>
+            <motion.div variants={formItemVariants}>
+              <Link
+                to="/clave-olvidada"
+                className="text-black hover:underline hover:text-purple-300 transition-colors"
+              >
+                ¿Olvidaste tu contraseña?
+              </Link>
+            </motion.div>
+
           </motion.div>
 
           {/* Botón Ingresar animado */}
