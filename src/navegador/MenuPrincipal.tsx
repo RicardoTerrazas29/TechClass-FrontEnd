@@ -31,7 +31,7 @@ const MenuBar = () => {
       {/* Contenedor principal (Navbar + contenido) */}
       <div className="flex flex-col flex-1 lg:ml-64">
         <Navbar />
-        <main className="mt-16 p-4">
+        <main className="mt-16 ">
           <Outlet />
         </main>
       </div>
