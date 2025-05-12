@@ -68,14 +68,18 @@ const Login = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    try {
+      if (!email || !password) {
+        alert("Por favor, completa todos los campos.");
+        return;
+      }
+      const res = await fetch("http://localhost:8080/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      if (!res.ok) throw new Error("Error al iniciar sesión");
 
-    const res = await fetch("http://localhost:8080/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
-
-    if (res.ok) {
       const data = await res.json();
       console.log(data);
 
@@ -90,13 +94,18 @@ const Login = () => {
         localStorage.setItem("idEstudiante", data.idEstudiante);
       }
 
+      if (data.genero) {
+        localStorage.setItem("genero", data.genero);
+      }
+
       setRole(data.role); // 👈 actualizamos el contexto con el nuevo rol
 
       if (data.role === "ADMIN") navigate("/admin");
       else if (data.role === "PROFESOR") navigate("/profesor");
       else if (data.role === "ESTUDIANTE") navigate("/estudiante");
-    } else {
-      alert("Usuario o contraseña incorrectos");
+    } catch (error) {
+      alert("Hubo un problema al iniciar sesión. Intenta nuevamente.");
+      console.error(error);
     }
   };
 

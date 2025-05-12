@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { NavItem } from "../const/profile";
-import { Drawer, DrawerTrigger, DrawerContent } from "@/components/ui/drawer";
+import { Drawer, DrawerTrigger, DrawerContent } from "./ui/drawer";
 import { Menu, X, LogOut } from "lucide-react";
 import { useUser } from "../Providers/UserProvider";
 import {
@@ -9,13 +8,8 @@ import {
   professorNavigation,
   studentNavigation,
 } from "../const/profile";
-const MobileMenu = ({
-  navigation,
-  onClose,
-}: {
-  navigation: NavItem[];
-  onClose: () => void;
-}) => {
+import AvatarUsuario from "./AvatarUsuario";
+const MobileMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { role, setRole } = useUser();
 
@@ -41,42 +35,33 @@ const MobileMenu = ({
       <DrawerTrigger asChild>
         <button
           onClick={() => setIsOpen(true)}
-          className="p-2 rounded-md bg-[#70A1FF] text-white hover:bg-[#1E90FF] transition"
+          className="p-2 rounded-md bg-[#5F27CD] text-white hover:bg-[#341f97] transition block lg:hidden"
         >
           <Menu className="h-6 w-6" />
         </button>
       </DrawerTrigger>
 
       {/* Contenido del menú */}
-      <DrawerContent
-        side="left"
-        className="bg-gradient-to-b from-[#7ED6DF] to-[#70A1FF] text-white w-64 h-screen shadow-lg"
-      >
+      <DrawerContent className="bg-gradient-to-b from-[#00C9A7] to-[#5F27CD] text-white w-full max-w-xs h-screen flex flex-col justify-between overflow-hidden [&>div:first-child]:hidden">
         {/* Parte superior: Perfil y navegación */}
         <div className="p-6">
-          {/* Encabezado */}
-          <div className="flex items-center justify-between mb-6">
-            <button
-              onClick={() => setIsOpen(false)}
-              className="p-2 rounded-md hover:bg-[#495057] transition"
-            >
-              <X className="h-6 w-6" />
-            </button>
-            <h2 className="text-xl font-bold">Menú</h2>
-          </div>
-
           {/* Perfil de usuario */}
-          <div className="flex items-center gap-3 mb-8">
-            <img
-              src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix"
-              alt="Perfil"
-              className="w-10 h-10 rounded-full"
-            />
-            <div>
+          <div className="flex items-center justify-center gap-3 mb-8">
+            {/* Imagen de perfil */}
+            <AvatarUsuario />
+            <div className="flex flex-col mt-3">
               <p className="text-sm font-semibold">
                 {localStorage.getItem("name") || "Usuario"}
               </p>
               <p className="text-xs capitalize">{role?.toLowerCase()}</p>
+            </div>
+            <div className="flex ml-auto mb-6">
+              <button
+                onClick={() => setIsOpen(false)}
+                className="p-2 rounded-md hover:bg-[#495057] transition"
+              >
+                <X className="h-6 w-6" />
+              </button>
             </div>
           </div>
 
@@ -86,13 +71,11 @@ const MobileMenu = ({
               <Link
                 key={item.name}
                 to={item.path}
-                className="block px-4 py-2 rounded-md hover:bg-[#495057] transition"
-                onClick={() => setIsOpen(false)} // Cierra el menú al hacer clic
+                onClick={() => setIsOpen(false)}
+                className="flex items-center gap-3 px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition font-medium no-underline text-decoration-none"
               >
-                <div className="flex items-center gap-3">
-                  <item.icon className="h-5 w-5 text-[#FF6B81]" />
-                  <span className="font-medium">{item.name}</span>
-                </div>
+                <item.icon className="h-5 w-5 text-[#FFD32A]" />
+                <span className="hover:text-white">{item.name}</span>
               </Link>
             ))}
           </nav>

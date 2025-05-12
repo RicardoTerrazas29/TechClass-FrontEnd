@@ -30,7 +30,7 @@ export const Sidebar = ({ navigation }: SidebarProps) => {
         <nav className="space-y-2">
           {navigation.map((item) => {
             const isActive = location.pathname === item.path;
-            const Icon = item.icon;
+            const Icon: any = item.icon;
 
             return (
               <Link
