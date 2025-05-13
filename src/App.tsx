@@ -59,7 +59,7 @@ function App() {
             <Route path="estudiantes" element={<EstudiantesPro />} />
             <Route path="cursos" element={<CursoProfesor />} />
             <Route path="perfil" element={<PerfilProfesor />} />
-            <Route path="grafico" element={<GraficoEstudiantes />} />
+            <Route path="monitor" element={<GraficoEstudiantes />} />
           </Route>
         </Route>
 

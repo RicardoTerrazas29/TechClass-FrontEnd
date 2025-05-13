@@ -248,8 +248,8 @@ const EstudiantesAdm: React.FC = () => {
           </div>
         </div>
 
-        {/* Tabla */}
-        <div className="table-responsive rounded">
+        {/* Tabla de estudiantes */}
+        <div className="table-responsive d-none d-md-block rounded">
           <table className="table table-striped table-bordered table-hover bg-white rounded shadow-sm">
             <thead className="table-success text-center">
               <tr>
@@ -438,6 +438,49 @@ const EstudiantesAdm: React.FC = () => {
               ))}
             </tbody>
           </table>
+        </div>
+
+        {/* Vista tipo tarjeta para móviles */}
+        <div className="d-md-none">
+          {estudiantes.map((estudiante) => (
+            <div key={estudiante.idEstudiante} className="card mb-3 shadow-sm">
+              <div className="card-body">
+                <h5 className="card-title fw-bold">{estudiante.name}</h5>
+                <p className="card-text mb-1">
+                  <strong>ID:</strong> {estudiante.idEstudiante}
+                </p>
+                <p className="card-text mb-1">
+                  <strong>DNI:</strong> {estudiante.dni}
+                </p>
+                <p className="card-text mb-1">
+                  <strong>Género:</strong> {estudiante.genero}
+                </p>
+                <p className="card-text mb-1">
+                  <strong>Dirección:</strong> {estudiante.address}
+                </p>
+                <p className="card-text mb-1">
+                  <strong>Correo:</strong> {estudiante.mail}
+                </p>
+                <p className="card-text mb-3">
+                  <strong>Clave:</strong> ••••••
+                </p>
+                <div className="d-flex gap-2 flex-column">
+                  <button
+                    className="btn btn-warning btn-sm"
+                    onClick={() => setEditando(estudiante)}
+                  >
+                    ✏️ Editar
+                  </button>
+                  <button
+                    className="btn btn-danger btn-sm"
+                    onClick={() => handleEliminar(estudiante.idEstudiante)}
+                  >
+                    🗑️ Eliminar
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </div>

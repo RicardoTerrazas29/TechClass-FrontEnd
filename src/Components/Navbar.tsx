@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Bell, LogOut } from "lucide-react";
 import { NotificationsDropdown } from "./NotificationsDropdown";
 import { useUser } from "../Providers/UserProvider";
@@ -12,6 +12,7 @@ export const Navbar = () => {
   const { setRole } = useUser();
   const notificationRef = useRef<HTMLDivElement>(null);
   const profileRef = useRef<HTMLDivElement>(null);
+  const { role } = useUser();
 
   const cerrarSesion = () => {
     localStorage.clear();
@@ -40,11 +41,13 @@ export const Navbar = () => {
   }, []);
 
   return (
-    <nav className="flex items-center justify-between h-16 bg-gradient-to-br 
+    <nav
+      className="flex items-center justify-between h-16 bg-gradient-to-br 
     from-yellow-200 to-lime-200 fixed top-0 right-0 left-0 z-10 shadow-md 
-    font-[Comic_Neue] px-4 border-b-4 border-lime-300">
-     {/* Mobile: Menú hamburguesa y título centrado */}
-     <div className="lg:hidden flex justify-between items-center w-full">
+    font-[Comic_Neue] px-4 border-b-4 border-lime-300"
+    >
+      {/* Mobile: Menú hamburguesa y título centrado */}
+      <div className="lg:hidden flex justify-between items-center w-full">
         {/* Izquierda: Burger */}
         <div className="w-10 flex justify-start">
           <MobileMenu />
@@ -52,7 +55,12 @@ export const Navbar = () => {
 
         {/* Centro: Título */}
         <div className="flex-1 text-center">
-          <h3 className="text-2xl font-bold text-white">TechClass</h3>
+          <Link
+            to={`/${role?.toLowerCase()}/principal`}
+            className="text-2xl font-extrabold text-green-700 tracking-wide hover:text-green-500 transition duration-300 text-decoration-none" // Agregado text-decoration-none aquí
+          >
+            AprendeGenial
+          </Link>
         </div>
         {/* Derecha: Espacio vacío para balance visual (mismo ancho que burger) */}
         <div className="w-10" />
@@ -71,7 +79,9 @@ export const Navbar = () => {
             </span>
           </button>
           {showNotifications && (
-            <NotificationsDropdown  onClose={() => setShowNotifications(false)} />
+            <NotificationsDropdown
+              onClose={() => setShowNotifications(false)}
+            />
           )}
         </div>
 
@@ -106,5 +116,3 @@ export const Navbar = () => {
     </nav>
   );
 };
-
-

@@ -35,14 +35,17 @@ const MobileMenu = () => {
       <DrawerTrigger asChild>
         <button
           onClick={() => setIsOpen(true)}
-          className="p-2 rounded-md bg-[#5F27CD] text-white hover:bg-[#341f97] transition block lg:hidden"
+          className="p-2 rounded-md bg-green-500 text-white transition block lg:hidden"
         >
           <Menu className="h-6 w-6" />
         </button>
       </DrawerTrigger>
 
       {/* Contenido del menú */}
-      <DrawerContent className="bg-gradient-to-b from-[#00C9A7] to-[#5F27CD] text-white w-full max-w-xs h-screen flex flex-col justify-between overflow-hidden [&>div:first-child]:hidden">
+      <DrawerContent
+        className="bg-gradient-to-br 
+    from-yellow-200 to-lime-200 text-white w-full max-w-xs h-screen flex flex-col justify-between overflow-hidden [&>div:first-child]:hidden"
+      >
         {/* Parte superior: Perfil y navegación */}
         <div className="p-6">
           {/* Perfil de usuario */}
@@ -50,17 +53,19 @@ const MobileMenu = () => {
             {/* Imagen de perfil */}
             <AvatarUsuario />
             <div className="flex flex-col mt-3">
-              <p className="text-sm font-semibold">
+              <p className="text-sm font-semibold text-green-700">
                 {localStorage.getItem("name") || "Usuario"}
               </p>
-              <p className="text-xs capitalize">{role?.toLowerCase()}</p>
+              <p className="text-xs capitalize text-green-700">
+                {role?.toLowerCase()}
+              </p>
             </div>
             <div className="flex ml-auto mb-6">
               <button
                 onClick={() => setIsOpen(false)}
                 className="p-2 rounded-md hover:bg-[#495057] transition"
               >
-                <X className="h-6 w-6" />
+                <X className="h-6 w-6 text-red-700" />
               </button>
             </div>
           </div>
@@ -74,7 +79,7 @@ const MobileMenu = () => {
                 onClick={() => setIsOpen(false)}
                 className="flex items-center gap-3 px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition font-medium no-underline text-decoration-none"
               >
-                <item.icon className="h-5 w-5 text-[#FFD32A]" />
+                <item.icon className="h-5 w-5 text-green-500" />
                 <span className="hover:text-white">{item.name}</span>
               </Link>
             ))}
@@ -85,7 +90,7 @@ const MobileMenu = () => {
         <div className="p-6 border-t border-white/20">
           <button
             onClick={cerrarSesion}
-            className="flex items-center gap-3 text-red-100 hover:text-white transition"
+            className="flex items-center gap-3 text-red-700 hover:text-white transition"
           >
             <LogOut className="h-5 w-5" />
             <span>Cerrar sesión</span>

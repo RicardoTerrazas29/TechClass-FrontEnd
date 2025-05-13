@@ -21,7 +21,7 @@ export const CourseCard = ({
     <button
       key={id}
       onClick={() => navigate(`/estudiante/cursos/${id}`)}
-      className="bg-white p-6 rounded-lg border hover:shadow-lg transition-shadow text-left"
+      className="bg-white p-6 rounded border hover:shadow-lg transition-shadow text-left"
     >
       <div
         className={`${color} w-12 h-12 rounded-lg flex items-center justify-center mb-4`}

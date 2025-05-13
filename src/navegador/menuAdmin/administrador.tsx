@@ -179,8 +179,8 @@ const AdministradorPage: React.FC = () => {
             </div>
           </div>
         </div>
-
-        <div className="table-responsive rounded">
+        {/* Tabla de administradores */}
+        <div className="table-responsive d-none d-md-block rounded">
           <table className="table table-bordered table-striped table-hover bg-white rounded shadow-sm">
             <thead className="table-success text-center">
               <tr>
@@ -314,6 +314,39 @@ const AdministradorPage: React.FC = () => {
               ))}
             </tbody>
           </table>
+        </div>
+        {/* Vista tipo tarjeta para móviles */}
+        <div className="d-md-none">
+          {administradores.map((admin) => (
+            <div key={admin.idAdministrador} className="card mb-3 shadow-sm">
+              <div className="card-body">
+                <h5 className="card-title fw-bold">{admin.name}</h5>
+                <p className="card-text mb-1">
+                  <strong>ID:</strong> {admin.idAdministrador}
+                </p>
+                <p className="card-text mb-1">
+                  <strong>Correo:</strong> {admin.mail}
+                </p>
+                <p className="card-text mb-3">
+                  <strong>Clave:</strong> ••••••
+                </p>
+                <div className="d-flex gap-2 flex-column">
+                  <button
+                    className="btn btn-warning btn-sm"
+                    onClick={() => setEditando(admin)}
+                  >
+                    ✏️ Editar
+                  </button>
+                  <button
+                    className="btn btn-danger btn-sm"
+                    onClick={() => handleEliminar(admin.idAdministrador)}
+                  >
+                    🗑️ Eliminar
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </div>

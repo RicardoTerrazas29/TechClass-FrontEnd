@@ -124,6 +124,7 @@ const ProfesoresAdm: React.FC = () => {
           <div className="card-header bg-success text-white">
             <h5 className="mb-0">➕ Agregar Nuevo Profesor</h5>
           </div>
+
           <div className="row g-3 p-4">
             <div className="col-12 col-md-6">
               <input
@@ -210,7 +211,7 @@ const ProfesoresAdm: React.FC = () => {
         </div>
 
         {/* Tabla de profesores */}
-        <div className="table-responsive rounded">
+        <div className="table-responsive d-none d-md-block rounded">
           <table className="table table-striped table-bordered table-hover bg-white rounded shadow-sm">
             <thead className="table-success text-center">
               <tr>
@@ -369,6 +370,43 @@ const ProfesoresAdm: React.FC = () => {
               ))}
             </tbody>
           </table>
+        </div>
+        {/* Vista tipo tarjeta para móviles */}
+        <div className="d-md-none">
+          {profesores.map((profesor) => (
+            <div key={profesor.idProfesor} className="card mb-3 shadow-sm">
+              <div className="card-body">
+                <h5 className="card-title fw-bold">{profesor.name}</h5>
+                <p className="card-text mb-1">
+                  <strong>ID:</strong> {profesor.idProfesor}
+                </p>
+                <p className="card-text mb-1">
+                  <strong>DNI:</strong> {profesor.phone}
+                </p>
+
+                <p className="card-text mb-1">
+                  <strong>Correo:</strong> {profesor.mail}
+                </p>
+                <p className="card-text mb-3">
+                  <strong>Clave:</strong> ••••••
+                </p>
+                <div className="d-flex gap-2 flex-column">
+                  <button
+                    className="btn btn-warning btn-sm"
+                    onClick={() => setEditando(profesor)}
+                  >
+                    ✏️ Editar
+                  </button>
+                  <button
+                    className="btn btn-danger btn-sm"
+                    onClick={() => handleEliminar(profesor.idProfesor)}
+                  >
+                    🗑️ Eliminar
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </div>

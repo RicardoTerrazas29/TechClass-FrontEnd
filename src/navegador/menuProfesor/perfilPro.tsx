@@ -1,14 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 const PerfilProfesor = () => {
   const [profesor, setProfesor] = useState({
-    idProfesor: '',
-    name: '',
-    phone: '',
-    mail: '',
-    clave: '',
+    idProfesor: "",
+    name: "",
+    phone: "",
+    mail: "",
+    clave: "",
   });
-  const [newPassword, setNewPassword] = useState('');
+  const [newPassword, setNewPassword] = useState("");
 
   useEffect(() => {
     const idProfesor = localStorage.getItem("idProfesor");
@@ -18,9 +18,9 @@ const PerfilProfesor = () => {
     }
 
     fetch(`http://localhost:8080/profesor/${idProfesor}`)
-      .then(res => res.json())
-      .then(data => setProfesor(data))
-      .catch(err => console.error(err));
+      .then((res) => res.json())
+      .then((data) => setProfesor(data))
+      .catch((err) => console.error(err));
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -29,83 +29,113 @@ const PerfilProfesor = () => {
     const updatedProfesor = { ...profesor };
     if (newPassword) updatedProfesor.clave = newPassword;
 
-    const res = await fetch(`http://localhost:8080/profesor/${profesor.idProfesor}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(updatedProfesor),
-    });
+    const res = await fetch(
+      `http://localhost:8080/profesor/${profesor.idProfesor}`,
+      {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updatedProfesor),
+      }
+    );
 
     if (res.ok) {
-      alert('✅ Perfil actualizado correctamente');
-      setNewPassword('');
+      alert("✅ Perfil actualizado correctamente");
+      setNewPassword("");
     } else {
-      alert('❌ Error al actualizar el perfil');
+      alert("❌ Error al actualizar el perfil");
     }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setProfesor(prev => ({ ...prev, [name]: value }));
+    setProfesor((prev) => ({ ...prev, [name]: value }));
   };
 
   return (
-    <div className="container mt-5">
-      <div className="card shadow p-4 mx-auto" style={{ maxWidth: "500px", borderRadius: "1rem" }}>
-        <h3 className="text-center mb-4">👨‍🏫 Perfil del Profesor</h3>
-        <form onSubmit={handleSubmit}>
-          <div className="mb-3">
-            <label className="form-label">Nombre completo</label>
-            <input
-              className="form-control"
-              type="text"
-              name="name"
-              value={profesor.name}
-              onChange={handleChange}
-              required
-            />
-          </div>
+    <div
+      className="min-h-screen bg-cover bg-center p-6"
+      style={{
+        backgroundImage:
+          "url('https://img.freepik.com/premium-vector/background-text-with-vector-illustrationschool-supplies-education-students_505564-3432.jpg')",
+      }}
+    >
+      <main className=" min-h-screen flex items-center justify-center p-4">
+        <div className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-4xl border-2 border-[#70A1FF]">
+          <h2 className="text-3xl text-center font-bold text-[#2F3542] mb-8">
+            👨‍🏫 Perfil del Profesor
+          </h2>
 
-          <div className="mb-3">
-            <label className="form-label">Teléfono</label>
-            <input
-              className="form-control"
-              type="text"
-              name="phone"
-              value={profesor.phone}
-              onChange={handleChange}
-              required
-            />
-          </div>
+          <form
+            onSubmit={handleSubmit}
+            className="grid grid-cols-1 md:grid-cols-2 gap-6"
+          >
+            <div>
+              <label className="block font-medium text-[#2F3542] mb-1">
+                Nombre completo
+              </label>
+              <input
+                type="text"
+                name="name"
+                value={profesor.name}
+                onChange={handleChange}
+                required
+                className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7ED6DF]"
+              />
+            </div>
 
-          <div className="mb-3">
-            <label className="form-label">Correo electrónico</label>
-            <input
-              className="form-control"
-              type="email"
-              name="mail"
-              value={profesor.mail}
-              onChange={handleChange}
-              required
-            />
-          </div>
+            <div>
+              <label className="block font-medium text-[#2F3542] mb-1">
+                Teléfono
+              </label>
+              <input
+                type="text"
+                name="dni"
+                value={profesor.phone}
+                onChange={handleChange}
+                required
+                className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7ED6DF]"
+              />
+            </div>
 
-          <div className="mb-3">
-            <label className="form-label">Nueva contraseña</label>
-            <input
-              className="form-control"
-              type="password"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-              placeholder="Obligatorio cambiar clave"
-              required
-            />
-          </div>
+            <div className="md:col-span-2">
+              <label className="block font-medium text-[#2F3542] mb-1">
+                Correo electrónico
+              </label>
+              <input
+                type="email"
+                name="mail"
+                value={profesor.mail}
+                onChange={handleChange}
+                required
+                className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7ED6DF]"
+              />
+            </div>
 
-          <button className="btn btn-success w-100" type="submit">
-            💾 Guardar cambios
-          </button>
-        </form>
-      </div>
+            <div className="md:col-span-2">
+              <label className="block font-medium text-[#2F3542] mb-1">
+                Nueva contraseña
+              </label>
+              <input
+                type="password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                placeholder="Obligatorio cambiar clave"
+                required
+                className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF6B81]"
+              />
+            </div>
+
+            <div className="md:col-span-2">
+              <button
+                type="submit"
+                className="bg-[#FF6B81] hover:bg-[#ff4757] text-white font-semibold py-3 rounded-lg w-full transition duration-300"
+              >
+                💾 Guardar cambios
+              </button>
+            </div>
+          </form>
+        </div>
+      </main>
     </div>
   );
 };

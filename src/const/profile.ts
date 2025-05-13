@@ -10,12 +10,12 @@ import {
 
 export type NavItem = {
   name: string;
-  icon?: React.ElementType;
+  icon: React.ElementType;
   path: string;
 };
 
 export const adminNavigation = [
-  { name: "Principal", icon: LayoutDashboard, path: "/admin/principal" },
+  { name: "Dashboard", icon: LayoutDashboard, path: "/admin/principal" },
   { name: "Admins", icon: Users, path: "/admin/administrador" },
   { name: "Teachers", icon: School2, path: "/admin/profesores" },
   { name: "Students", icon: GraduationCap, path: "/admin/estudiantes" },
@@ -25,7 +25,7 @@ export const professorNavigation = [
   { name: "Dashboard", icon: LayoutDashboard, path: "/profesor/principal" },
   { name: "Students", icon: GraduationCap, path: "/profesor/estudiantes" },
   { name: "Courses", icon: BookOpen, path: "/profesor/cursos" },
-  { name: "Monitor", icon: Monitor, path: "/profesor/grafico" },
+  { name: "Monitor", icon: Monitor, path: "/profesor/monitor" },
   { name: "Profile", icon: UserRound, path: "/profesor/perfil" },
 ];
 

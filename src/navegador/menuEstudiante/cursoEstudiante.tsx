@@ -5,82 +5,103 @@ const courses = [
   {
     id: "matematicas",
     title: "Matemáticas",
-    description: "Fundamentos clave de las matemáticas en primaria",
+    description: "Aprende a sumar, restar y jugar con los números.",
     icon: Calculator,
-    color: "bg-blue-500",
+    color: "bg-blue-400",
   },
   {
     id: "letras",
     title: "Letras",
-    description: "Lectura comprensiva y redacción básica",
+    description: "Descubre el mundo leyendo cuentos y escribiendo historias.",
     icon: Book,
-    color: "bg-purple-500",
+    color: "bg-pink-400",
   },
   {
     id: "ciencia",
     title: "Ciencia",
-    description: "Experimentos y conceptos científicos iniciales",
+    description: "Explora la naturaleza con experimentos divertidos.",
     icon: BoxIcon,
-    color: "bg-green-500",
+    color: "bg-green-400",
   },
   {
     id: "tecnologia",
     title: "Tecnología",
-    description: "Habilidades digitales y uso de computadoras",
+    description: "Aprende con la computadora y juega mientras estudias.",
     icon: Laptop,
-    color: "bg-orange-500",
+    color: "bg-yellow-400",
   },
 ];
 
 const CursoEstudiante = () => {
   return (
-    <div className="p-6">
-      <h2 className="text-3xl font-bold text-[#2F3542] mb-6 text-center md:text-left">
-        📘 Mis Cursos
-      </h2>
+    <div
+      className="min-h-screen bg-cover bg-center p-6"
+      style={{
+        backgroundImage:
+          "url('https://img.freepik.com/free-psd/science-background-with-laboratory-equipment_23-2150181635.jpg')",
+      }}
+    >
+      <div className="p-6  min-h-screen">
+        <h2 className="text-4xl font-bold text-center text-white mb-4">
+          📘 ¡Hola, Explorador! Estos son tus cursos
+        </h2>
 
-      <div className="flex flex-col md:flex-row gap-6">
-        {/* Contenido principal */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 flex-1">
-          {courses.map((course) => {
-            const Icon = course.icon;
-            return (
-              <CourseCard
-                key={course.id}
-                id={course.id}
-                title={course.title}
-                description={course.description}
-                icon={Icon}
-                color={course.color}
-              />
-            );
-          })}
-        </div>
+        <div className="flex flex-col lg:flex-row gap-8">
+          {/* Tarjetas de cursos */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 flex-1">
+            {courses.map((course) => {
+              const Icon = course.icon;
+              return (
+                <CourseCard
+                  key={course.id}
+                  id={course.id}
+                  title={course.title}
+                  description={course.description}
+                  icon={Icon}
+                  color={course.color}
+                />
+              );
+            })}
+          </div>
 
-        {/* Panel lateral */}
-        <div className="w-full md:w-80 bg-white shadow-lg rounded-xl p-5 border border-[#CED6E0]">
-          <h3 className="text-xl font-semibold text-[#3742FA] mb-4">
-            🧭 Panel de Progreso
-          </h3>
-          <div className="mb-4">
-            <p className="text-sm text-gray-600">Progreso general:</p>
-            <div className="w-full bg-gray-200 rounded-full h-3 mt-1">
-              <div className="bg-green-500 h-3 rounded-full w-[65%]" />
+          {/* Panel de Progreso */}
+          <div className="w-full lg:w-80 bg-white rounded-2xl shadow-xl p-6 border border-[#DDE6ED]">
+            <h3 className="text-2xl font-bold text-[#1E90FF] mb-4 text-center">
+              🧭 Tu Progreso
+            </h3>
+
+            <div className="mb-6">
+              <p className="text-base font-medium text-gray-700">
+                Progreso general
+              </p>
+              <div className="w-full bg-gray-300 rounded-full h-4 mt-2">
+                <div className="bg-green-500 h-4 rounded-full w-[65%] transition-all duration-500" />
+              </div>
+              <p className="text-sm text-gray-600 mt-1 text-right">
+                65% completado
+              </p>
             </div>
-            <p className="text-sm text-gray-500 mt-1">65% completado</p>
-          </div>
 
-          <div className="mb-4">
-            <p className="text-sm text-gray-600">Próxima evaluación:</p>
-            <p className="font-medium text-[#2F3542]">10 de mayo - Ciencia</p>
-          </div>
+            <div className="mb-6">
+              <p className="text-base font-medium text-gray-700">
+                📅 Próxima evaluación
+              </p>
+              <p className="text-lg text-[#2F3542] font-semibold mt-1">
+                Viernes 10 de mayo
+              </p>
+              <p className="text-sm text-[#747D8C]">Tema: Ciencia</p>
+            </div>
 
-          <div className="mb-2">
-            <p className="text-sm text-gray-600">Logros recientes:</p>
-            <ul className="list-disc list-inside text-sm text-[#2F3542]">
-              <li>📈 Superaste el nivel básico en Tecnología</li>
-              <li>📚 Completaste el módulo de Lectura</li>
-            </ul>
+            <div>
+              <p className="text-base font-medium text-gray-700">
+                🎉 Logros recientes
+              </p>
+              <ul className="mt-2 space-y-1 text-sm text-[#2F3542] list-disc list-inside">
+                <li>✅ ¡Superaste el nivel 1 en Tecnología!</li>
+                <li>📖 ¡Terminaste el módulo de Lectura!</li>
+                <li>🔢 ¡Resolviste 10 problemas matemáticos!</li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
