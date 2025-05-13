@@ -170,9 +170,33 @@ Este proyecto está bajo la licencia MIT. Consulta el archivo LICENSE para más 
 
 ![Inicio de sesión](./public/screenshots/login.png)
 
+### Panel de Administrador
+
+![Panel de Administrador](./public/screenshots/administrador-dashboard.png)
+
+![Panel de Gestion Administradores](./public/screenshots/manage-admin-interface.png)
+
+![Panel de Gestion Profesores](./public/screenshots/manage-profesor-interface.png)
+
 ### Panel de Profesor
 
 ![Panel de Profesor](./public/screenshots/profesor-dashboard.png)
+
+![Panel de Gestion Estudiantes](./public/screenshots/manage-student-interface.png)
+
+![Panel de Gestion Cursos](./public/screenshots/manage-courses.png)
+
+![Panel de Monitoreo](./public/screenshots/monitoring.png)
+
+### Panel de Estudiante
+
+![Panel de Estudiante](./public/screenshots/student-dashboard.png)
+
+![Panel de Cursos Estudiante](./public/screenshots/student-courses.png)
+
+![Panel de Perfil Estudiante](./public/screenshots/student-profile.png)
+
+![Panel de Contenido Curso](./public/screenshots/course-content.png)
 
 ---
 
