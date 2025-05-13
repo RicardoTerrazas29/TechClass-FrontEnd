@@ -42,22 +42,22 @@ El proyecto está diseñado para ser responsivo y fácil de usar, con una interf
 
 ## Estructura del Proyecto
 
-TechClass-FrontEnd/ 
-├── public/ # Archivos estáticos (imágenes, íconos, etc.) 
-│ ├── imagenes/ # Recursos gráficos 
-│ └── vite.svg # Ícono del proyecto 
-├── src/ # Código fuente 
-│ ├── Components/ # Componentes reutilizables 
-│ ├── navegador/ # Páginas principales y rutas 
-│ ├── Providers/ # Contextos y lógica global 
-│ ├── const/ # Constantes y configuraciones 
-│ ├── App.tsx # Componente principal 
-│ ├── main.tsx # Punto de entrada 
-│ └── index.css # Estilos globales 
-├── .gitignore # Archivos ignorados por Git 
-├── package.json # Dependencias y scripts del proyecto 
-├── tsconfig.json # Configuración de TypeScript 
-├── vite.config.ts # Configuración de Vite 
+TechClass-FrontEnd/
+├── public/ # Archivos estáticos (imágenes, íconos, etc.)
+│ ├── imagenes/ # Recursos gráficos
+│ └── vite.svg # Ícono del proyecto
+├── src/ # Código fuente
+│ ├── Components/ # Componentes reutilizables
+│ ├── navegador/ # Páginas principales y rutas
+│ ├── Providers/ # Contextos y lógica global
+│ ├── const/ # Constantes y configuraciones
+│ ├── App.tsx # Componente principal
+│ ├── main.tsx # Punto de entrada
+│ └── index.css # Estilos globales
+├── .gitignore # Archivos ignorados por Git
+├── package.json # Dependencias y scripts del proyecto
+├── tsconfig.json # Configuración de TypeScript
+├── vite.config.ts # Configuración de Vite
 └── README.md # Documentación del proyecto
 
 ---
@@ -77,88 +77,88 @@ Antes de comenzar, asegúrate de tener instalado lo siguiente:
 Sigue estos pasos para configurar el proyecto en tu entorno local:
 
 1. Clona este repositorio:
-   
-  ```bash
-  git clone https://github.com/tu-usuario/TechClass-FrontEnd.git
-  ```
+
+```bash
+git clone https://github.com/tu-usuario/TechClass-FrontEnd.git
+```
 
 2. Navega al directorio del proyecto:
-   
-  ```
-  cd TechClass-FrontEnd
-  ```
+
+```
+cd TechClass-FrontEnd
+```
 
 3. Instala las dependencias:
-   
-  ```
-  npm install
-  ```
+
+```
+npm install
+```
 
 4. Inicia el servidor de desarrollo:
-   
-  ```
-  npm run dev
-  ```
+
+```
+npm run dev
+```
 
 5. Abre tu navegador en http://localhost:5173 para ver la aplicación.
 
 ---
 
-📘 Uso
+##📘 Uso
 
 👥 Roles de Usuario
 
-* Administrador
+- Administrador
   Accede a /admin para gestionar estudiantes, profesores y cursos.
 
-* Profesor
+- Profesor
   Accede a /profesor para administrar cursos y ver estadísticas.
 
-* Estudiante
+- Estudiante
   Accede a /estudiante para explorar cursos y logros.
 
 ---
 
-🧭 Navegación
+##🧭 Navegación
 
-* El menú lateral (Sidebar) está disponible en pantallas grandes.
+- El menú lateral (Sidebar) está disponible en pantallas grandes.
 
-* En dispositivos móviles, utiliza el menú hamburguesa para navegar fácilmente.
+- En dispositivos móviles, utiliza el menú hamburguesa para navegar fácilmente.
 
 ---
 
-🛠 Scripts Disponibles
+##🛠 Scripts Disponibles
 Los siguientes comandos están definidos en el archivo package.json:
 
-* npm run dev – Inicia el servidor de desarrollo.
+- npm run dev – Inicia el servidor de desarrollo.
 
-* npm run build – Genera una versión optimizada para producción.
+- npm run build – Genera una versión optimizada para producción.
 
-* npm run preview – Previsualiza la aplicación después de compilarla.
+- npm run preview – Previsualiza la aplicación después de compilarla.
 
-* npm run lint – Ejecuta ESLint para verificar errores de código.
-
----
-
-🧰 Tecnologías Utilizadas
-
-* React – Biblioteca para construir interfaces de usuario.
-
-* TypeScript – Tipado estático para JavaScript.
-
-* Vite – Herramienta de desarrollo rápida y ligera.
-
-* Tailwind CSS – Framework de utilidades CSS para estilos rápidos.
-
-* Axios – Cliente HTTP para consumir APIs.
-
-* Lucide React – Íconos modernos y personalizables.
-
-* Chart.js – Gráficos interactivos para estadísticas.
+- npm run lint – Ejecuta ESLint para verificar errores de código.
 
 ---
 
-📄 Licencia
+##🧰 Tecnologías Utilizadas
+
+- React – Biblioteca para construir interfaces de usuario.
+
+- TypeScript – Tipado estático para JavaScript.
+
+- Vite – Herramienta de desarrollo rápida y ligera.
+
+- Tailwind CSS – Framework de utilidades CSS para estilos rápidos.
+
+- Axios – Cliente HTTP para consumir APIs.
+
+- Lucide React – Íconos modernos y personalizables.
+
+- Chart.js – Gráficos interactivos para estadísticas.
+
+---
+
+##📄 Licencia
 Este proyecto está bajo la licencia MIT. Consulta el archivo LICENSE para más detalles.
 
 ---
