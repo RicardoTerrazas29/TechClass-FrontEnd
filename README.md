@@ -104,7 +104,7 @@ npm run dev
 
 ---
 
-##📘 Uso
+## 📘 Uso
 
 👥 Roles de Usuario
 
@@ -119,7 +119,7 @@ npm run dev
 
 ---
 
-##🧭 Navegación
+## 🧭 Navegación
 
 - El menú lateral (Sidebar) está disponible en pantallas grandes.
 
@@ -140,7 +140,7 @@ Los siguientes comandos están definidos en el archivo package.json:
 
 ---
 
-##🧰 Tecnologías Utilizadas
+## 🧰 Tecnologías Utilizadas
 
 - React – Biblioteca para construir interfaces de usuario.
 
@@ -158,13 +158,20 @@ Los siguientes comandos están definidos en el archivo package.json:
 
 ---
 
-##📄 Licencia
+## 📄 Licencia
+
 Este proyecto está bajo la licencia MIT. Consulta el archivo LICENSE para más detalles.
 
 ---
 
 📸 Capturas de Pantalla
+
+### Inicio de sesión
+
 ![Inicio de sesión](./public/screenshots/login.png)
+
+### Panel de Profesor
+
 ![Panel de Profesor](./public/screenshots/profesor-dashboard.png)
 
 ---
