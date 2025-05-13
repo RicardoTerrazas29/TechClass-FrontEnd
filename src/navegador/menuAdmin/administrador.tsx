@@ -15,7 +15,12 @@ const AdministradorPage: React.FC = () => {
     Omit<Administrador, "idAdministrador">
   >({ name: "", mail: "", clave: "" });
   const [editando, setEditando] = useState<Administrador | null>(null);
-
+  const [erroresNuevo, setErroresNuevo] = useState<{ [key: string]: string }>(
+    {}
+  );
+  const [erroresEditar, setErroresEditar] = useState<{ [key: string]: string }>(
+    {}
+  );
   const fetchAdministradores = async () => {
     const response = await axios.get<Administrador[]>(
       "http://localhost:8080/administrador"
@@ -27,28 +32,17 @@ const AdministradorPage: React.FC = () => {
     fetchAdministradores();
   }, []);
 
-  const esNombreValido = (nombre: string) =>
-    /^[A-Za-zÁÉÍÓÚÑáéíóúñ\s]+$/.test(nombre);
-  const esCorreoValido = (correo: string) =>
-    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo);
-  const esClaveValida = (clave: string) =>
-    /^[\w!@#$%^&*()\-_=+[\]{};:'",.<>/?\\|`~]+$/.test(clave);
-
   const handleCrear = async () => {
-    if (
-      !esNombreValido(nuevoAdmin.name) ||
-      !esCorreoValido(nuevoAdmin.mail) ||
-      !esClaveValida(nuevoAdmin.clave)
-    ) {
-      alert(
-        "Por favor, revisa los campos. El nombre solo debe tener letras, el correo debe ser válido y la clave debe tener caracteres permitidos."
-      );
+    const errores = validarCampos(nuevoAdmin);
+    if (Object.keys(errores).length > 0) {
+      setErroresNuevo(errores);
       return;
     }
 
     try {
       await axios.post("http://localhost:8080/administrador", [nuevoAdmin]);
       setNuevoAdmin({ name: "", mail: "", clave: "" });
+      setErroresNuevo({});
       fetchAdministradores();
     } catch (error) {
       console.error("Error al crear:", error);
@@ -57,12 +51,10 @@ const AdministradorPage: React.FC = () => {
 
   const handleActualizar = async () => {
     if (editando) {
-      if (
-        !esNombreValido(editando.name) ||
-        !esCorreoValido(editando.mail) ||
-        !esClaveValida(editando.clave)
-      ) {
-        alert("Por favor, revisa los campos editados.");
+      const { idAdministrador, ...datosEditar } = editando;
+      const errores = validarCampos(datosEditar);
+      if (Object.keys(errores).length > 0) {
+        setErroresEditar(errores);
         return;
       }
 
@@ -72,6 +64,7 @@ const AdministradorPage: React.FC = () => {
           editando
         );
         setEditando(null);
+        setErroresEditar({});
         fetchAdministradores();
       } catch (error) {
         console.error("Error al actualizar:", error);
@@ -86,6 +79,26 @@ const AdministradorPage: React.FC = () => {
     } catch (error) {
       console.error("Error al eliminar:", error);
     }
+  };
+
+  const validarCampos = (
+    administrador: Omit<Administrador, "idAdministrador">
+  ) => {
+    const errores: { [key: string]: string } = {};
+
+    if (!/^[a-zA-Z\s]+$/.test(administrador.name)) {
+      errores.name = "El nombre solo debe contener letras y espacios.";
+    }
+
+    if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(administrador.mail)) {
+      errores.mail = "El correo no es válido.";
+    }
+
+    if (!administrador.clave) {
+      errores.clave = "La clave no puede estar vacía.";
+    }
+
+    return errores;
   };
 
   return (
@@ -117,6 +130,11 @@ const AdministradorPage: React.FC = () => {
                     setNuevoAdmin({ ...nuevoAdmin, name: e.target.value })
                   }
                 />
+                {erroresNuevo.name && (
+                  <div className="text-danger small ms-1">
+                    {erroresNuevo.name}
+                  </div>
+                )}
               </div>
               <div className="col-md-4">
                 <input
@@ -128,6 +146,11 @@ const AdministradorPage: React.FC = () => {
                     setNuevoAdmin({ ...nuevoAdmin, mail: e.target.value })
                   }
                 />
+                {erroresNuevo.mail && (
+                  <div className="text-danger small ms-1">
+                    {erroresNuevo.mail}
+                  </div>
+                )}
               </div>
               <div className="col-md-4">
                 <input
@@ -139,6 +162,11 @@ const AdministradorPage: React.FC = () => {
                     setNuevoAdmin({ ...nuevoAdmin, clave: e.target.value })
                   }
                 />
+                {erroresNuevo.clave && (
+                  <div className="text-danger small ms-1">
+                    {erroresNuevo.clave}
+                  </div>
+                )}
               </div>
               <div className="col-12 d-grid">
                 <button
@@ -183,6 +211,12 @@ const AdministradorPage: React.FC = () => {
                     ) : (
                       admin.name
                     )}
+                    {erroresEditar.name &&
+                      editando?.idAdministrador === admin.idAdministrador && (
+                        <div className="text-danger small">
+                          {erroresEditar.name}
+                        </div>
+                      )}
                   </td>
 
                   <td>
@@ -197,6 +231,12 @@ const AdministradorPage: React.FC = () => {
                     ) : (
                       admin.mail
                     )}
+                    {erroresEditar.mail &&
+                      editando?.idAdministrador === admin.idAdministrador && (
+                        <div className="text-danger small">
+                          {erroresEditar.mail}
+                        </div>
+                      )}
                   </td>
 
                   <td>
@@ -217,6 +257,12 @@ const AdministradorPage: React.FC = () => {
                     ) : (
                       "********"
                     )}
+                    {erroresEditar.clave &&
+                      editando?.idAdministrador === admin.idAdministrador && (
+                        <div className="text-danger small">
+                          {erroresEditar.clave}
+                        </div>
+                      )}
                   </td>
 
                   <td>

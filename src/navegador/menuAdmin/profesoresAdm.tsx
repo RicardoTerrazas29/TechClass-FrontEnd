@@ -115,249 +115,261 @@ const ProfesoresAdm: React.FC = () => {
           "url('https://img.freepik.com/premium-photo/blue-box-notebook-green-apple-pink-marker-colorful-sticky-notes_157927-214.jpg')",
       }}
     >
-      <h2 className="text-3xl font-bold text-center mb-4 text-primary">
-        👩‍💼 Gestión de Profesores 👨‍💼
-      </h2>
-      {/* Crear nuevo profesor */}
-      <div className="card shadow-lg mb-4">
-        <div className="card-header bg-success text-white">
-          <h5 className="mb-0">➕ Agregar Nuevo Profesor</h5>
-        </div>
-        <div className="row g-3 p-4">
-          <div className="col-12 col-md-6">
-            <input
-              className="form-control rounded-3 shadow-sm"
-              placeholder="👦 Nombre"
-              value={nuevoProfesor.name}
-              onChange={(e) =>
-                setNuevoProfesor({
-                  ...nuevoProfesor,
-                  name: e.target.value,
-                })
-              }
-            />
-            {erroresNuevo.name && (
-              <div className="text-danger small ms-1">{erroresNuevo.name}</div>
-            )}
+      <div className="container bg-white bg-opacity-75 p-4 rounded-4 shadow">
+        <h2 className="text-3xl font-bold text-center mb-4 text-primary">
+          👩‍💼 Gestión de Profesores 👨‍💼
+        </h2>
+        {/* Crear nuevo profesor */}
+        <div className="card shadow-lg mb-4">
+          <div className="card-header bg-success text-white">
+            <h5 className="mb-0">➕ Agregar Nuevo Profesor</h5>
           </div>
-          <div className="col-12 col-md-6">
-            <input
-              className="form-control rounded-3 shadow-sm"
-              placeholder="🏠 Teléfono"
-              value={nuevoProfesor.phone}
-              onChange={(e) =>
-                setNuevoProfesor({
-                  ...nuevoProfesor,
-                  phone: e.target.value,
-                })
-              }
-            />
-            {erroresNuevo.phone && (
-              <div className="text-danger small ms-1">{erroresNuevo.phone}</div>
-            )}
-          </div>
-          <div className="col-12 col-md-6">
-            <input
-              className="form-control rounded-3 shadow-sm"
-              placeholder="📧 Correo"
-              value={nuevoProfesor.mail}
-              onChange={(e) =>
-                setNuevoProfesor({
-                  ...nuevoProfesor,
-                  mail: e.target.value,
-                })
-              }
-            />
-            {erroresNuevo.mail && (
-              <div className="text-danger small ms-1">{erroresNuevo.mail}</div>
-            )}
-          </div>
-          <div className="col-12 col-md-6">
-            <input
-              className="form-control rounded-3 shadow-sm"
-              type="password"
-              placeholder="🔑 Clave"
-              value={nuevoProfesor.clave}
-              onChange={(e) =>
-                setNuevoProfesor({
-                  ...nuevoProfesor,
-                  clave: e.target.value,
-                })
-              }
-            />
-            {erroresNuevo.clave && (
-              <div className="text-danger small ms-1">{erroresNuevo.clave}</div>
-            )}
-          </div>
-          <div className="col-12 d-grid">
-            <button
-              className="btn btn-success mt-2 fw-bold fs-5"
-              onClick={handleCrear}
-            >
-              🎓 Crear Profesor
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Tabla de profesores */}
-      <div className="table-responsive rounded">
-        <table className="table table-striped table-bordered table-hover bg-white rounded shadow-sm">
-          <thead className="table-success text-center">
-            <tr>
-              <th>ID</th>
-              <th>Nombre</th>
-              <th>Teléfono</th>
-              <th>Correo</th>
-              <th>Clave</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {profesores.map((profesor) => (
-              <tr
-                key={profesor.idProfesor}
-                className="text-center align-middle"
+          <div className="row g-3 p-4">
+            <div className="col-12 col-md-6">
+              <input
+                className="form-control rounded-3 shadow-sm"
+                placeholder="👦 Nombre"
+                value={nuevoProfesor.name}
+                onChange={(e) =>
+                  setNuevoProfesor({
+                    ...nuevoProfesor,
+                    name: e.target.value,
+                  })
+                }
+              />
+              {erroresNuevo.name && (
+                <div className="text-danger small ms-1">
+                  {erroresNuevo.name}
+                </div>
+              )}
+            </div>
+            <div className="col-12 col-md-6">
+              <input
+                className="form-control rounded-3 shadow-sm"
+                placeholder="🏠 Teléfono"
+                value={nuevoProfesor.phone}
+                onChange={(e) =>
+                  setNuevoProfesor({
+                    ...nuevoProfesor,
+                    phone: e.target.value,
+                  })
+                }
+              />
+              {erroresNuevo.phone && (
+                <div className="text-danger small ms-1">
+                  {erroresNuevo.phone}
+                </div>
+              )}
+            </div>
+            <div className="col-12 col-md-6">
+              <input
+                className="form-control rounded-3 shadow-sm"
+                placeholder="📧 Correo"
+                value={nuevoProfesor.mail}
+                onChange={(e) =>
+                  setNuevoProfesor({
+                    ...nuevoProfesor,
+                    mail: e.target.value,
+                  })
+                }
+              />
+              {erroresNuevo.mail && (
+                <div className="text-danger small ms-1">
+                  {erroresNuevo.mail}
+                </div>
+              )}
+            </div>
+            <div className="col-12 col-md-6">
+              <input
+                className="form-control rounded-3 shadow-sm"
+                type="password"
+                placeholder="🔑 Clave"
+                value={nuevoProfesor.clave}
+                onChange={(e) =>
+                  setNuevoProfesor({
+                    ...nuevoProfesor,
+                    clave: e.target.value,
+                  })
+                }
+              />
+              {erroresNuevo.clave && (
+                <div className="text-danger small ms-1">
+                  {erroresNuevo.clave}
+                </div>
+              )}
+            </div>
+            <div className="col-12 d-grid">
+              <button
+                className="btn btn-success mt-2 fw-bold fs-5"
+                onClick={handleCrear}
               >
-                <td>{profesor.idProfesor}</td>
+                👨‍🏫 Crear Profesor
+              </button>
+            </div>
+          </div>
+        </div>
 
-                {/* Nombre */}
-                <td>
-                  {editando?.idProfesor === profesor.idProfesor ? (
-                    <input
-                      className="form-control"
-                      value={editando.name}
-                      onChange={(e) =>
-                        setEditando({ ...editando, name: e.target.value })
-                      }
-                    />
-                  ) : (
-                    profesor.name
-                  )}
-                  {erroresEditar.name &&
-                    editando?.idProfesor === profesor.idProfesor && (
-                      <div className="text-danger small">
-                        {erroresEditar.name}
-                      </div>
-                    )}
-                </td>
+        {/* Tabla de profesores */}
+        <div className="table-responsive rounded">
+          <table className="table table-striped table-bordered table-hover bg-white rounded shadow-sm">
+            <thead className="table-success text-center">
+              <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Teléfono</th>
+                <th>Correo</th>
+                <th>Clave</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {profesores.map((profesor) => (
+                <tr
+                  key={profesor.idProfesor}
+                  className="text-center align-middle"
+                >
+                  <td>{profesor.idProfesor}</td>
 
-                {/* Teléfono */}
-                <td>
-                  {editando?.idProfesor === profesor.idProfesor ? (
-                    <input
-                      className="form-control"
-                      value={editando.phone}
-                      onChange={(e) =>
-                        setEditando({ ...editando, phone: e.target.value })
-                      }
-                    />
-                  ) : (
-                    profesor.phone
-                  )}
-                  {erroresEditar.phone &&
-                    editando?.idProfesor === profesor.idProfesor && (
-                      <div className="text-danger small">
-                        {erroresEditar.phone}
-                      </div>
-                    )}
-                </td>
-
-                {/* Correo */}
-                <td>
-                  {editando?.idProfesor === profesor.idProfesor ? (
-                    <input
-                      className="form-control"
-                      value={editando.mail}
-                      onChange={(e) =>
-                        setEditando({ ...editando, mail: e.target.value })
-                      }
-                    />
-                  ) : (
-                    profesor.mail
-                  )}
-                  {erroresEditar.mail &&
-                    editando?.idProfesor === profesor.idProfesor && (
-                      <div className="text-danger small">
-                        {erroresEditar.mail}
-                      </div>
-                    )}
-                </td>
-
-                {/* Clave */}
-                <td>
-                  {editando?.idProfesor === profesor.idProfesor ? (
-                    <>
+                  {/* Nombre */}
+                  <td>
+                    {editando?.idProfesor === profesor.idProfesor ? (
                       <input
-                        type="password"
-                        className="form-control mb-1"
-                        value={editando.clave}
+                        className="form-control"
+                        value={editando.name}
                         onChange={(e) =>
-                          setEditando({ ...editando, clave: e.target.value })
+                          setEditando({ ...editando, name: e.target.value })
                         }
                       />
-                      <small className="text-danger">
-                        ⚠️ Importante: también actualice la contraseña
-                      </small>
-                    </>
-                  ) : (
-                    <span>********</span>
-                  )}
-                  {erroresEditar.clave &&
-                    editando?.idProfesor === profesor.idProfesor && (
-                      <div className="text-danger small">
-                        {erroresEditar.clave}
-                      </div>
+                    ) : (
+                      profesor.name
                     )}
-                </td>
+                    {erroresEditar.name &&
+                      editando?.idProfesor === profesor.idProfesor && (
+                        <div className="text-danger small">
+                          {erroresEditar.name}
+                        </div>
+                      )}
+                  </td>
 
-                {/* Botones */}
-                <td>
-                  <div className="d-flex flex-column flex-sm-row gap-2">
+                  {/* Teléfono */}
+                  <td>
+                    {editando?.idProfesor === profesor.idProfesor ? (
+                      <input
+                        className="form-control"
+                        value={editando.phone}
+                        onChange={(e) =>
+                          setEditando({ ...editando, phone: e.target.value })
+                        }
+                      />
+                    ) : (
+                      profesor.phone
+                    )}
+                    {erroresEditar.phone &&
+                      editando?.idProfesor === profesor.idProfesor && (
+                        <div className="text-danger small">
+                          {erroresEditar.phone}
+                        </div>
+                      )}
+                  </td>
+
+                  {/* Correo */}
+                  <td>
+                    {editando?.idProfesor === profesor.idProfesor ? (
+                      <input
+                        className="form-control"
+                        value={editando.mail}
+                        onChange={(e) =>
+                          setEditando({ ...editando, mail: e.target.value })
+                        }
+                      />
+                    ) : (
+                      profesor.mail
+                    )}
+                    {erroresEditar.mail &&
+                      editando?.idProfesor === profesor.idProfesor && (
+                        <div className="text-danger small">
+                          {erroresEditar.mail}
+                        </div>
+                      )}
+                  </td>
+
+                  {/* Clave */}
+                  <td>
                     {editando?.idProfesor === profesor.idProfesor ? (
                       <>
-                        <div className="d-grid w-100">
-                          <button
-                            className="btn btn-success btn-sm"
-                            onClick={handleActualizar}
-                          >
-                            💾 Guardar
-                          </button>
-                          <button
-                            className="btn btn-secondary btn-sm"
-                            onClick={() => {
-                              setEditando(null);
-                              setErroresEditar({});
-                            }}
-                          >
-                            ❌ Cancelar
-                          </button>
-                        </div>
+                        <input
+                          type="password"
+                          className="form-control mb-1"
+                          value={editando.clave}
+                          onChange={(e) =>
+                            setEditando({ ...editando, clave: e.target.value })
+                          }
+                        />
+                        <small className="text-danger">
+                          ⚠️ Importante: también actualice la contraseña
+                        </small>
                       </>
                     ) : (
-                      <>
-                        <div className="d-grid w-100 ">
-                          <button
-                            className="btn btn-warning btn-sm"
-                            onClick={() => setEditando(profesor)}
-                          >
-                            ✏️ Editar
-                          </button>
-                          <button
-                            className="btn btn-danger btn-sm"
-                            onClick={() => handleEliminar(profesor.idProfesor)}
-                          >
-                            🗑️ Eliminar
-                          </button>
-                        </div>
-                      </>
+                      <span>********</span>
                     )}
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                    {erroresEditar.clave &&
+                      editando?.idProfesor === profesor.idProfesor && (
+                        <div className="text-danger small">
+                          {erroresEditar.clave}
+                        </div>
+                      )}
+                  </td>
+
+                  {/* Botones */}
+                  <td>
+                    <div className="d-flex flex-column flex-sm-row gap-2">
+                      {editando?.idProfesor === profesor.idProfesor ? (
+                        <>
+                          <div className="d-grid w-100">
+                            <button
+                              className="btn btn-success btn-sm"
+                              onClick={handleActualizar}
+                            >
+                              💾 Guardar
+                            </button>
+                            <button
+                              className="btn btn-secondary btn-sm"
+                              onClick={() => {
+                                setEditando(null);
+                                setErroresEditar({});
+                              }}
+                            >
+                              ❌ Cancelar
+                            </button>
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <div className="d-grid w-100 ">
+                            <button
+                              className="btn btn-warning btn-sm"
+                              onClick={() => setEditando(profesor)}
+                            >
+                              ✏️ Editar
+                            </button>
+                            <button
+                              className="btn btn-danger btn-sm"
+                              onClick={() =>
+                                handleEliminar(profesor.idProfesor)
+                              }
+                            >
+                              🗑️ Eliminar
+                            </button>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
