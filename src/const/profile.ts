@@ -25,6 +25,7 @@ export const professorNavigation = [
   { name: "Dashboard", icon: LayoutDashboard, path: "/profesor/principal" },
   { name: "Students", icon: GraduationCap, path: "/profesor/estudiantes" },
   { name: "Courses", icon: BookOpen, path: "/profesor/cursos" },
+  { name: "Asignaciones", icon: GraduationCap, path: "/profesor/asignaciones" },
   { name: "Monitor", icon: Monitor, path: "/profesor/monitor" },
   { name: "Profile", icon: UserRound, path: "/profesor/perfil" },
 ];
