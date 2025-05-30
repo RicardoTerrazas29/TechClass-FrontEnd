@@ -14,6 +14,7 @@ import CursoProfesor from "./navegador/menuProfesor/cursoProfesor";
 import EstudiantesPro from "./navegador/menuProfesor/estudiantesPro";
 import PerfilProfesor from "./navegador/menuProfesor/perfilPro";
 import GraficoEstudiantes from "./navegador/menuProfesor/grafico";
+import AsignacionCursoPage from "./navegador/menuProfesor/asignacion";
 
 //importar el menuEstudiante
 import PrincipalEst from "./navegador/menuEstudiante/principal";
@@ -60,6 +61,7 @@ function App() {
             <Route path="cursos" element={<CursoProfesor />} />
             <Route path="perfil" element={<PerfilProfesor />} />
             <Route path="monitor" element={<GraficoEstudiantes />} />
+            <Route path="asignaciones" element={<AsignacionCursoPage />} />
           </Route>
         </Route>
 
