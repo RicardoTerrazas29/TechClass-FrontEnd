@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { CheckCircle, Lock, ArrowLeft, Circle } from "lucide-react";
+import { CheckCircle, Lock, ArrowLeft, Circle, ChevronDown, ChevronUp, File } from "lucide-react";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
@@ -11,14 +11,28 @@ type Lesson = {
   urlContenido?: string;
   locked?: boolean;
   completed?: boolean;
+  recursos: Resource[];
 };
+
+type Resource ={
+  idRecurso: number;
+  nombre: string;
+  tipoContenido?: string;
+  url?: string;
+}
+
+type ResourceList = {
+  idContenido: number;
+  recursos: Resource[];
+}
 
 export const CursoEstudianteContenido = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [lessons, setLessons] = useState<Lesson[]>([]);
-
+  const [resources, setResources] = useState<ResourceList[]>([]);
   const [expandedLesson, setExpandedLesson] = useState<number | null>(null);
+  const [expandedResource, setExpandedResource] = useState<number | null>(null);
 
   const handleToggle = (lessonId: number, locked?: boolean) => {
     if (!locked) {
@@ -26,15 +40,29 @@ export const CursoEstudianteContenido = () => {
     }
   };
 
+  const handleToggleResource = (resourceId: number) => {
+    setExpandedResource(expandedResource === resourceId ? null : resourceId);
+  };
+
   useEffect(()=>{
     axios.get(`http://localhost:8080/api/contenidos/curso/${id}`)
       .then((response) => {
-        const lessonsData = response.data || [];
+        const lessonsData:Lesson[] = response.data || [];
         lessonsData.forEach((lesson: any) => {
           lesson.locked = lesson.locked || false;
           lesson.completed = lesson.completed || false;
         });
         setLessons(lessonsData);  
+        const resourcesData:ResourceList[] = []
+        for (let i = 0; i < lessonsData.length; i++) {
+          if (lessonsData[i].recursos.length > 0) {
+            resourcesData[i] = {
+              idContenido:lessonsData[i].idContenido,
+              recursos: lessonsData[i].recursos
+            }
+          } 
+        }
+        setResources(resourcesData);
       })
       .catch((error) => {console.log(error);
       });
@@ -78,9 +106,8 @@ export const CursoEstudianteContenido = () => {
                     ? "bg-gray-100 border-gray-300 opacity-60 cursor-not-allowed"
                     : "bg-white hover:shadow-lg cursor-pointer"
                 }`}
-                onClick={() => handleToggle(lesson.idContenido, lesson.locked)}
               >
-                <div className="flex items-center justify-between p-4">
+                <div className="flex items-center justify-between p-4 hover:bg-gray-50"  onClick={() => handleToggle(lesson.idContenido, lesson.locked)}>
                   <div className="flex items-center gap-3">
                     {isCompleted ? (
                       <CheckCircle className="h-5 w-5 text-green-500" />
@@ -95,44 +122,51 @@ export const CursoEstudianteContenido = () => {
                     </div>
                   </div>
                   {!isLocked && (
-                    <button className="text-sm text-blue-600 hover:underline">
-                      {isExpanded ? "Ocultar" : "Ver contenido"}
+                    <button className="text-sm hover:underline" >
+                      {isExpanded ? <ChevronUp/> : <ChevronDown/>}
                     </button>
                   )}
                 </div>
 
                 {/* Contenido de la lección */}
                 {!isLocked && isExpanded && (
-                  <div className="bg-blue-50 px-6 py-4 text-sm text-gray-700 space-y-3 border-t border-blue-200">
-                    <p className="font-medium">
-                      📄 Material Didáctico:
-                    </p>
-                    <a
-                      href={lesson.urlContenido}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="block text-blue-500 hover:underline"
-                    >
-                      Ver {lesson.tipoContenido} en Google Drive
-                    </a>
-                    <p className="font-medium">🎮 Juego interactivo:</p>
-                    <a
-                      href="https://www.kahoot.com"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="block text-blue-500 hover:underline"
-                    >
-                      Ir al juego
-                    </a>
-                    <p className="font-medium">📝 Evaluación rápida:</p>
-                    <a
-                      href="https://quizizz.com"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="block text-blue-500 hover:underline"
-                    >
-                      Realizar Quiz
-                    </a>
+                  <div className="bg-blue-50 px-4 py-4 text-sm text-gray-700 space-y-3 border-t border-blue-200">
+                    {resources.map((resource) => {
+                      if (resource.idContenido === lesson.idContenido) {
+                        return resource.recursos.map((res) => {
+                          const isResourceExpanded = expandedResource === res.idRecurso;
+                          return(
+                          <div key={res.idRecurso} className="flex-col items-center gap-2">
+                            <div 
+                            className="flex items-center justify-between p-2 gap-2 hover:bg-gray-50"  
+                            onClick={() => handleToggleResource(res.idRecurso)}>
+                              <p>{res.nombre}</p>
+                              <button className="text-sm">
+                                {isResourceExpanded ? <ChevronUp/> : <ChevronDown/>}
+                              </button>                            
+                            </div>
+                            <hr className="border-gray-600 my-2" />
+                            {isResourceExpanded && (
+                              <a
+                                href={res.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex  text-decoration-none hover:bg-gray-50 p-4 rounded-lg items-center gap-2"
+                              >
+                                <div className="text-dark"><File/></div>
+                                <div className="flex-col">
+                                  <span className="text-gray-500">
+                                    Material . {res.tipoContenido}
+                                  </span>
+                                  <p className="text-lg hover:underline">Ver {res.nombre}</p>
+                                </div>
+                              </a>
+                            )}     
+                          </div>
+                          );
+                        });
+                      }
+                    })}
                   </div>
                 )}
               </div>
