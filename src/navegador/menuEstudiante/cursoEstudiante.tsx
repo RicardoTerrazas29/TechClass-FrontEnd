@@ -1,5 +1,7 @@
 import { Calculator, Book, Laptop, BoxIcon } from "lucide-react";
 import { CourseCard } from "../../Components/CourseCard";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 const courses = [
   {
@@ -33,6 +35,22 @@ const courses = [
 ];
 
 const CursoEstudiante = () => {
+  const [cursos, setCursos] = useState([]);
+  useEffect(() => {
+    axios.get("http://localhost:8080/api/asignaciones").then((response) => {
+      const asignaciones = response.data;
+
+      const cursos: any = []
+      for (let i = 0; i < asignaciones.length; i++) {
+         if (asignaciones[i].estudiante.idEstudiante == localStorage.getItem("idEstudiante")) {
+          cursos.push(asignaciones[i].curso);
+        }
+      }
+      setCursos(cursos);
+    }).catch((error) => {
+      console.log(error);})
+  }, []);
+
   return (
     <div
       className="min-h-screen bg-cover bg-center p-6"
@@ -49,16 +67,15 @@ const CursoEstudiante = () => {
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Tarjetas de cursos */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 flex-1">
-            {courses.map((course) => {
-              const Icon = course.icon;
+            {cursos.map((curso:any) => {
               return (
                 <CourseCard
-                  key={course.id}
-                  id={course.id}
-                  title={course.title}
-                  description={course.description}
-                  icon={Icon}
-                  color={course.color}
+                  key={curso.idCurso}
+                  id={curso.idCurso}
+                  title={curso.nombre}
+                  description={curso.descripcion}
+                  icon={curso.foto}
+                  profesor={curso.profesor.name}
                 />
               );
             })}

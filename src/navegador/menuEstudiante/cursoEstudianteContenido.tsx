@@ -1,40 +1,22 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { CheckCircle, Lock, ArrowLeft, Circle } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 type Lesson = {
-  id: number;
-  title: string;
-  completed?: boolean;
+  idContenido: number;
+  titulo: string;
+  descripcion?: string;
+  tipoContenido?: string;
+  urlContenido?: string;
   locked?: boolean;
-};
-
-const mockLessons: Record<string, Lesson[]> = {
-  matematicas: [
-    { id: 1, title: "Números y Conteo", completed: true },
-    { id: 2, title: "Suma y Resta", completed: true },
-    { id: 3, title: "Tablas de Multiplicar", completed: false },
-    { id: 4, title: "División Básica", locked: true },
-  ],
-  letras: [
-    { id: 1, title: "Introducción a la Literatura", completed: true },
-    { id: 2, title: "Fundamentos de la Poesía", completed: false },
-    { id: 3, title: "Cuentos Cortos", locked: true },
-  ],
-  ciencia: [
-    { id: 1, title: "Introducción a la Ciencia", completed: true },
-    { id: 2, title: "Experimentos Básicos", completed: false },
-  ],
-  tecnologia: [
-    { id: 1, title: "Introducción a las Computadoras", completed: true },
-    { id: 2, title: "Habilidades Digitales", completed: false },
-  ],
+  completed?: boolean;
 };
 
 export const CursoEstudianteContenido = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const lessons = mockLessons[id as keyof typeof mockLessons] || [];
+  const [lessons, setLessons] = useState<Lesson[]>([]);
 
   const [expandedLesson, setExpandedLesson] = useState<number | null>(null);
 
@@ -43,6 +25,20 @@ export const CursoEstudianteContenido = () => {
       setExpandedLesson(expandedLesson === lessonId ? null : lessonId);
     }
   };
+
+  useEffect(()=>{
+    axios.get(`http://localhost:8080/api/contenidos/curso/${id}`)
+      .then((response) => {
+        const lessonsData = response.data || [];
+        lessonsData.forEach((lesson: any) => {
+          lesson.locked = lesson.locked || false;
+          lesson.completed = lesson.completed || false;
+        });
+        setLessons(lessonsData);  
+      })
+      .catch((error) => {console.log(error);
+      });
+  }, [id]);
 
   return (
     <div
@@ -69,20 +65,20 @@ export const CursoEstudianteContenido = () => {
         </p>
 
         <div className="space-y-4">
-          {lessons.map((lesson) => {
-            const isExpanded = expandedLesson === lesson.id;
+          {lessons.map((lesson: Lesson) => {
+            const isExpanded = expandedLesson === lesson.idContenido;
             const isLocked = lesson.locked;
             const isCompleted = lesson.completed;
 
             return (
               <div
-                key={lesson.id}
+                key={lesson.idContenido}
                 className={`rounded-lg border shadow-md transition-all ${
                   isLocked
                     ? "bg-gray-100 border-gray-300 opacity-60 cursor-not-allowed"
                     : "bg-white hover:shadow-lg cursor-pointer"
                 }`}
-                onClick={() => handleToggle(lesson.id, lesson.locked)}
+                onClick={() => handleToggle(lesson.idContenido, lesson.locked)}
               >
                 <div className="flex items-center justify-between p-4">
                   <div className="flex items-center gap-3">
@@ -93,9 +89,10 @@ export const CursoEstudianteContenido = () => {
                     ) : (
                       <Circle className="h-5 w-5 text-gray-300" />
                     )}
-                    <h3 className="font-semibold text-lg text-gray-800">
-                      {lesson.title}
-                    </h3>
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-lg text-gray-800">{lesson.titulo}</h3>
+                      <p>{lesson.descripcion}</p>
+                    </div>
                   </div>
                   {!isLocked && (
                     <button className="text-sm text-blue-600 hover:underline">
@@ -107,38 +104,26 @@ export const CursoEstudianteContenido = () => {
                 {/* Contenido de la lección */}
                 {!isLocked && isExpanded && (
                   <div className="bg-blue-50 px-6 py-4 text-sm text-gray-700 space-y-3 border-t border-blue-200">
-                    <p className="font-medium">📼 Video explicativo:</p>
-                    <a
-                      href="https://www.youtube.com"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="block text-blue-500 hover:underline"
-                    >
-                      Ver video en YouTube
-                    </a>
-
                     <p className="font-medium">
-                      📄 Presentación en diapositivas:
+                      📄 Material Didáctico:
                     </p>
                     <a
-                      href="https://drive.google.com"
+                      href={lesson.urlContenido}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="block text-blue-500 hover:underline"
                     >
-                      Ver PDF en Google Drive
+                      Ver {lesson.tipoContenido} en Google Drive
                     </a>
-
                     <p className="font-medium">🎮 Juego interactivo:</p>
                     <a
-                      href="https://www.educaplay.com"
+                      href="https://www.kahoot.com"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="block text-blue-500 hover:underline"
                     >
                       Ir al juego
                     </a>
-
                     <p className="font-medium">📝 Evaluación rápida:</p>
                     <a
                       href="https://quizizz.com"
