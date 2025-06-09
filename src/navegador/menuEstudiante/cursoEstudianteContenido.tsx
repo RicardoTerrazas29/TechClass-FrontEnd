@@ -143,3 +143,4 @@ export const CursoEstudianteContenido = () => {
     </div>
   );
 };
+
