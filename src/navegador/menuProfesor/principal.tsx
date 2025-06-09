@@ -9,6 +9,14 @@ import {
     Award,
 } from "lucide-react";
 
+// Definición de la interfaz para las props de SubjectCard
+interface SubjectCardProps {
+    title: string;
+    grade: number;
+    icon: React.ElementType; // Usamos React.ElementType para componentes de iconos
+    color: string;
+}
+
 const mockAgenda = [
     {
         date: "15 Mayo",
@@ -40,7 +48,8 @@ const mockAgenda = [
     },
 ];
 
-const SubjectCard = ({ title, grade, icon: Icon, color }) => {
+// Componente SubjectCard con las props tipadas
+const SubjectCard = ({ title, grade, icon: Icon, color }: SubjectCardProps) => {
     return (
         <div
             className={`p-5 rounded-2xl text-white shadow-2xl border-2 border-white/30 transition-all duration-300 transform hover:scale-105 hover:shadow-[0_0_25px_rgba(255,255,255,0.3)] hover:border-yellow-400 animate-fade-in ${color}`}
@@ -218,7 +227,7 @@ const PrincipalPro = () => {
                                             <span className="font-medium">{item.date}</span> — {item.time}
                                         </p>
                                         <span
-                                            className={`inline-block mt-2 px-3 py-1 text-xs font-semibold rounded-full 
+                                            className={`inline-block mt-2 px-3 py-1 text-xs font-semibold rounded-full
                                                 ${
                                                     item.type === "Examen"
                                                         ? "bg-red-200 text-red-800"
@@ -252,14 +261,3 @@ const PrincipalPro = () => {
 };
 
 export default PrincipalPro;
-
-
-
-
-
-
-
-
-
-
-

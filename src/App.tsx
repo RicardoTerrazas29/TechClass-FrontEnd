@@ -1,40 +1,39 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./navegador/Login";
 import MenuPrincipal from "./navegador/MenuPrincipal";
 import ProtectedRoute from "./navegador/ProtectedRoute";
-// importar el menuAdmin
+
+// Menu Admin
 import PrincipalAdm from "./navegador/menuAdmin/principal";
 import AdministradorPage from "./navegador/menuAdmin/administrador";
 import ProfesoresAdm from "./navegador/menuAdmin/profesoresAdm";
 import EstudiantesAdm from "./navegador/menuAdmin/estudiantesAdm";
 
-//importar el menuProfesor
+// Menu Profesor
 import PrincipalPro from "./navegador/menuProfesor/principal";
 import CursoProfesor from "./navegador/menuProfesor/cursoProfesor";
 import EstudiantesPro from "./navegador/menuProfesor/estudiantesPro";
 import PerfilProfesor from "./navegador/menuProfesor/perfilPro";
 import GraficoEstudiantes from "./navegador/menuProfesor/grafico";
 import AsignacionCursoPage from "./navegador/menuProfesor/asignacion";
+import ContenidosCurso from "./navegador/menuProfesor/ContenidosCurso";
 
-//importar el menuEstudiante
+// Menu Estudiante
 import PrincipalEst from "./navegador/menuEstudiante/principal";
 import PerfilEstudiante from "./navegador/menuEstudiante/perfilEstu";
 import CursoEstudiante from "./navegador/menuEstudiante/cursoEstudiante";
+import { CursoEstudianteContenido } from "./navegador/menuEstudiante/cursoEstudianteContenido";
 
-//importar el token
+// Token
 import ClaveOlvidada from "./navegador/token/claveOlvidada";
 import IngresarToken from "./navegador/token/ingresarToken";
 import CambiarClave from "./navegador/token/cambiarClave";
-
-import { Navigate } from "react-router-dom";
-import { CursoEstudianteContenido } from "./navegador/menuEstudiante/cursoEstudianteContenido";
 
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<Login />} />
-        {/*  aqui pones diferentes principales para que no haya confucion con otros principales, por eso se le crea otra clase como principalPro, principalAdm y Est, etc*/}
 
         {/* Token */}
         <Route path="/clave-olvidada" element={<ClaveOlvidada />} />
@@ -54,14 +53,31 @@ function App() {
 
         {/* Menu Profesor */}
         <Route element={<ProtectedRoute allowedRoles={["PROFESOR"]} />}>
+          {/* Ruta base para el profesor que carga MenuPrincipal */}
           <Route path="/profesor" element={<MenuPrincipal />}>
             <Route index element={<Navigate to="principal" replace />} />
             <Route path="principal" element={<PrincipalPro />} />
             <Route path="estudiantes" element={<EstudiantesPro />} />
             <Route path="cursos" element={<CursoProfesor />} />
+            {/* Aquí es donde necesitamos definir la ruta de contenidos de manera específica
+                para que no choque con la ruta "cursos" principal.
+                Lo más seguro es que "cursos/:idCurso/contenidos" sea una ruta de *tipo absoluto*
+                si está en el mismo nivel de <Route path="cursos" ... />.
+                Pero como está dentro de "/profesor", debería funcionar.
+                El problema puede ser que la ruta "cursos" sin más, sin un outlet, no está diseñada para
+                tener rutas anidadas.
+                
+                Vamos a probar a poner la ruta de contenidos FUERA de la ruta "cursos", pero DENTRO de la ruta "/profesor".
+                El path ya es relativo a "/profesor", por lo tanto "cursos/:idCurso/contenidos" debería coincidir.
+                
+                La única razón por la que diría "No routes matched" es si hay un problema con el orden o el
+                manejo del Outlet en MenuPrincipal.
+            */}
             <Route path="perfil" element={<PerfilProfesor />} />
             <Route path="monitor" element={<GraficoEstudiantes />} />
             <Route path="asignaciones" element={<AsignacionCursoPage />} />
+            {/* **Mantener la ruta de contenidos aquí, ya que el navigate la apunta como relativa a /profesor** */}
+            <Route path="cursos/:idCurso/contenidos" element={<ContenidosCurso />} />
           </Route>
         </Route>
 
@@ -81,3 +97,4 @@ function App() {
 }
 
 export default App;
+
