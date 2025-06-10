@@ -43,6 +43,7 @@ const ContenidosCurso: React.FC = () => {
       axios
         .get(`http://localhost:8080/api/contenidos/curso/${idCurso}`)
         .then((res) => {
+        console.log(res.data);
           setContenidos(res.data);
         })
         .catch((err) => {
