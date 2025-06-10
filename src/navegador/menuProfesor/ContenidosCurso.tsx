@@ -163,22 +163,44 @@ const ContenidosCurso: React.FC = () => {
   };
 
   return (
-  <div className="container py-4 px-4" style={{ background: "#f0f8ff", minHeight: "100vh" }}>
-    <h2 className="text-center mb-4" style={{ color: "#0077b6", fontWeight: "bold", fontSize: "2.2rem" }}>
+  <div className="py-4 px-4 sm:px-4 bg-[#f0f8ff] min-vh-100">
+    <h2
+      className="w-100 text-center mb-4"
+      style={{
+        color: "#0077b6",
+        fontWeight: "bold",
+        fontSize: "2.2rem",
+        wordBreak: "break-word",
+      }}
+    >
       📚 Contenidos del Curso:{" "}
       <span className="text-primary">{nombreCurso || "Cargando..."}</span>
     </h2>
-    <button className="btn btn-secondary mb-3" onClick={() => navigate(-1)} style={{ fontSize: "1.1rem" }}>
-      🔙 Volver a Cursos
-    </button>
+    <div className="flex flex-col sm:flex-row justify-between items-center mb-3 gap-2">
+      <button
+        className="btn btn-secondary"
+        onClick={() => navigate(-1)}
+        style={{ fontSize: "1.1rem" }}
+      >
+        🔙 Volver a Cursos
+      </button>
+    </div>
 
     {/* Formulario para añadir/editar contenido */}
-    <div className="card mb-4 shadow-sm p-3" style={{ borderRadius: "20px", background: "#e3f2fd" }}>
+    <div
+      className="card mb-4 shadow-sm p-3"
+      style={{
+        borderRadius: "20px",
+        background: "#e3f2fd",
+
+        margin: "0 auto",
+      }}
+    >
       <h4 style={{ color: "#023e8a", fontWeight: "bold" }}>
         {editandoContenido ? "✏️ Editar Contenido" : "➕ Nuevo Contenido"}
       </h4>
       <div className="row g-3">
-        <div className="col-md-6">
+        <div className="col-12 col-md-6">
           <input
             type="text"
             name="titulo"
@@ -189,7 +211,7 @@ const ContenidosCurso: React.FC = () => {
             onChange={manejarCambioContenido}
           />
         </div>
-        <div className="col-md-6">
+        <div className="col-12 col-md-6">
           <select
             name="tipoContenido"
             className="form-select"
@@ -214,13 +236,20 @@ const ContenidosCurso: React.FC = () => {
             onChange={manejarCambioContenido}
           ></textarea>
         </div>
-        <div className="col-12 d-flex gap-2">
-          <button className="btn btn-success" style={{ fontSize: "1.1rem", borderRadius: "10px" }} onClick={guardarContenido}>
+        <div className="col-12 d-flex flex-column flex-sm-row gap-2">
+          <button
+            className="btn btn-success"
+            style={{ fontSize: "1.1rem", borderRadius: "10px" }}
+            onClick={guardarContenido}
+          >
             {editandoContenido ? "✅ Actualizar Contenido" : "➕ Añadir Contenido"}
           </button>
           {editandoContenido && (
-            <button className="btn btn-secondary" style={{ fontSize: "1.1rem", borderRadius: "10px" }} 
-              onClick={cancelarEdicionContenido}>
+            <button
+              className="btn btn-secondary"
+              style={{ fontSize: "1.1rem", borderRadius: "10px" }}
+              onClick={cancelarEdicionContenido}
+            >
               ❌ Cancelar
             </button>
           )}
@@ -229,44 +258,63 @@ const ContenidosCurso: React.FC = () => {
     </div>
 
     {/* Lista de contenidos */}
-    <h3 className="mt-5 mb-3" style={{ color: "#0077b6", fontWeight: "bold" }}>Contenidos Existentes</h3>
+    <h3
+      className="mt-5 mb-3"
+      style={{ color: "#0077b6", fontWeight: "bold" }}
+    >
+      Contenidos Existentes
+    </h3>
     {contenidos.length === 0 ? (
-      <div className="alert alert-info text-center" style={{ fontSize: "1.2rem", borderRadius: "15px" }}>
+      <div
+        className="alert alert-info text-center"
+        style={{ fontSize: "1.2rem", borderRadius: "15px" }}
+      >
         No hay contenidos disponibles para este curso. ¡Añade el primero!
       </div>
     ) : (
-      <ul className="list-group">
+      <ul className="list-group" style={{ margin: "0 auto" }}>
         {contenidos.map((contenido) => (
           <li
             key={contenido.idContenido}
             className="list-group-item d-flex flex-column mb-3 shadow-sm"
-            style={{ borderRadius: "15px", background: "#fffbea", border: "2px solid #ffd166" }}
+            style={{
+              borderRadius: "15px",
+              background: "#fffbea",
+              border: "2px solid #ffd166",
+              wordBreak: "break-word",
+            }}
           >
-            <div className="d-flex justify-content-between align-items-center">
-              <div>
-                <h5 style={{ color: "#f77f00", fontWeight: "bold" }}>{contenido.titulo}</h5>
-                <p className="mb-1" style={{ fontSize: "1.1rem" }}>{contenido.descripcion}</p>
+            <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2">
+              <div className="flex-grow-1">
+                <h5 style={{ color: "#f77f00", fontWeight: "bold" }}>
+                  {contenido.titulo}
+                </h5>
+                <p className="mb-1" style={{ fontSize: "1.1rem" }}>
+                  {contenido.descripcion}
+                </p>
                 <p className="text-muted small">
                   <strong>Tipo:</strong> {contenido.tipoContenido}
                 </p>
               </div>
-              <div>
+              <div className="d-flex flex-wrap gap-2 mt-2 mt-md-0">
                 <button
-                  className="btn btn-info btn-sm me-2"
+                  className="btn btn-info btn-sm"
                   style={{ fontSize: "1.1rem", borderRadius: "10px" }}
                   onClick={() => toggleRecursos(contenido.idContenido)}
                 >
-                  {recursosVisibles === contenido.idContenido ? "🔼 Ocultar Recursos" : "🔽 Mostrar Recursos"}
+                  {recursosVisibles === contenido.idContenido
+                    ? "🔼 Ocultar Recursos"
+                    : "🔽 Mostrar Recursos"}
                 </button>
                 <button
-                  className="btn btn-success btn-sm me-2"
+                  className="btn btn-success btn-sm"
                   style={{ fontSize: "1.1rem", borderRadius: "10px" }}
                   onClick={() => crearRecurso(contenido.idContenido)}
                 >
                   ➕ Añadir Recurso
                 </button>
                 <button
-                  className="btn btn-warning btn-sm me-2"
+                  className="btn btn-warning btn-sm"
                   style={{ fontSize: "1.1rem", borderRadius: "10px" }}
                   onClick={() => editarContenidoClick(contenido)}
                 >
@@ -283,46 +331,101 @@ const ContenidosCurso: React.FC = () => {
             </div>
             {/* Mostrar recursos si corresponde */}
             {recursosVisibles === contenido.idContenido && (
-              <div className="mt-3" style={{ background: "#e0f7fa", borderRadius: "10px", padding: "10px" }}>
-                <h6 style={{ color: "#009688", fontWeight: "bold" }}>Recursos:</h6>
+              <div
+                className="mt-3"
+                style={{
+                  background: "#e0f7fa",
+                  borderRadius: "10px",
+                  padding: "10px",
+                  overflowX: "auto",
+                }}
+              >
+                <h6 style={{ color: "#009688", fontWeight: "bold" }}>
+                  Recursos:
+                </h6>
                 {contenido.recursos && contenido.recursos.length > 0 ? (
-                  <ul>
+                  <ul className="p-0 m-0" style={{ listStyle: "none" }}>
                     {contenido.recursos.map((recurso, idx) => (
-                      <li key={idx} style={{ fontSize: "1.05rem", marginBottom: "8px" }}>
-                        <span style={{ color: "#0288d1", fontWeight: "bold" }}>{recurso.nombre}</span> 
-                        <span> ({recurso.tipoContenido})</span> -{" "}
-                        <a href={recurso.url} target="_blank" rel="noopener noreferrer" style={{ color: "#43a047", textDecoration: "underline" }}>
-                          Ver recurso
-                        </a>
-                        <button
-                          className="btn btn-danger btn-sm ms-2"
-                          style={{ borderRadius: "8px" }}
-                          onClick={() => {
-                            if (window.confirm("¿Estás seguro de eliminar este recurso?") && recurso.idRecurso !== undefined) {
-                              eliminarRecurso(contenido.idContenido, recurso.idRecurso);
-                            }
+                      <li
+                        key={idx}
+                        className="d-flex flex-column flex-sm-row align-items-start align-items-sm-center mb-2 gap-2"
+                        style={{ fontSize: "1.05rem" }}
+                      >
+                        <span
+                          style={{
+                            color: "#0288d1",
+                            fontWeight: "bold",
+                            wordBreak: "break-word",
                           }}
                         >
-                          🗑️
-                        </button>
-                        <button
-                          className="btn btn-warning btn-sm ms-2"
-                          style={{ borderRadius: "8px" }}
-                          onClick={() => editarRecursoClick(contenido.idContenido, recurso)}
+                          {recurso.nombre}
+                        </span>
+                        <span>({recurso.tipoContenido})</span>
+                        <a
+                          href={recurso.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{
+                            color: "#43a047",
+                            textDecoration: "underline",
+                            wordBreak: "break-all",
+                          }}
                         >
-                          ✏️
-                        </button>
+                          Ver recurso
+                        </a>
+                        <div className="d-flex gap-2 mt-2 mt-sm-0">
+                          <button
+                            className="btn btn-danger btn-sm"
+                            style={{ borderRadius: "8px" }}
+                            onClick={() => {
+                              if (
+                                window.confirm(
+                                  "¿Estás seguro de eliminar este recurso?"
+                                ) &&
+                                recurso.idRecurso !== undefined
+                              ) {
+                                eliminarRecurso(
+                                  contenido.idContenido,
+                                  recurso.idRecurso
+                                );
+                              }
+                            }}
+                          >
+                            🗑️
+                          </button>
+                          <button
+                            className="btn btn-warning btn-sm"
+                            style={{ borderRadius: "8px" }}
+                            onClick={() =>
+                              editarRecursoClick(
+                                contenido.idContenido,
+                                recurso
+                              )
+                            }
+                          >
+                            ✏️
+                          </button>
+                        </div>
                       </li>
                     ))}
                   </ul>
                 ) : (
-                  <p className="text-muted" style={{ fontSize: "1.1rem" }}>No hay recursos para este contenido.</p>
+                  <p className="text-muted" style={{ fontSize: "1.1rem" }}>
+                    No hay recursos para este contenido.
+                  </p>
                 )}
               </div>
             )}
             {/* Formulario de recurso solo para este contenido */}
             {formularioRecurso === contenido.idContenido && (
-              <form className="mt-3 border-top pt-3" style={{ background: "#fff3e0", borderRadius: "10px", padding: "10px" }}>
+              <form
+                className="mt-3 border-top pt-3"
+                style={{
+                  background: "#fff3e0",
+                  borderRadius: "10px",
+                  padding: "10px",
+                }}
+              >
                 <div className="mb-2">
                   <input
                     type="text"
@@ -359,26 +462,32 @@ const ContenidosCurso: React.FC = () => {
                     <option value="">--Tipo de recurso--</option>
                     <option value="Documento">📄 Documento</option>
                     <option value="Video">🎬 Video</option>
-                    <option value="Juego Interactivo">🎮 Juego Interactivo</option>
+                    <option value="Juego Interactivo">
+                      🎮 Juego Interactivo
+                    </option>
                     <option value="Quiz">❓ Quiz</option>
                   </select>
                 </div>
-                <button
-                  type="button"
-                  className="btn btn-primary btn-sm me-2"
-                  style={{ borderRadius: "8px", fontSize: "1.05rem" }}
-                  onClick={() => guardarRecurso(contenido.idContenido)}
-                >
-                  {nuevoRecurso.idRecurso ? "Guardar Cambios" : "Guardar Recurso"}
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-secondary btn-sm"
-                  style={{ borderRadius: "8px", fontSize: "1.05rem" }}
-                  onClick={() => setFormularioRecurso(null)}
-                >
-                  Cancelar
-                </button>
+                <div className="d-flex flex-column flex-sm-row gap-2">
+                  <button
+                    type="button"
+                    className="btn btn-primary btn-sm"
+                    style={{ borderRadius: "8px", fontSize: "1.05rem" }}
+                    onClick={() => guardarRecurso(contenido.idContenido)}
+                  >
+                    {nuevoRecurso.idRecurso
+                      ? "Guardar Cambios"
+                      : "Guardar Recurso"}
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-secondary btn-sm"
+                    style={{ borderRadius: "8px", fontSize: "1.05rem" }}
+                    onClick={() => setFormularioRecurso(null)}
+                  >
+                    Cancelar
+                  </button>
+                </div>
               </form>
             )}
           </li>

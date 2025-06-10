@@ -14,6 +14,10 @@ type Lesson = {
   recursos: Resource[];
 };
 
+type LessonList = {
+  nombreCurso: string;
+  contenidos: Lesson[];
+}
 type Resource ={
   idRecurso: number;
   nombre: string;
@@ -47,21 +51,18 @@ export const CursoEstudianteContenido = () => {
   useEffect(()=>{
     axios.get(`http://localhost:8080/api/contenidos/curso/${id}`)
       .then((response) => {
-        const lessonsData:Lesson[] = response.data || [];
-        lessonsData.forEach((lesson: any) => {
-          lesson.locked = lesson.locked || false;
-          lesson.completed = lesson.completed || false;
+        const lessonsData:LessonList = response.data || [];
+        setLessons(lessonsData.contenidos || []);
+        const resourcesData:ResourceList[] = [];
+        lessonsData.contenidos.forEach((lesson) => {
+          if (lesson.recursos && lesson.recursos.length > 0) {
+            resourcesData.push({
+              idContenido: lesson.idContenido,
+              recursos: lesson.recursos,
+            });
+          }
         });
-        setLessons(lessonsData);  
-        const resourcesData:ResourceList[] = []
-        for (let i = 0; i < lessonsData.length; i++) {
-          if (lessonsData[i].recursos.length > 0) {
-            resourcesData[i] = {
-              idContenido:lessonsData[i].idContenido,
-              recursos: lessonsData[i].recursos
-            }
-          } 
-        }
+        console.log(resourcesData);
         setResources(resourcesData);
       })
       .catch((error) => {console.log(error);

@@ -141,7 +141,7 @@ const CursoProfesor: React.FC = () => {
   };
 
   return (
-    <div className="container py-4 px-4 bg-[#f0f8ff] min-vh-100">
+    <div className="py-4 px-4 bg-[#f0f8ff] min-vh-100">
       <h2 className="text-center mb-4">📚 Gestión de Cursos 📚</h2>
       {/* Crear/editar curso */}
       {/* ...Formulario omitido por brevedad... */}
