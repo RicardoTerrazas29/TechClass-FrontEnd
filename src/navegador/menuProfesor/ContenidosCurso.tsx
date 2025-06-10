@@ -8,7 +8,14 @@ interface Contenido {
   titulo: string;
   descripcion: string;
   tipoContenido: string;
-  urlContenido: string;
+  recursos?: Recurso[];
+}
+
+interface Recurso {
+  idRecurso?: number; 
+  nombre: string;
+  tipoContenido: string;
+  url: string;
 }
 
 const ContenidosCurso: React.FC = () => {
@@ -16,39 +23,94 @@ const ContenidosCurso: React.FC = () => {
   const navigate = useNavigate(); // Para el botón de "Volver"
 
   // Estados para el curso y sus contenidos
-  const [nombreCurso, setNombreCurso] = useState("");
+  const [nombreCurso, setNombreCurso] = useState<string>("");
   const [contenidos, setContenidos] = useState<Contenido[]>([]);
 
   // Estados para la gestión de nuevos/edición de contenidos
   const [nuevoContenido, setNuevoContenido] = useState<Partial<Contenido>>({}); // Usamos Partial para permitir campos vacíos al inicio
   const [editandoContenido, setEditandoContenido] = useState<Contenido | null>(null);
 
+  // Estado para los recursos
+  const [formularioRecurso, setFormularioRecurso] = useState<number | null>(null);
+  const [nuevoRecurso, setNuevoRecurso] = useState<Recurso>({
+    nombre: "",
+    url: "",
+    tipoContenido: "",
+  })
+  const [recursosVisibles, setRecursosVisibles] = useState<number|null>(null);
+
+  const toggleRecursos = (idContenido: number) => {
+    setRecursosVisibles(recursosVisibles === idContenido ? null : idContenido);
+  }
+
+  // Función para crear un nuevo recurso
+  const crearRecurso = (idContenido: number) => {
+    setFormularioRecurso(formularioRecurso === idContenido ? null : idContenido);
+    setNuevoRecurso({ nombre: "", tipoContenido: "", url: "" }); 
+  };
+
+  const handleResource =(e:React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const {name, value} = e.target;
+    setNuevoRecurso({...nuevoRecurso, [name]: value});
+  }
+
+  const guardarRecurso = (idContenido: number) => {
+    if (nuevoRecurso.idRecurso) {
+    // Editar recurso existente
+    axios
+      .put(
+        `http://localhost:8080/api/contenidos/${idContenido}/recursos/${nuevoRecurso.idRecurso}`,
+        nuevoRecurso
+      )
+      .then(() => {
+        setFormularioRecurso(null);
+        setNuevoRecurso({ nombre: "", url: "", tipoContenido: "" });
+        cargarContenidosDelCurso();
+      })
+      .catch((err) => console.error("Error al editar recurso:", err));
+    } else {
+    // Aquí deberías hacer el POST a tu backend
+    axios.post(`http://localhost:8080/api/contenidos/${idContenido}/recursos`, [nuevoRecurso])
+      .then(() => {
+        setFormularioRecurso(null);
+        setNuevoRecurso({ nombre: "", url: "", tipoContenido: "" });
+        cargarContenidosDelCurso();
+      })
+      .catch((err) => console.error("Error al guardar recurso:", err));
+    }
+  };
+
+  // Función para editar un recurso
+  const editarRecursoClick = (idContenido: number, recurso: any) => {
+    setFormularioRecurso(idContenido);
+    setNuevoRecurso({
+      nombre: recurso.nombre,
+      url: recurso.url,
+      tipoContenido: recurso.tipoContenido,
+      idRecurso: recurso.idRecurso, // Asegúrate de tener este campo en tu modelo
+    });
+  };
+  // Función para eliminar un recurso
+  const eliminarRecurso = (idContenido: number, idRecurso: number) => {
+  axios
+    .delete(`http://localhost:8080/api/contenidos/${idContenido}/recursos/${idRecurso}`)
+    .then(() => cargarContenidosDelCurso())
+    .catch((err) => console.error("Error al eliminar recurso:", err));
+  };
   // Función para cargar los contenidos del curso
   const cargarContenidosDelCurso = () => {
     if (idCurso) {
-      // Cargar nombre del curso
-      axios
-        .get(`http://localhost:8080/api/contenidos/curso/${idCurso}`)
-        .then((res) => {
-          
-          setNombreCurso(res.data[0].curso.nombre);
-    
-        })
-        .catch((err) => {
-          console.error("Error cargando nombre del curso:", err);
-          // Puedes redirigir o mostrar un error si el curso no existe
-        });
-
-      // Cargar contenidos del curso
-      axios
-        .get(`http://localhost:8080/api/contenidos/curso/${idCurso}`)
-        .then((res) => {
-          setContenidos(res.data);
-        })
-        .catch((err) => {
-          console.error("Error cargando contenidos:", err);
-          setContenidos([]); // Asegurarse de que esté vacío si hay un error
-        });
+       axios
+      .get(`http://localhost:8080/api/contenidos/curso/${idCurso}`)
+      .then((res) => {
+        setNombreCurso(res.data.nombreCurso);
+        setContenidos(res.data.contenidos);
+      })
+      .catch((err) => {
+        console.error("Error cargando curso y contenidos:", err);
+        setNombreCurso("Curso no encontrado");
+        setContenidos([]);
+      });
     }
   };
 
@@ -101,121 +163,230 @@ const ContenidosCurso: React.FC = () => {
   };
 
   return (
-    <div className="container py-4">
-      <h2 className="text-center mb-4">
-        📚 Contenidos del Curso:{" "}
-        <span className="text-primary">{nombreCurso || "Cargando..."}</span>
-      </h2>
-      <button className="btn btn-secondary mb-3" onClick={() => navigate(-1)}>
-        🔙 Volver a Cursos
-      </button>
+  <div className="container py-4 px-4" style={{ background: "#f0f8ff", minHeight: "100vh" }}>
+    <h2 className="text-center mb-4" style={{ color: "#0077b6", fontWeight: "bold", fontSize: "2.2rem" }}>
+      📚 Contenidos del Curso:{" "}
+      <span className="text-primary">{nombreCurso || "Cargando..."}</span>
+    </h2>
+    <button className="btn btn-secondary mb-3" onClick={() => navigate(-1)} style={{ fontSize: "1.1rem" }}>
+      🔙 Volver a Cursos
+    </button>
 
-      {/* Formulario para añadir/editar contenido */}
-      <div className="card mb-4 shadow-sm p-3">
-        <h4>{editandoContenido ? "✏️ Editar Contenido" : "➕ Nuevo Contenido"}</h4>
-        <div className="row g-3">
-          <div className="col-md-6">
-            <input
-              type="text"
-              name="titulo"
-              placeholder="Título del Contenido"
-              className="form-control"
-              value={nuevoContenido.titulo || ""}
-              onChange={manejarCambioContenido}
-            />
-          </div>
-          <div className="col-md-6">
-            <select
-              name="tipoContenido"
-              className="form-select"
-              value={nuevoContenido.tipoContenido || ""}
-              onChange={manejarCambioContenido}
-            >
-              <option value="">Selecciona tipo de contenido</option>
-              <option value="texto">Texto</option>
-              <option value="imagen">Imagen</option>
-              <option value="video">Video</option>
-              <option value="documento">Documento</option> {/* Agregué "documento" como ejemplo */}
-            </select>
-          </div>
-          <div className="col-12">
-            <textarea
-              name="descripcion"
-              placeholder="Descripción del Contenido"
-              className="form-control"
-              rows={3}
-              value={nuevoContenido.descripcion || ""}
-              onChange={manejarCambioContenido}
-            ></textarea>
-          </div>
-          <div className="col-12">
-            <input
-              type="text"
-              name="urlContenido"
-              placeholder="URL del Recurso (Ej: URL de YouTube, Google Drive, imagen)"
-              className="form-control"
-              value={nuevoContenido.urlContenido || ""}
-              onChange={manejarCambioContenido}
-            />
-          </div>
-          <div className="col-12 d-flex gap-2">
-            <button className="btn btn-success" onClick={guardarContenido}>
-              {editandoContenido ? "✅ Actualizar Contenido" : "➕ Añadir Contenido"}
+    {/* Formulario para añadir/editar contenido */}
+    <div className="card mb-4 shadow-sm p-3" style={{ borderRadius: "20px", background: "#e3f2fd" }}>
+      <h4 style={{ color: "#023e8a", fontWeight: "bold" }}>
+        {editandoContenido ? "✏️ Editar Contenido" : "➕ Nuevo Contenido"}
+      </h4>
+      <div className="row g-3">
+        <div className="col-md-6">
+          <input
+            type="text"
+            name="titulo"
+            placeholder="Título del Contenido"
+            className="form-control"
+            style={{ borderRadius: "10px", fontSize: "1.1rem" }}
+            value={nuevoContenido.titulo || ""}
+            onChange={manejarCambioContenido}
+          />
+        </div>
+        <div className="col-md-6">
+          <select
+            name="tipoContenido"
+            className="form-select"
+            style={{ borderRadius: "10px", fontSize: "1.1rem" }}
+            value={nuevoContenido.tipoContenido || ""}
+            onChange={manejarCambioContenido}
+          >
+            <option value="">--Selecciona tipo de contenido--</option>
+            <option value="Teoría">📖 Teoría</option>
+            <option value="Evaluación">📝 Evaluación</option>
+            <option value="Foro">💬 Foro</option>
+          </select>
+        </div>
+        <div className="col-12">
+          <textarea
+            name="descripcion"
+            placeholder="Descripción del Contenido"
+            className="form-control"
+            style={{ borderRadius: "10px", fontSize: "1.1rem" }}
+            rows={3}
+            value={nuevoContenido.descripcion || ""}
+            onChange={manejarCambioContenido}
+          ></textarea>
+        </div>
+        <div className="col-12 d-flex gap-2">
+          <button className="btn btn-success" style={{ fontSize: "1.1rem", borderRadius: "10px" }} onClick={guardarContenido}>
+            {editandoContenido ? "✅ Actualizar Contenido" : "➕ Añadir Contenido"}
+          </button>
+          {editandoContenido && (
+            <button className="btn btn-secondary" style={{ fontSize: "1.1rem", borderRadius: "10px" }} 
+              onClick={cancelarEdicionContenido}>
+              ❌ Cancelar
             </button>
-            {editandoContenido && (
-              <button className="btn btn-secondary" onClick={cancelarEdicionContenido}>
-                ❌ Cancelar
-              </button>
-            )}
-          </div>
+          )}
         </div>
       </div>
+    </div>
 
-      {/* Lista de contenidos */}
-      <h3 className="mt-5 mb-3">Contenidos Existentes</h3>
-      {contenidos.length === 0 ? (
-        <p>No hay contenidos disponibles para este curso. ¡Añade el primero!</p>
-      ) : (
-        <ul className="list-group">
-          {contenidos.map((contenido) => (
-            <li key={contenido.idContenido} className="list-group-item d-flex justify-content-between align-items-center mb-2 shadow-sm rounded">
+    {/* Lista de contenidos */}
+    <h3 className="mt-5 mb-3" style={{ color: "#0077b6", fontWeight: "bold" }}>Contenidos Existentes</h3>
+    {contenidos.length === 0 ? (
+      <div className="alert alert-info text-center" style={{ fontSize: "1.2rem", borderRadius: "15px" }}>
+        No hay contenidos disponibles para este curso. ¡Añade el primero!
+      </div>
+    ) : (
+      <ul className="list-group">
+        {contenidos.map((contenido) => (
+          <li
+            key={contenido.idContenido}
+            className="list-group-item d-flex flex-column mb-3 shadow-sm"
+            style={{ borderRadius: "15px", background: "#fffbea", border: "2px solid #ffd166" }}
+          >
+            <div className="d-flex justify-content-between align-items-center">
               <div>
-                <h5>{contenido.titulo}</h5>
-                <p className="mb-1">{contenido.descripcion}</p>
+                <h5 style={{ color: "#f77f00", fontWeight: "bold" }}>{contenido.titulo}</h5>
+                <p className="mb-1" style={{ fontSize: "1.1rem" }}>{contenido.descripcion}</p>
                 <p className="text-muted small">
                   <strong>Tipo:</strong> {contenido.tipoContenido}
                 </p>
-                {contenido.urlContenido && (
-                  <a
-                    href={contenido.urlContenido}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="btn btn-info btn-sm mt-1"
-                  >
-                    🔗 Ver Recurso
-                  </a>
-                )}
               </div>
               <div>
                 <button
+                  className="btn btn-info btn-sm me-2"
+                  style={{ fontSize: "1.1rem", borderRadius: "10px" }}
+                  onClick={() => toggleRecursos(contenido.idContenido)}
+                >
+                  {recursosVisibles === contenido.idContenido ? "🔼 Ocultar Recursos" : "🔽 Mostrar Recursos"}
+                </button>
+                <button
+                  className="btn btn-success btn-sm me-2"
+                  style={{ fontSize: "1.1rem", borderRadius: "10px" }}
+                  onClick={() => crearRecurso(contenido.idContenido)}
+                >
+                  ➕ Añadir Recurso
+                </button>
+                <button
                   className="btn btn-warning btn-sm me-2"
-                  onClick={() => editarContenidoClick(contenido)} // Renombré para evitar confusión con el estado
+                  style={{ fontSize: "1.1rem", borderRadius: "10px" }}
+                  onClick={() => editarContenidoClick(contenido)}
                 >
                   ✏️ Editar
                 </button>
                 <button
                   className="btn btn-danger btn-sm"
+                  style={{ fontSize: "1.1rem", borderRadius: "10px" }}
                   onClick={() => eliminarContenido(contenido.idContenido)}
                 >
                   🗑️ Eliminar
                 </button>
               </div>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-  );
+            </div>
+            {/* Mostrar recursos si corresponde */}
+            {recursosVisibles === contenido.idContenido && (
+              <div className="mt-3" style={{ background: "#e0f7fa", borderRadius: "10px", padding: "10px" }}>
+                <h6 style={{ color: "#009688", fontWeight: "bold" }}>Recursos:</h6>
+                {contenido.recursos && contenido.recursos.length > 0 ? (
+                  <ul>
+                    {contenido.recursos.map((recurso, idx) => (
+                      <li key={idx} style={{ fontSize: "1.05rem", marginBottom: "8px" }}>
+                        <span style={{ color: "#0288d1", fontWeight: "bold" }}>{recurso.nombre}</span> 
+                        <span> ({recurso.tipoContenido})</span> -{" "}
+                        <a href={recurso.url} target="_blank" rel="noopener noreferrer" style={{ color: "#43a047", textDecoration: "underline" }}>
+                          Ver recurso
+                        </a>
+                        <button
+                          className="btn btn-danger btn-sm ms-2"
+                          style={{ borderRadius: "8px" }}
+                          onClick={() => {
+                            if (window.confirm("¿Estás seguro de eliminar este recurso?") && recurso.idRecurso !== undefined) {
+                              eliminarRecurso(contenido.idContenido, recurso.idRecurso);
+                            }
+                          }}
+                        >
+                          🗑️
+                        </button>
+                        <button
+                          className="btn btn-warning btn-sm ms-2"
+                          style={{ borderRadius: "8px" }}
+                          onClick={() => editarRecursoClick(contenido.idContenido, recurso)}
+                        >
+                          ✏️
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-muted" style={{ fontSize: "1.1rem" }}>No hay recursos para este contenido.</p>
+                )}
+              </div>
+            )}
+            {/* Formulario de recurso solo para este contenido */}
+            {formularioRecurso === contenido.idContenido && (
+              <form className="mt-3 border-top pt-3" style={{ background: "#fff3e0", borderRadius: "10px", padding: "10px" }}>
+                <div className="mb-2">
+                  <input
+                    type="text"
+                    name="nombre"
+                    className="form-control"
+                    placeholder="Nombre del recurso"
+                    style={{ borderRadius: "8px", fontSize: "1.05rem" }}
+                    value={nuevoRecurso.nombre}
+                    onChange={handleResource}
+                    required
+                  />
+                </div>
+                <div className="mb-2">
+                  <input
+                    type="text"
+                    name="url"
+                    className="form-control"
+                    placeholder="URL del recurso"
+                    style={{ borderRadius: "8px", fontSize: "1.05rem" }}
+                    value={nuevoRecurso.url}
+                    onChange={handleResource}
+                    required
+                  />
+                </div>
+                <div className="mb-2">
+                  <select
+                    name="tipoContenido"
+                    className="form-select"
+                    style={{ borderRadius: "8px", fontSize: "1.05rem" }}
+                    value={nuevoRecurso.tipoContenido}
+                    onChange={handleResource}
+                    required
+                  >
+                    <option value="">--Tipo de recurso--</option>
+                    <option value="Documento">📄 Documento</option>
+                    <option value="Video">🎬 Video</option>
+                    <option value="Juego Interactivo">🎮 Juego Interactivo</option>
+                    <option value="Quiz">❓ Quiz</option>
+                  </select>
+                </div>
+                <button
+                  type="button"
+                  className="btn btn-primary btn-sm me-2"
+                  style={{ borderRadius: "8px", fontSize: "1.05rem" }}
+                  onClick={() => guardarRecurso(contenido.idContenido)}
+                >
+                  {nuevoRecurso.idRecurso ? "Guardar Cambios" : "Guardar Recurso"}
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-secondary btn-sm"
+                  style={{ borderRadius: "8px", fontSize: "1.05rem" }}
+                  onClick={() => setFormularioRecurso(null)}
+                >
+                  Cancelar
+                </button>
+              </form>
+            )}
+          </li>
+        ))}
+      </ul>
+    )}
+  </div>
+);
 };
 
 export default ContenidosCurso;

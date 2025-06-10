@@ -141,12 +141,71 @@ const CursoProfesor: React.FC = () => {
   };
 
   return (
-    <div className="container py-4">
+    <div className="container py-4 px-4">
       <h2 className="text-center mb-4">📚 Gestión de Cursos 📚</h2>
-
       {/* Crear/editar curso */}
       {/* ...Formulario omitido por brevedad... */}
-
+      <div className="card mb-4 shadow-sm">
+        <div className="card-body">
+          <h4>{editandoCurso ? "✏ Editar Curso" : "➕ Nuevo Curso"}</h4>
+          <div className="row g-3">
+            <div className="col-md-6">
+              <input
+                type="text"
+                className={`form-control ${errores.nombre && "is-invalid"}`}
+                placeholder="Nombre del Curso"
+                value={nombre}
+                onChange={(e) => setNombre(e.target.value)}
+              />
+              {errores.nombre && <div className="invalid-feedback">{errores.nombre}</div>}
+            </div>
+            <div className="col-md-6">
+              <input
+                type="text"
+                className={`form-control${errores.descripcion ? " is-invalid" : ""}`}
+                placeholder="Descripción"
+                value={descripcion}
+                onChange={(e) => setDescripcion(e.target.value)}
+              />
+              {errores.descripcion && <div className="invalid-feedback">{errores.descripcion}</div>}
+            </div>
+            <div className="col-md-6">
+              <input
+                type="file"
+                className={`form-control ${errores.foto && "is-invalid"}`}
+                onChange={(e) => setFoto(e.target.files?.[0] || null)}
+              />
+              {errores.foto && <div className="invalid-feedback">{errores.foto}</div>}
+            </div>
+            <div className="col-md-6">
+              <select
+                className={`form-control ${errores.nombreProfesor && "is-invalid"}`}
+                value={nombreProfesor ?? ""}
+                onChange={(e) => setNombreProfesor(Number(e.target.value))}
+              >
+                <option value="">Selecciona un profesor</option>
+                {profesores.map((p) => (
+                  <option key={p.id} value={p.id}>{p.name}</option>
+                ))}
+              </select>
+              {errores.nombreProfesor && <div className="invalid-feedback">{errores.nombreProfesor}</div>}
+            </div>
+            <div className="col-12 d-flex gap-2">
+              <button
+                className="btn btn-success"
+                onClick={editandoCurso ? actualizarCurso : crearCurso}
+              >
+                {editandoCurso ? "✅ Actualizar" : "➕ Crear"} Curso
+              </button>
+              {editandoCurso && (
+                <button className="btn btn-secondary" onClick={resetForm}>
+                  ❌ Cancelar
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
       {/* Lista de cursos */}
       <div className="row row-cols-1 row-cols-md-3 g-4">
         {cursos.map((curso) => (
