@@ -132,6 +132,24 @@ const PrincipalAdm = () => {
         <div className="absolute text-7xl animate-bounce-fast left-1/4 bottom-10 opacity-30 text-orange-900">🧑‍💼</div>
       </div>
 
+         {/* Emojis decorativos y ahora el águila */}
+      <div className="absolute top-0 left-0 w-full h-full z-0 pointer-events-none">
+
+        {/* ¡Aquí va el águila! */}
+        <img
+          src="/imagenes/aguila2.1.gif" 
+          alt="Águila volando"
+          className="animate-move-eagle"
+        />
+
+        {/* Opcional: Otra águila volando en dirección contraria */}
+        <img
+          src="/imagenes/aguila2.1.gif" // 
+          alt="Águila volando inversa"
+          className="animate-move-eagle reverse" // Aplica la clase 'reverse' para la animación inversa
+        />
+
+      </div>
       {/* Títulos y mensaje de bienvenida */}
       {/* CAMBIO: Colores de texto ajustados para el overlay de fondo, y fuente */}
       <div className="relative z-10 text-center text-white"> {/* Texto blanco para contrastar con el overlay oscuro */}
