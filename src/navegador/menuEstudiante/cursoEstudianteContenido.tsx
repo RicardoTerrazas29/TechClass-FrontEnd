@@ -62,7 +62,6 @@ export const CursoEstudianteContenido = () => {
             });
           }
         });
-        console.log(resourcesData);
         setResources(resourcesData);
       })
       .catch((error) => {console.log(error);

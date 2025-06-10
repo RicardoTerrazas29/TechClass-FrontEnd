@@ -147,7 +147,23 @@ const PrincipalPro = () => {
                     }
                 `}
             </style>
+            <div className="absolute top-0 left-0 w-full h-full z-20 pointer-events-none">
 
+                    {/* ¡Aquí va el águila! */}
+                    <img
+                    src="/imagenes/aguila2.1.gif" 
+                    alt="Águila volando"
+                    className="animate-move-eagle"
+                    />
+
+                    {/* Opcional: Otra águila volando en dirección contraria */}
+                    <img
+                    src="/imagenes/aguila2.1.gif" // 
+                    alt="Águila volando inversa"
+                    className="animate-move-eagle reverse" // Aplica la clase 'reverse' para la animación inversa
+                    />
+
+                </div>
             <div className="relative z-10 text-center text-Green-700">
                 <h1 className="text-3xl md:text-4xl font-bold py-4">
                     ¡Bienvenido Profesor, {nombreUsuario}!

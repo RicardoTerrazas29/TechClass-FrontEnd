@@ -81,12 +81,12 @@ const PrincipalEst = () => {
       </style>
 
       <BackgroundDecor />
-          <div className="absolute top-0 left-0 w-full h-full z-0 pointer-events-none">
-  <div className="absolute text-7xl animate-pulse left-5 top-10 opacity-30 text-yellow-500">⚙️</div>
-  <div className="absolute text-6xl animate-bounce right-10 top-20 opacity-20 text-blue-300">📊</div>
-  <div className="absolute text-8xl animate-pulse left-1/2 top-1/3 opacity-20 text-purple-800">📈</div>
-  <div className="absolute text-6xl animate-float-slow right-1/4 bottom-20 opacity-30 text-green-500">📋</div>
-  <div className="absolute text-7xl animate-bounce-fast left-1/4 bottom-10 opacity-30 text-orange-900">🧑‍💼</div>
+        <div className="absolute top-0 left-0 w-full h-full z-20 pointer-events-none">
+          <div className="absolute text-7xl animate-pulse left-5 top-10 opacity-30 text-yellow-500">⚙️</div>
+          <div className="absolute text-6xl animate-bounce right-10 top-20 opacity-20 text-blue-300">📊</div>
+          <div className="absolute text-8xl animate-pulse left-1/2 top-1/3 opacity-20 text-purple-800">📈</div>
+          <div className="absolute text-6xl animate-float-slow right-1/4 bottom-20 opacity-30 text-green-500">📋</div>
+          <div className="absolute text-7xl animate-bounce-fast left-1/4 bottom-10 opacity-30 text-orange-900">🧑‍💼</div>
 
           {/* El águila */}
           <img

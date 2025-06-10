@@ -133,7 +133,7 @@ const PrincipalAdm = () => {
       </div>
 
          {/* Emojis decorativos y ahora el águila */}
-      <div className="absolute top-0 left-0 w-full h-full z-0 pointer-events-none">
+      <div className="absolute top-0 left-0 w-full h-full z-10 pointer-events-none">
 
         {/* ¡Aquí va el águila! */}
         <img
@@ -152,7 +152,7 @@ const PrincipalAdm = () => {
       </div>
       {/* Títulos y mensaje de bienvenida */}
       {/* CAMBIO: Colores de texto ajustados para el overlay de fondo, y fuente */}
-      <div className="relative z-10 text-center text-white"> {/* Texto blanco para contrastar con el overlay oscuro */}
+      <div className="relative z-0 text-center text-white"> {/* Texto blanco para contrastar con el overlay oscuro */}
         <h1 className="text-5xl md:text-6xl py-6 font-extrabold leading-tight drop-shadow-lg text-white">
           👨‍💼 ¡Hola {nombreUsuario}!
         </h1>
@@ -161,7 +161,7 @@ const PrincipalAdm = () => {
         </h5>
       </div>
 
-      <div className="p-6 relative z-10">
+      <div className="p-6 relative z-0">
         {/* CAMBIO: Color de texto ajustado para el overlay de fondo */}
         <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center text-white drop-shadow-lg">
           📋 Estadísticas Generales
