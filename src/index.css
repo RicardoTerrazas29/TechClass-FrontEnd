@@ -155,6 +155,22 @@
   z-index: 100;
   pointer-events: none;
 }
+.animate-move-eagle {
+  position: fixed;
+  width: 180px; /* Ajusta el tamaño de tu águila */
+  height: 120px; /* Ajusta el tamaño de tu águila */
+  background-size: contain; /* Asegura que la imagen se ajuste al tamaño del div */
+  background-repeat: no-repeat;
+  animation: moveEagle 20s linear infinite; /* 20s de duración, movimiento constante, infinito */
+  z-index: 90; /* Un poco menos que la ardilla si ambas están, o el que necesites */
+  pointer-events: none; /* No interactuable con el ratón */
+}
+
+/* Opcional: Si quieres usar la animación inversa */
+
+.animate-move-eagle.reverse {
+  animation: moveEagleReverse 20s linear infinite; /* Usa la animación inversa */
+}
 
 .animate-bounce-slow {
   animation: bounce-slow 4s ease-in-out infinite;
@@ -167,4 +183,53 @@
 }
 .animate-float-slow {
   animation: float-slow 8s ease-in-out infinite alternate;
+}
+/* Nuevas animaciones para el águila */
+@keyframes moveEagle {
+  0% {
+    left: -200px; /* Comienza fuera de la pantalla a la izquierda */
+    top: 25%;     /* Comienza al 5% desde la parte superior */
+    transform: translateY(0) scaleX(1); /* Sin desplazamiento vertical inicial, y normal */
+  }
+  25% {
+    top: 23%;     /* Baja ligeramente */
+  }
+  50% {
+    left: 50%;   /* Llega al centro de la pantalla */
+    top: 27%;     /* Sube ligeramente */
+    transform: translateX(-50%) translateY(0) scaleX(1); /* Centra y normal */
+  }
+  75% {
+    top: 24%;     /* Baja ligeramente de nuevo */
+  }
+  100% {
+    left: calc(100% + 200px); /* Termina fuera de la pantalla a la derecha */
+    top: 25%;     /* Vuelve a la altura inicial */
+    transform: translateY(0) scaleX(1); /* Normal */
+  }
+}
+
+/* Opcional: Si quieres que el águila a veces vuele en la otra dirección (de derecha a izquierda) */
+@keyframes moveEagleReverse {
+  0% {
+    left: calc(100% + 200px); /* Comienza fuera de la pantalla a la derecha */
+    top: 10%;
+    transform: translateY(0) scaleX(-1); /* Voltea horizontalmente para mirar a la izquierda */
+  }
+  25% {
+    top: 10%;
+  }
+  50% {
+    left: 50%;
+    top: 13%;
+    transform: translateX(-50%) translateY(0) scaleX(-1);
+  }
+  75% {
+    top: 16%;
+  }
+  100% {
+    left: -200px; /* Termina fuera de la pantalla a la izquierda */
+    top: 15%;
+    transform: translateY(0) scaleX(-1);
+  }
 }
