@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react"; // Quitamos useCallback por ahora para simplificar
+import { useEffect, useState, useRef, useCallback } from "react";
 import { NavItem } from "../const/profile";
 import { BookOpen } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
@@ -28,32 +28,35 @@ export const Sidebar = ({ navigation }: SidebarProps) => {
   const isPlayingRef = useRef(false);
   const currentAudioInstanceRef = useRef<HTMLAudioElement | null>(null);
 
-  // Referencia para el ID del intervalo
   const intervalIdRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Función para iniciar/reiniciar el temporizador de los mensajes
-  // La definimos dentro del componente para que tenga acceso directo a setCurrentContentIndex
-  const startMessageTimer = () => {
+  // Función para avanzar al siguiente mensaje/audio.
+  // Será llamada por el temporizador y por la función de finalización de audio.
+  const advanceContentIndex = useCallback(() => {
+    setCurrentContentIndex((prevIndex) => (prevIndex + 1) % motivationalContent.length);
+  }, []);
+
+  // Función para reiniciar el temporizador de los mensajes
+  const resetMessageTimer = useCallback(() => {
     if (intervalIdRef.current) {
       clearInterval(intervalIdRef.current);
     }
     intervalIdRef.current = setInterval(() => {
-      // Usamos el callback para asegurar que obtenemos el valor más reciente
-      setCurrentContentIndex((prevIndex) => (prevIndex + 1) % motivationalContent.length);
-      console.log(`[Timer] Message index advanced to: ${(currentContentIndex + 1) % motivationalContent.length}`);
+      advanceContentIndex(); // Llama a la función para avanzar el índice
     }, MESSAGE_INTERVAL_MS);
-  };
+  }, [advanceContentIndex]); // Dependencia advanceContentIndex
 
   // useEffect para el cambio automático de mensajes
   useEffect(() => {
-    startMessageTimer(); // Inicia el temporizador al montar
+    resetMessageTimer(); // Inicia el temporizador al montar
     return () => {
       // Limpia el temporizador al desmontar el componente
       if (intervalIdRef.current) {
         clearInterval(intervalIdRef.current);
       }
     };
-  }, [currentContentIndex]); // <-- ¡Importante! Depende de currentContentIndex para reiniciar
+  }, [resetMessageTimer]);
+
 
   const playNextAudioInQueue = async () => {
     console.log(`[playNextAudioInQueue] START: isPlayingRef: ${isPlayingRef.current}, Cola Length: ${audioQueueRef.current.length}`);
@@ -71,7 +74,7 @@ export const Sidebar = ({ navigation }: SidebarProps) => {
     }
 
     isPlayingRef.current = true;
-    const nextSoundUrl = audioQueueRef.current.shift();
+    const nextSoundUrl = audioQueueRef.current.shift(); // Saca el audio de la cola
 
     if (!nextSoundUrl) {
       console.warn("[playNextAudioInQueue] WARN: nextSoundUrl es nulo inesperadamente después de shift(). Reintentando cola.");
@@ -98,7 +101,13 @@ export const Sidebar = ({ navigation }: SidebarProps) => {
         audio.removeEventListener('error', onError);
         isPlayingRef.current = false;
         currentAudioInstanceRef.current = null;
-        playNextAudioInQueue();
+        
+        // *** CAMBIO CLAVE AQUÍ: Avanza el índice solo cuando el audio ha terminado ***
+        advanceContentIndex(); 
+        // Y reinicia el temporizador para que el siguiente ciclo comience desde este nuevo índice
+        resetMessageTimer();
+
+        playNextAudioInQueue(); // Intenta reproducir el siguiente de la cola
     };
 
     const onError = (e: Event) => {
@@ -107,7 +116,12 @@ export const Sidebar = ({ navigation }: SidebarProps) => {
         audio.removeEventListener('error', onError);
         isPlayingRef.current = false;
         currentAudioInstanceRef.current = null;
-        playNextAudioInQueue();
+        
+        // Si hay un error, también avanzamos el índice para no quedarnos atascados
+        advanceContentIndex();
+        resetMessageTimer();
+
+        playNextAudioInQueue(); // Intenta el siguiente a pesar del error
     };
 
     audio.addEventListener('ended', onEnded);
@@ -122,21 +136,25 @@ export const Sidebar = ({ navigation }: SidebarProps) => {
       audio.removeEventListener('error', onError);
       isPlayingRef.current = false;
       currentAudioInstanceRef.current = null;
+      
+      // Si play() falla inmediatamente, avanza el índice y reinicia el timer
+      advanceContentIndex();
+      resetMessageTimer();
+
       playNextAudioInQueue();
     }
   };
 
   const handleHongoClick = () => {
+    // Al hacer clic, el mensaje visible y el audio encolado SIEMPRE serán el del currentContentIndex actual
     const currentSound = motivationalContent[currentContentIndex].sound;
-    console.log(`[handleHongoClick] CLICKED: Añadiendo ${currentSound} a la cola. Índice ANTES del clic: ${currentContentIndex}`);
+    const currentMessage = motivationalContent[currentContentIndex].message;
+
+    console.log(`[handleHongoClick] CLICKED: Encolando "${currentMessage}" (${currentSound}). Índice ANTES del clic: ${currentContentIndex}`);
     audioQueueRef.current.push(currentSound);
     
-    // Avanza el índice inmediatamente después de encolar
-    setCurrentContentIndex((prevIndex) => (prevIndex + 1) % motivationalContent.length);
-    console.log(`[handleHongoClick] INFO: Índice después del clic: ${(currentContentIndex + 1) % motivationalContent.length}`);
-
-    // Reinicia el temporizador para que el próximo avance automático sea desde el nuevo índice
-    startMessageTimer();
+    // Al hacer clic, siempre reiniciamos el temporizador para darle prioridad al clic
+    resetMessageTimer();
 
     if (!isPlayingRef.current) {
         console.log("[handleHongoClick] INFO: No hay audio sonando, iniciando playNextAudioInQueue.");
@@ -144,6 +162,9 @@ export const Sidebar = ({ navigation }: SidebarProps) => {
     } else {
         console.log("[handleHongoClick] INFO: Audio ya en reproducción, el nuevo audio se añade a la cola.");
     }
+    
+    // *** CAMBIO CLAVE AQUÍ: NO AVANZAR currentContentIndex inmediatamente ***
+    // El avance ahora se gestiona en onEnded/onError o por el temporizador.
   };
 
   return (
