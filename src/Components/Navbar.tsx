@@ -1,6 +1,7 @@
+import React from "react";
 import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Bell, LogOut } from "lucide-react";
+import { Bell, LogOut, UserRound } from "lucide-react";
 import { NotificationsDropdown } from "./NotificationsDropdown";
 import { useUser } from "../Providers/UserProvider";
 import MobileMenu from "./MobileMenu";
@@ -102,6 +103,19 @@ export const Navbar = () => {
           </button>
           {showProfileMenu && (
             <div className="absolute top-full right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-lime-200 py-1 z-20">
+              <button
+                onClick={() => {
+                  navigate(`/${role?.toLowerCase()}/perfil`);
+                  setShowProfileMenu(false);
+                }}
+                id="profile-button"
+                className={role === "ADMIN"? 
+                  "hidden" :
+                  "w-full flex items-center gap-2 px-4 py-2 text-sm text-blue-600 hover:bg-lime-100 hover:text-blue-700 transition"}
+              >
+                <UserRound className="h-4 w-4" />
+                <span>Mi Perfil</span>
+              </button>
               <button
                 onClick={() => cerrarSesion()}
                 className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-lime-100 hover:text-red-700 transition"

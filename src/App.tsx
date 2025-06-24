@@ -23,11 +23,14 @@ import PrincipalEst from "./navegador/menuEstudiante/principal";
 import PerfilEstudiante from "./navegador/menuEstudiante/perfilEstu";
 import CursoEstudiante from "./navegador/menuEstudiante/cursoEstudiante";
 import { CursoEstudianteContenido } from "./navegador/menuEstudiante/cursoEstudianteContenido";
+import MisLogros from "./navegador/menuEstudiante/misLogros";
+import RecursoContenido from "./navegador/menuEstudiante/RecursoContenido";
 
 // Token
 import ClaveOlvidada from "./navegador/token/claveOlvidada";
 import IngresarToken from "./navegador/token/ingresarToken";
 import CambiarClave from "./navegador/token/cambiarClave";
+import Logros from "./navegador/menuProfesor/logros";
 
 function App() {
   return (
@@ -78,6 +81,7 @@ function App() {
             <Route path="asignaciones" element={<AsignacionCursoPage />} />
             {/* **Mantener la ruta de contenidos aquí, ya que el navigate la apunta como relativa a /profesor** */}
             <Route path="cursos/:idCurso/contenidos" element={<ContenidosCurso />} />
+            <Route path="logros" element={<Logros/>}/>
           </Route>
         </Route>
 
@@ -89,6 +93,8 @@ function App() {
             <Route path="perfil" element={<PerfilEstudiante />} />
             <Route path="cursos" element={<CursoEstudiante />} />
             <Route path="cursos/:id" element={<CursoEstudianteContenido />} />
+            <Route path="cursos/:id/recurso/:idRecurso" element={<RecursoContenido />} />
+            <Route path="logros" element={<MisLogros/>}/>
           </Route>
         </Route>
       </Routes>

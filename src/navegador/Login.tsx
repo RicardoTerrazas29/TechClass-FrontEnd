@@ -114,7 +114,6 @@ const Login = () => {
       }
 
       const data = await res.json();
-      console.log("Login successful:", data);
 
       // Almacenamiento en localStorage
       saveToLocalStorage(LS_ROLE, data.role);

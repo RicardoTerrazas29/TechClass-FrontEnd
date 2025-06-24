@@ -6,6 +6,7 @@ import {
   GraduationCap,
   UserRound,
   Monitor,
+  Star,
 } from "lucide-react";
 
 export type NavItem = {
@@ -27,11 +28,11 @@ export const professorNavigation = [
   { name: "Courses", icon: BookOpen, path: "/profesor/cursos" },
   { name: "Asignaciones", icon: GraduationCap, path: "/profesor/asignaciones" },
   { name: "Monitor", icon: Monitor, path: "/profesor/monitor" },
-  { name: "Profile", icon: UserRound, path: "/profesor/perfil" },
+  { name: "Logros", icon: Star, path: "/profesor/logros" },
 ];
 
 export const studentNavigation = [
   { name: "Dashboard", icon: LayoutDashboard, path: "/estudiante/principal" },
-  { name: "Courses", icon: BookOpen, path: "/estudiante/cursos" },
-  { name: "Profile", icon: UserRound, path: "/estudiante/perfil" },
+  { name: "Mis Cursos", icon: BookOpen, path: "/estudiante/cursos" },
+  { name:"Mis Logros", icon: Star, path: "/estudiante/logros"}
 ];

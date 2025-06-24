@@ -1,45 +1,12 @@
-import { Calculator, Book, Laptop, BoxIcon } from "lucide-react";
 import { CourseCard } from "../../Components/CourseCard";
 import { useEffect, useState } from "react";
 import axios from "axios";
-
-const courses = [
-  {
-    id: "matematicas",
-    title: "Matemáticas",
-    description: "Aprende a sumar, restar y jugar con los números.",
-    icon: Calculator,
-    color: "bg-blue-400",
-  },
-  {
-    id: "letras",
-    title: "Letras",
-    description: "Descubre el mundo leyendo cuentos y escribiendo historias.",
-    icon: Book,
-    color: "bg-pink-400",
-  },
-  {
-    id: "ciencia",
-    title: "Ciencia",
-    description: "Explora la naturaleza con experimentos divertidos.",
-    icon: BoxIcon,
-    color: "bg-green-400",
-  },
-  {
-    id: "tecnologia",
-    title: "Tecnología",
-    description: "Aprende con la computadora y juega mientras estudias.",
-    icon: Laptop,
-    color: "bg-yellow-400",
-  },
-];
 
 const CursoEstudiante = () => {
   const [cursos, setCursos] = useState([]);
   useEffect(() => {
     axios.get("http://localhost:8080/api/asignaciones").then((response) => {
       const asignaciones = response.data;
-
       const cursos: any = []
       for (let i = 0; i < asignaciones.length; i++) {
          if (asignaciones[i].estudiante.idEstudiante == localStorage.getItem("idEstudiante")) {
