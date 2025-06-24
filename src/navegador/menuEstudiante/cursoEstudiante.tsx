@@ -49,7 +49,7 @@ const CursoEstudiante = () => {
           </div>
 
           {/* Panel de Progreso */}
-          <div className="w-full lg:w-80 bg-white rounded-2xl shadow-xl p-6 border border-[#DDE6ED]">
+          <div className="w-full lg:w-72 bg-white rounded-2xl shadow-xl p-6 border border-[#DDE6ED]">
             <h3 className="text-2xl font-bold text-[#1E90FF] mb-4 text-center">
               🧭 Tu Progreso
             </h3>
