@@ -2,6 +2,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { CheckCircle, Lock, ArrowLeft, Circle, ChevronDown, ChevronUp, File } from "lucide-react";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { url } from "inspector";
 
 type Lesson = {
   idContenido: number;
@@ -37,7 +38,7 @@ export const CursoEstudianteContenido = () => {
   const [resources, setResources] = useState<ResourceList[]>([]);
   const [expandedLesson, setExpandedLesson] = useState<number | null>(null);
   const [expandedResource, setExpandedResource] = useState<number | null>(null);
-
+  
   const handleToggle = (lessonId: number, locked?: boolean) => {
     if (!locked) {
       setExpandedLesson(expandedLesson === lessonId ? null : lessonId);
@@ -147,20 +148,18 @@ export const CursoEstudianteContenido = () => {
                             </div>
                             <hr className="border-gray-600 my-2" />
                             {isResourceExpanded && (
-                              <a
-                                href={res.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex  text-decoration-none hover:bg-gray-50 p-4 rounded-lg items-center gap-2"
+                              <div
+                                onClick={()=>navigate(`recurso/${res.idRecurso}`,{state:{url: res.url, nombre:res.nombre}})}
+                                className="flex w-full text-left text-decoration-none hover:bg-gray-50 p-4 rounded-lg items-center gap-2"
                               >
                                 <div className="text-dark"><File/></div>
                                 <div className="flex-col">
                                   <span className="text-gray-500">
                                     Material . {res.tipoContenido}
                                   </span>
-                                  <p className="text-lg hover:underline">Ver {res.nombre}</p>
+                                  <p className="text-lg hover:underline text-blue-500">Ver {res.nombre}</p>
                                 </div>
-                              </a>
+                              </div>
                             )}     
                           </div>
                           );
