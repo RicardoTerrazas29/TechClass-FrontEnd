@@ -23,6 +23,8 @@ import PrincipalEst from "./navegador/menuEstudiante/principal";
 import PerfilEstudiante from "./navegador/menuEstudiante/perfilEstu";
 import CursoEstudiante from "./navegador/menuEstudiante/cursoEstudiante";
 import { CursoEstudianteContenido } from "./navegador/menuEstudiante/cursoEstudianteContenido";
+import ConoceANuti from "./navegador/menuEstudiante/ConoceANuti";
+import JuegoNuti from "./navegador/menuEstudiante/JuegoNuti"; // 🔴 Import CORRECTO
 
 // Token
 import ClaveOlvidada from "./navegador/token/claveOlvidada";
@@ -40,7 +42,7 @@ function App() {
         <Route path="/ingresar-token" element={<IngresarToken />} />
         <Route path="/cambiar-clave" element={<CambiarClave />} />
 
-        {/* Menu Administrador */}
+        {/* Menu Admin */}
         <Route element={<ProtectedRoute allowedRoles={["ADMIN"]} />}>
           <Route path="/admin" element={<MenuPrincipal />}>
             <Route index element={<Navigate to="principal" replace />} />
@@ -53,30 +55,14 @@ function App() {
 
         {/* Menu Profesor */}
         <Route element={<ProtectedRoute allowedRoles={["PROFESOR"]} />}>
-          {/* Ruta base para el profesor que carga MenuPrincipal */}
           <Route path="/profesor" element={<MenuPrincipal />}>
             <Route index element={<Navigate to="principal" replace />} />
             <Route path="principal" element={<PrincipalPro />} />
             <Route path="estudiantes" element={<EstudiantesPro />} />
             <Route path="cursos" element={<CursoProfesor />} />
-            {/* Aquí es donde necesitamos definir la ruta de contenidos de manera específica
-                para que no choque con la ruta "cursos" principal.
-                Lo más seguro es que "cursos/:idCurso/contenidos" sea una ruta de *tipo absoluto*
-                si está en el mismo nivel de <Route path="cursos" ... />.
-                Pero como está dentro de "/profesor", debería funcionar.
-                El problema puede ser que la ruta "cursos" sin más, sin un outlet, no está diseñada para
-                tener rutas anidadas.
-                
-                Vamos a probar a poner la ruta de contenidos FUERA de la ruta "cursos", pero DENTRO de la ruta "/profesor".
-                El path ya es relativo a "/profesor", por lo tanto "cursos/:idCurso/contenidos" debería coincidir.
-                
-                La única razón por la que diría "No routes matched" es si hay un problema con el orden o el
-                manejo del Outlet en MenuPrincipal.
-            */}
             <Route path="perfil" element={<PerfilProfesor />} />
             <Route path="monitor" element={<GraficoEstudiantes />} />
             <Route path="asignaciones" element={<AsignacionCursoPage />} />
-            {/* **Mantener la ruta de contenidos aquí, ya que el navigate la apunta como relativa a /profesor** */}
             <Route path="cursos/:idCurso/contenidos" element={<ContenidosCurso />} />
           </Route>
         </Route>
@@ -89,6 +75,8 @@ function App() {
             <Route path="perfil" element={<PerfilEstudiante />} />
             <Route path="cursos" element={<CursoEstudiante />} />
             <Route path="cursos/:id" element={<CursoEstudianteContenido />} />
+            <Route path="conoce-a-nuti" element={<ConoceANuti />} />
+            <Route path="juego-nuti" element={<JuegoNuti />} /> {/* ✅ Esta línea */}
           </Route>
         </Route>
       </Routes>
@@ -97,4 +85,7 @@ function App() {
 }
 
 export default App;
+
+
+
 

@@ -9,10 +9,9 @@ export const Navbar = () => {
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const navigate = useNavigate();
-  const { setRole } = useUser();
+  const { role, setRole } = useUser();
   const notificationRef = useRef<HTMLDivElement>(null);
   const profileRef = useRef<HTMLDivElement>(null);
-  const { role } = useUser();
 
   const cerrarSesion = () => {
     localStorage.clear();
@@ -43,29 +42,28 @@ export const Navbar = () => {
   return (
     <nav
       className="flex items-center justify-between h-16 bg-gradient-to-br 
-    from-yellow-200 to-lime-200 fixed top-0 right-0 left-0 z-10 shadow-md 
-    font-[Comic_Neue] px-4 border-b-4 border-lime-300"
+      from-yellow-200 to-lime-200 fixed top-0 right-0 left-0 z-10 shadow-md 
+      font-[Comic_Neue] px-4 border-b-4 border-lime-300"
     >
       {/* Mobile: Menú hamburguesa y título centrado */}
       <div className="lg:hidden flex justify-between items-center w-full">
-        {/* Izquierda: Burger */}
         <div className="w-10 flex justify-start">
           <MobileMenu />
         </div>
 
-        {/* Centro: Título */}
         <div className="flex-1 text-center">
           <Link
             to={`/${role?.toLowerCase()}/principal`}
-            className="text-2xl font-extrabold text-green-700 tracking-wide hover:text-green-500 transition duration-300 text-decoration-none" // Agregado text-decoration-none aquí
+            className="text-2xl font-extrabold text-green-700 tracking-wide hover:text-green-500 transition duration-300"
           >
             AprendeGenial
           </Link>
         </div>
-        {/* Derecha: Espacio vacío para balance visual (mismo ancho que burger) */}
+
         <div className="w-10" />
       </div>
-      {/* Desktop: Oculta el título y hamburguesa, solo íconos a la derecha */}
+
+      {/* Desktop: íconos a la derecha */}
       <div className="hidden lg:flex flex-1 justify-end items-center gap-4 pr-2">
         {/* Notifications */}
         <div className="relative" ref={notificationRef}>
@@ -84,6 +82,17 @@ export const Navbar = () => {
             />
           )}
         </div>
+
+        {/* Botón "¿Conoces a Nuti?" solo si es estudiante */}
+        {role === "ESTUDIANTE" && (
+          <Link
+            to="/estudiante/conoce-a-nuti"
+            className="hidden lg:flex items-center gap-2 px-4 py-2 bg-pink-300 hover:bg-pink-400 text-white font-semibold rounded-full shadow-lg transition duration-300 hover:scale-105"
+            title="¡Conoce a Nuti, la ardilla curiosa!"
+          >
+            🐿️ ¿Conoces a Nuti?
+          </Link>
+        )}
 
         {/* Profile */}
         <div className="relative pr-4" ref={profileRef}>
@@ -116,3 +125,5 @@ export const Navbar = () => {
     </nav>
   );
 };
+
+
