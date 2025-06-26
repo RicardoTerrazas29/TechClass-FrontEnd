@@ -145,10 +145,30 @@ const PrincipalPro = () => {
                         z-index: 100;
                         pointer-events: none;
                     }
+
+                    /* Eagle animations copied from PrincipalEst */
+                    @keyframes move-eagle {
+                        0% { transform: translateX(-100%); }
+                        100% { transform: translateX(calc(100vw + 100%)); }
+                    }
+
+                    .animate-move-eagle {
+                        position: absolute;
+                        top: 50px;
+                        left: -200px;
+                        width: 200px;
+                        height: auto;
+                        animation: move-eagle 25s linear infinite;
+                    }
+
+                    .animate-move-eagle.reverse {
+                        animation: move-eagle 25s linear infinite reverse;
+                        left: calc(100vw + 200px);
+                        transform: scaleX(-1);
+                    }
                 `}
             </style>
             <div className="absolute top-0 left-0 w-full h-full z-20 pointer-events-none">
-
                     {/* ¡Aquí va el águila! */}
                     <img
                     src="/imagenes/aguila2.1.gif" 
@@ -210,70 +230,26 @@ const PrincipalPro = () => {
                         📅 Agenda del Profesor
                     </h3>
                     <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
-                        {mockAgenda.map((item, index) => {
-                            let cardStyle = "";
-                            switch (item.type) {
-                                case "Examen":
-                                    cardStyle = "from-red-100 via-red-50 to-white border-red-300";
-                                    break;
-                                case "Tarea":
-                                    cardStyle = "from-blue-100 via-blue-50 to-white border-blue-300";
-                                    break;
-                                case "Clase":
-                                    cardStyle = "from-orange-100 via-yellow-50 to-white border-orange-300";
-                                    break;
-                                case "Evento":
-                                    cardStyle = "from-green-100 via-green-50 to-white border-green-300";
-                                    break;
-                                default:
-                                    cardStyle = "from-gray-100 via-gray-50 to-white border-gray-300";
-                            }
-
-                            return (
-                                <div
-                                    key={index}
-                                    className={`flex items-start gap-4 bg-gradient-to-br ${cardStyle} p-5 rounded-2xl border shadow-md hover:shadow-xl hover:scale-[1.03] transition-all duration-300`}
-                                >
-                                    <div className="mt-1">{item.icon}</div>
-                                    <div>
-                                        <h4 className="text-lg font-semibold text-gray-800 mb-1">
-                                            {item.title}
-                                        </h4>
-                                        <p className="text-sm text-gray-600">
-                                            <span className="font-medium">{item.date}</span> — {item.time}
-                                        </p>
-                                        <span
-                                            className={`inline-block mt-2 px-3 py-1 text-xs font-semibold rounded-full
-                                                ${
-                                                    item.type === "Examen"
-                                                        ? "bg-red-200 text-red-800"
-                                                        : item.type === "Tarea"
-                                                        ? "bg-blue-200 text-blue-800"
-                                                        : item.type === "Clase"
-                                                        ? "bg-orange-200 text-orange-800"
-                                                        : item.type === "Evento"
-                                                        ? "bg-green-200 text-green-800"
-                                                        : "bg-gray-200 text-gray-800"
-                                                }`}
-                                        >
-                                            {item.type}
-                                        </span>
-                                    </div>
+                        {mockAgenda.map((item, index) => (
+                            <div
+                                key={index}
+                                className="bg-white p-4 rounded-xl shadow-md flex items-center gap-4 border-l-4 border-yellow-400"
+                            >
+                                {item.icon}
+                                <div>
+                                    <h4 className="font-bold text-lg">{item.title}</h4>
+                                    <p className="text-sm text-gray-600">
+                                        {item.date} - {item.time}
+                                    </p>
                                 </div>
-                            );
-                        })}
+                            </div>
+                        ))}
                     </div>
                 </div>
             </div>
-
-            {/* Ardilla animada caminando */}
-            <img
-                src="/imagenes/Ardilla 3.gif"
-                alt="Ardilla caminando"
-                className="animate-move-squirrel"
-            />
         </div>
     );
 };
+
 
 export default PrincipalPro;
