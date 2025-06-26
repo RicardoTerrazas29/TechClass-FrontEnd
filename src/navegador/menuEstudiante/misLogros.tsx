@@ -6,7 +6,7 @@ function MisLogros() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-200 p-4">
-      <div className="max-w-3xl mx-auto">
+      <div className="max-w-7xl mx-auto">
         <h2 className="text-2xl sm:text-3xl font-bold text-blue-800 mb-6 flex items-center gap-2">
           <span>🏅</span> Mis Logros
         </h2>

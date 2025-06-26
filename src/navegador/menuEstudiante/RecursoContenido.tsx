@@ -10,7 +10,6 @@ function RecursoContenido() {
     const { url, nombre, idRecurso, idContenido } = location.state || {} // Obtener idRecurso e idContenido del estado de navegación
     
     const [isLoading, setIsLoading] = useState(true)
-    const [showModal, setShowModal] = useState(false) // Para el modal de logro
     const [puedeMarcarRevisado, setPuedeMarcarRevisado] = useState(false); // Bandera para saber si ya se cumplió el tiempo de visualización
     
     // Función para convertir URLs de YouTube a formato embed
@@ -52,23 +51,13 @@ function RecursoContenido() {
         }
     };
 
-    // useEffect para iniciar el temporizador de 5 segundos
+    // useEffect para iniciar el temporizador de 3 segundos
     useEffect(() => {
         const timer = setTimeout(() => {
             setPuedeMarcarRevisado(true); // Marca que el recurso ha sido visto por el tiempo necesario
         }, 3000);
-        
-        // Limpiar el temporizador si el componente se desmonta antes de los 5 segundos
         return () => clearTimeout(timer);
-    }, []); // Se ejecuta una sola vez al montar el componente
-
-    // useEffect para mostrar el modal de logro (si se ha activado desde otro componente)
-    useEffect(() => {
-        if (localStorage.getItem('mostrarModalLogro') === 'true') {
-            setShowModal(true);
-            localStorage.removeItem('mostrarModalLogro'); // Limpiar la bandera para que no se muestre de nuevo
-        }
-    }, []);
+    }, []); // Se ejecuta una sola vez al montar el 
       
     return (
         <div className='flex flex-col items-start p-5 bg-[#e0f7fa] min-h-screen box-border font-sans'>
@@ -104,22 +93,6 @@ function RecursoContenido() {
                 </div>
                 <p className='text-[#004d40] text-[1.2em] mt-auto pt-2 text-center font-medium'>¡Aprender es súper divertido! 📚</p>
             </div>
-
-            {/* Modal de Logro (opcional, si quieres que se muestre aquí) */}
-            {showModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-                    <div className="bg-white p-6 rounded-lg shadow-xl text-center max-w-sm w-full">
-                        <h3 className="text-2xl font-bold text-green-600 mb-4">¡Logro Desbloqueado! 🎉</h3>
-                        <p className="text-gray-700 mb-6">¡Felicidades, has completado un contenido y ganado un logro!</p>
-                        <button
-                            onClick={() => setShowModal(false)}
-                            className="bg-green-500 text-white px-5 py-2 rounded-md hover:bg-green-600 transition"
-                        >
-                            ¡Genial!
-                        </button>
-                    </div>
-                </div>
-            )}
         </div>
     )
 }

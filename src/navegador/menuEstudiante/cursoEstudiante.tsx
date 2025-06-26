@@ -20,20 +20,20 @@ const CursoEstudiante = () => {
 
   return (
     <div
-      className="min-h-screen bg-cover bg-center p-6"
+      className="min-h-screen bg-cover bg-center p-2"
       style={{
         backgroundImage:
           "url('https://img.freepik.com/free-psd/science-background-with-laboratory-equipment_23-2150181635.jpg')",
       }}
     >
-      <div className="p-6  min-h-screen">
+      <div className="p-6 min-h-screen max-w-full">
         <h2 className="text-4xl font-bold text-center text-white mb-4">
           📘 ¡Hola, Explorador! Estos son tus cursos
         </h2>
 
-        <div className="flex flex-col lg:flex-row gap-8">
+        <div className="flex flex-col lg:flex-row gap-4 max-w-full">
           {/* Tarjetas de cursos */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 flex-1">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {cursos.map((curso:any) => {
               return (
                 <CourseCard
@@ -49,7 +49,7 @@ const CursoEstudiante = () => {
           </div>
 
           {/* Panel de Progreso */}
-          <div className="w-full lg:w-72 bg-white rounded-2xl shadow-xl p-6 border border-[#DDE6ED]">
+          <div className="w-full bg-white rounded-2xl shadow-xl p-6 border border-[#DDE6ED]">
             <h3 className="text-2xl font-bold text-[#1E90FF] mb-4 text-center">
               🧭 Tu Progreso
             </h3>

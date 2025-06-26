@@ -168,9 +168,9 @@ export const Sidebar = ({ navigation }: SidebarProps) => {
   };
 
   return (
-    <div className="w-64 overflow-y-auto bg-gradient-to-br from-yellow-200 to-lime-200 h-screen fixed left-0 top-0 shadow-xl font-[Comic_Neue] border-r-4 border-lime-300">
+    <div className="w-64 bg-gradient-to-br from-yellow-200 to-lime-200 h-screen fixed left-0 top-0 shadow-xl font-[Comic_Neue] border-r-4 border-lime-300">
       <div className="p-6">
-        <div className="flex items-center gap-3 mb-10">
+        <div className="flex items-center gap-3 mb-4">
           <BookOpen className="h-9 w-9 text-green-500 animate-pulse" />
           <Link
             to={`/${role?.toLowerCase()}/principal`}
@@ -180,7 +180,7 @@ export const Sidebar = ({ navigation }: SidebarProps) => {
           </Link>
         </div>
 
-        <nav className="space-y-4 ">
+        <nav className="space-y-2 ">
           {navigation.map((item) => {
             const isActive = location.pathname === item.path;
             const Icon = item.icon;
@@ -202,7 +202,7 @@ export const Sidebar = ({ navigation }: SidebarProps) => {
         </nav>
       </div>
       {/* Nube de mensaje + Hongo */}
-      <div className="relative mt-10 px-4 text-center">
+      <div className="absolute bottom-3 px-4 text-center">
         {/* Nube */}
         <div className="relative inline-block bg-white text-green-800 font-bold text-base py-3 px-6 rounded-2xl shadow-lg border border-green-300 animate-fade-in">
           {/* Mostramos el mensaje del contenido actual */}

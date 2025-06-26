@@ -45,7 +45,8 @@ export const CursoEstudianteContenido = () => {
     const [expandedLesson, setExpandedLesson] = useState<number | null>(null);
     // Nuevo estado para indicar si los datos iniciales (lecciones y recursos) han sido cargados
     const [isDataLoaded, setIsDataLoaded] = useState(false);
-
+    const [showModal, setShowModal] = useState(false) // Para el modal de logro
+    const [logros,setLogros] = useState<any[]>([]);
     // Estado para los recursos que el estudiante ha revisado (persiste en localStorage)
     const [reviewed, setReviewed] = useState<{[idRecurso: number]: boolean}>(() => {
         try {
@@ -56,7 +57,6 @@ export const CursoEstudianteContenido = () => {
             return {};
         }
     });
-
     // Estado para los contenidos que el estudiante ha completado (todos sus recursos revisados) (persiste en localStorage)
     const [contentCompleted, setContentCompleted] = useState<{[idContenido:number]:boolean}>(() => {
         try {
@@ -67,17 +67,14 @@ export const CursoEstudianteContenido = () => {
             return {};
         }
     });
-
     // useEffect para guardar el estado 'reviewed' en localStorage cada vez que cambie
     useEffect(() => {
         localStorage.setItem('recursosRevisados', JSON.stringify(reviewed));
     }, [reviewed]);
-
     // useEffect para guardar el estado 'contentCompleted' en localStorage cada vez que cambie
     useEffect(() => {
         localStorage.setItem('contenidosCompletados', JSON.stringify(contentCompleted));
     }, [contentCompleted]);
-
     // Función para expandir/colapsar una lección/contenido
     const handleToggle = (lessonId: number, locked?: boolean) => {
         if (!locked) { // Solo se puede expandir si no está bloqueado
@@ -85,38 +82,41 @@ export const CursoEstudianteContenido = () => {
         }
     };
 
+    useEffect(() => {
+      axios.get('http://localhost:8080/api/logros')
+        .then(res => setLogros(res.data))
+        .catch(() => setLogros([]));
+    }, []);
     // Función para marcar un recurso como revisado y verificar si el contenido está completo
     const checkResourceReviewed = async (idRecurso: number, idContenido: number, idEstudiante: number) => {
-        setReviewed(prevReviewed => {
-            const newReviewed = { ...prevReviewed, [idRecurso]: true };
-            // Obtiene todos los recursos del contenido actual a partir del estado `resources` cargado
-            // Es CRUCIAL que `resources` esté cargado y contenga todos los recursos correctos aquí.
-            const currentContentResources = resources.find(r => r.idContenido === idContenido)?.recursos || [];
-            // Verifica si *todos* los recursos de este contenido están ahora revisados
-            // Si currentContentResources está vacío, allResourcesInContentReviewed será true, lo cual es el error anterior.
-            // La solución se asegura que resources esté cargado antes de llamar a esta función.
-            const allResourcesInContentReviewed = currentContentResources.every(r => newReviewed[r.idRecurso]);
+        if (!logros.length) {
+          // Espera a que los logros estén cargados antes de continuar
+          setTimeout(() => checkResourceReviewed(idRecurso, idContenido, idEstudiante), 100);
+          return;
+        }
+        const newReviewed = { ...reviewed, [idRecurso]: true };
+        setReviewed(newReviewed);
 
-            if (allResourcesInContentReviewed && !contentCompleted[idContenido]) { 
-                setContentCompleted(prev => ({ ...prev, [idContenido]: true })); 
-                
-                const lesson = lessons.find(l => l.idContenido === idContenido);
-                const idLogro = lesson?.idLogro;
+        // Verifica si todos los recursos del contenido están revisados
+        const currentContentResources = resources.find(r => r.idContenido === idContenido)?.recursos || [];
+        const allResourcesInContentReviewed = currentContentResources.every(r => newReviewed[r.idRecurso]);
 
-                if (idLogro && idEstudiante) {
-                    axios.post(`http://localhost:8080/api/logros/${idEstudiante}/${idLogro}`, { idContenido })
-                        .then(() => {
-                            localStorage.setItem('mostrarModalLogro', 'true');
-                        })
-                        .catch(error => {
-                            console.error("Error asignando logro:", error);
-                        });
-                }
+        if (allResourcesInContentReviewed && !contentCompleted[idContenido]) {
+            setContentCompleted(prev => ({ ...prev, [idContenido]: true }));
+            const logro = logros.find(l=>l.contenido && l.contenido.idContenido === idContenido);
+            if (!logros.length) return
+            if (logro && idEstudiante) {
+                axios.post(`http://localhost:8080/api/logros/${idEstudiante}/${logro.idLogro}`)
+                    .then(() => {
+                        setShowModal(true);
+                        localStorage.setItem('mostrarModalLogro', 'true');
+                    })
+                    .catch(error => {
+                        console.error("Error asignando logro:", error);
+                    });
             }
-            return newReviewed; 
-        });
+        }
     };
-
     // useEffect para cargar los contenidos del curso al montar el componente o cambiar el ID del curso
     useEffect(() => {
         axios.get<LessonList>(`http://localhost:8080/api/contenidos/curso/${id}`)
@@ -142,13 +142,10 @@ export const CursoEstudianteContenido = () => {
             });
     }, [id]);
 
-    // useEffect para procesar el estado de navegación cuando se vuelve de un recurso
-    // Se ejecutará solo cuando los datos estén cargados (`isDataLoaded` sea true)
     useEffect(() => {
         if (isDataLoaded && location.state && location.state.revisado && location.state.idRecurso && location.state.idContenido) {
             const { idRecurso, idContenido } = location.state;
             const idEstudiante = Number(localStorage.getItem("idEstudiante")); 
-            
             // Asegúrate de que el contenido con sus recursos esté realmente disponible en el estado `resources`
             const foundContentResources = resources.find(r => r.idContenido === idContenido);
 
@@ -165,13 +162,18 @@ export const CursoEstudianteContenido = () => {
         }
     }, [isDataLoaded, location.state, navigate, resources]); // 'resources' es crucial como dependencia aquí
 
+    // useEffect para mostrar el modal de logro (si se ha activado desde otro componente)
+    useEffect(() => {
+      if (localStorage.getItem('mostrarModalLogro') === 'true') {
+          setShowModal(true);
+          localStorage.removeItem('mostrarModalLogro'); // Limpiar la bandera para que no se muestre de nuevo
+      }
+    }, []);
+
     return (
         <div
             className="min-h-screen bg-cover bg-center p-6"
-            style={{
-                backgroundImage:
-                    "url('https://img.freepik.com/free-photo/top-view-geometric-forms-with-copy-space_23-2148830233.jpg')",
-            }}
+            style={{backgroundImage:"url('https://img.freepik.com/free-photo/top-view-geometric-forms-with-copy-space_23-2148830233.jpg')",}}
         >
             <div className="p-6 max-w-4xl mx-auto bg-white bg-opacity-90 rounded-xl shadow-lg">
                 <button
@@ -264,6 +266,24 @@ export const CursoEstudianteContenido = () => {
                     })}
                 </div>
             </div>
+            {/* Modal de Logro (opcional, si quieres que se muestre aquí) */}
+            {showModal && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+                    <div className="bg-white p-6 rounded-lg shadow-xl text-center max-w-sm w-full">
+                        <h3 className="text-2xl font-bold text-green-600 mb-4">¡Logro Desbloqueado! 🎉</h3>
+                        <p className="text-gray-700 mb-6">¡Felicidades, has completado un contenido y ganado un logro!</p>
+                        <button
+                            onClick={() => {
+                              setShowModal(false);
+                              localStorage.removeItem('mostrarModalLogro');
+                            }}
+                            className="bg-green-500 text-white px-5 py-2 rounded-md hover:bg-green-600 transition"
+                        >
+                            ¡Genial!
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

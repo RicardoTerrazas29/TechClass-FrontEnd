@@ -106,13 +106,13 @@ function Logros() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-200 p-4">
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-7xl mx-auto">
         <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
-          <h2 className="text-2xl sm:text-3xl font-bold text-blue-800 flex items-center gap-2">
+          <h2 className="text-2xl sm:text-3xl font-bold text-blue-600 flex items-center gap-2">
             <span>🏆</span> Gestión de Logros
           </h2>
           <button
-            className="btn btn-primary flex items-center gap-2 rounded-lg px-4 py-2 shadow"
+            className="inline-flex gap-2 rounded-lg px-4 py-2 bg-blue-600 text-white font-semibold shadow hover:bg-blue-700 transition"
             onClick={handleNew}
           >
             <Plus /> Nuevo Logro
@@ -143,7 +143,7 @@ function Logros() {
                   alt={logro.titulo}
                   className="w-20 h-20 object-contain rounded-full border-2 border-blue-200 mb-2"
                 />
-                <h3 className="font-bold text-lg text-blue-700 text-center">{logro.titulo}</h3>
+                <h4 className="font-bold text-lg text-blue-700 text-center">{logro.titulo.toUpperCase()}</h4>
                 <div className="text-sm text-gray-600 text-center">
                   <div>
                     <span className="font-semibold">Curso:</span> {logro.curso.nombre}
@@ -154,13 +154,13 @@ function Logros() {
                 </div>
                 <div className="flex gap-2 mt-2">
                   <button
-                    className="btn btn-warning btn-sm flex items-center gap-1"
+                    className="inline-flex gap-2 rounded-lg px-4 py-2 bg-amber-400 hover:bg-amber-500 transition items-center"
                     onClick={() => handleEdit(logro)}
                   >
                     <Edit size={16} /> Editar
                   </button>
                   <button
-                    className="btn btn-danger btn-sm flex items-center gap-1"
+                    className="inline-flex gap-2 rounded-lg px-4 py-2 bg-red-500 hover:bg-red-600 transition items-center"
                     onClick={() => handleDelete(logro.idLogro)}
                   >
                     <Trash2 size={16} /> Eliminar

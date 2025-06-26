@@ -144,7 +144,7 @@ const PrincipalEst = () => {
             <img
               src="/imagenes/ardilla.gif"
               alt="Ardilla caminando"
-              className="animate-move-squirrel cursor-pointer"
+              className="animate-move-squirrel cursor-pointer absolute bottom-0"
               onClick={() => {
                 setMensajeVisible(true);
                 setTimeout(() => setMensajeVisible(false), 4000);
