@@ -1,8 +1,7 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { CheckCircle, Lock, ArrowLeft, Circle, ChevronDown, ChevronUp, File } from "lucide-react";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { url } from "inspector";
 
 type Lesson = {
   idContenido: number;
@@ -13,6 +12,7 @@ type Lesson = {
   locked?: boolean;
   completed?: boolean;
   recursos: Resource[];
+  idLogro?:number;
 };
 
 type LessonList = {
@@ -34,10 +34,13 @@ type ResourceList = {
 export const CursoEstudianteContenido = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const [lessons, setLessons] = useState<Lesson[]>([]);
   const [resources, setResources] = useState<ResourceList[]>([]);
   const [expandedLesson, setExpandedLesson] = useState<number | null>(null);
   const [expandedResource, setExpandedResource] = useState<number | null>(null);
+  const [reviewed, setReviewed] = useState<{[idRecurso: number]: boolean}>({});
+  const [contentCompleted, setContentCompleted] = useState<{[idContenido:number]:boolean}>({});
   
   const handleToggle = (lessonId: number, locked?: boolean) => {
     if (!locked) {
@@ -49,11 +52,43 @@ export const CursoEstudianteContenido = () => {
     setExpandedResource(expandedResource === resourceId ? null : resourceId);
   };
 
+  const checkResourceReviewed = async (idRecurso: number, idContenido: number, idEstudiante: number, idLogro: number) => {
+    const newReviewed = {...reviewed, [idRecurso]:true};
+    setReviewed(newReviewed);
+    // Verifica si todos los recursos del contenido están revisados
+    const resourcesContent = resources.find(r => r.idContenido === idContenido)?.recursos || [];
+    const allReviewed = resourcesContent.every(r => reviewed[r.idRecurso] || r.idRecurso === idRecurso);
+    if (allReviewed) {
+      setContentCompleted(prev => ({ ...prev, [idContenido]: true }));
+      try {
+        // Busca el idLogro del contenido
+        const lesson = lessons.find(l => l.idContenido === idContenido);
+        const idLogro = lesson?.idLogro
+        if (idLogro) {
+          await axios.post(`http://localhost:8080/api/logros/${idEstudiante}/${idLogro}`, { idContenido });
+          localStorage.setItem('mostrarModalLogro', 'true');
+        }
+      } catch (error) {
+        console.error("Error asignando logro:", error);
+      }
+    }
+  };
+
   useEffect(()=>{
     axios.get(`http://localhost:8080/api/contenidos/curso/${id}`)
-      .then((response) => {
+      .then(async (response) => {
         const lessonsData:LessonList = response.data || [];
-        setLessons(lessonsData.contenidos || []);
+        const lessonsWithLogro = await Promise.all(
+          lessonsData.contenidos.map(async (lesson) => {
+            // Supón que lesson.idLogro existe, si no, ajusta según tu modelo
+            if (lesson.idLogro) {
+              const logroResp = await axios.get(`http://localhost:8080/api/logros/${lesson.idLogro}`);
+              return { ...lesson, logro: logroResp.data };
+            }
+            return lesson;
+          })
+        );
+        setLessons(lessonsWithLogro);
         const resourcesData:ResourceList[] = [];
         lessonsData.contenidos.forEach((lesson) => {
           if (lesson.recursos && lesson.recursos.length > 0) {
@@ -69,6 +104,21 @@ export const CursoEstudianteContenido = () => {
       });
   }, [id]);
 
+  useEffect(() => {
+    if (location.state && location.state.revisado && location.state.idRecurso && location.state.idContenido) {
+      // Aquí debes obtener el idEstudiante (de contexto, localStorage, etc.)
+      // Y el idLogro (lo tienes en lessons)
+      const lesson = lessons.find(l => l.idContenido === location.state.idContenido);
+      const idLogro = lesson?.idLogro;
+      const idEstudiante = Number(localStorage.getItem("idEstudiante"));
+      if (idEstudiante && idLogro) {
+        checkResourceReviewed(location.state.idRecurso, location.state.idContenido, idEstudiante, idLogro);
+      }
+      // Limpia el estado para evitar dobles ejecuciones
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [location, lessons]);
+  
   return (
     <div
       className="min-h-screen bg-cover bg-center p-6"
@@ -97,7 +147,7 @@ export const CursoEstudianteContenido = () => {
           {lessons.map((lesson: Lesson) => {
             const isExpanded = expandedLesson === lesson.idContenido;
             const isLocked = lesson.locked;
-            const isCompleted = lesson.completed;
+            const isCompleted = contentCompleted[lesson.idContenido];
 
             return (
               <div
@@ -158,6 +208,9 @@ export const CursoEstudianteContenido = () => {
                                     Material . {res.tipoContenido}
                                   </span>
                                   <p className="text-lg hover:underline text-blue-500">Ver {res.nombre}</p>
+                                  <span className={`ml-2 px-3 py-1 rounded-full text-xs ${reviewed[res.idRecurso] ? 'bg-green-200 text-green-800' : 'bg-gray-200 text-gray-600'}`}>
+                                    {reviewed[res.idRecurso] ? 'Revisado' : 'No revisado'}
+                                  </span>
                                 </div>
                               </div>
                             )}     
