@@ -33,49 +33,112 @@ type ResourceList = {
     recursos: Resource[];
 }
 
+type Logro = {
+    idLogro: number;
+    contenido?: { idContenido: number };
+    // otros campos si los tienes
+};
+
 export const CursoEstudianteContenido = () => {
     const { id } = useParams(); // ID del curso
     const navigate = useNavigate();
-    const location = useLocation(); // Para acceder al estado de navegación
-    // Estado para la lista de lecciones/contenidos del curso
+    const location = useLocation();
+
     const [lessons, setLessons] = useState<Lesson[]>([]);
-    // Estado para los recursos agrupados por contenido
     const [resources, setResources] = useState<ResourceList[]>([]);
-    // Estado para controlar qué lección/contenido está expandido
     const [expandedLesson, setExpandedLesson] = useState<number | null>(null);
-    // Nuevo estado para indicar si los datos iniciales (lecciones y recursos) han sido cargados
     const [isDataLoaded, setIsDataLoaded] = useState(false);
-    const [showModal, setShowModal] = useState(false) // Para el modal de logro
-    const [logros,setLogros] = useState<any[]>([]);
+    const [showModal, setShowModal] = useState(false)
+    const [logros,setLogros] = useState<Logro[]>([]);
     const [currentAchievementId, setCurrentAchievementId] = useState<number|null>()
-    // Estado para los recursos que el estudiante ha revisado (persiste en localStorage)
-    const [reviewed, setReviewed] = useState<{[idRecurso: number]: boolean}>(() => {
-        try {
-            const storedReviewed = localStorage.getItem('recursosRevisados');
-            return storedReviewed ? JSON.parse(storedReviewed) : {};
-        } catch (error) {
-            console.error("Error al cargar recursos revisados de localStorage:", error);
-            return {};
-        }
-    });
-    // Estado para los contenidos que el estudiante ha completado (todos sus recursos revisados) (persiste en localStorage)
-    const [contentCompleted, setContentCompleted] = useState<{[idContenido:number]:boolean}>(() => {
-        try {
-            const storedCompleted = localStorage.getItem('contenidosCompletados');
-            return storedCompleted ? JSON.parse(storedCompleted) : {};
-        } catch (error) {
-            console.error("Error al cargar contenidos completados de localStorage:", error);
-            return {};
-        }
-    });
-    // useEffect para guardar el estado 'reviewed' en localStorage cada vez que cambie
+    const [reviewed, setReviewed] = useState<{[idRecurso: number]: boolean}>({});
+    const [contentCompleted, setContentCompleted] = useState<{[idContenido:number]:boolean}>({});
+    const [prevContentCompleted, setPrevContentCompleted] = useState<{[idContenido:number]:boolean}>({});
+    //cargar logros
     useEffect(() => {
-        localStorage.setItem('recursosRevisados', JSON.stringify(reviewed));
-    }, [reviewed]);
-    // useEffect para guardar el estado 'contentCompleted' en localStorage cada vez que cambie
+      axios.get('http://localhost:8080/api/logros')
+        .then(res => {setLogros(res.data)})
+        .catch(() => setLogros([]));
+    }, []);
+
     useEffect(() => {
-        localStorage.setItem('contenidosCompletados', JSON.stringify(contentCompleted));
-    }, [contentCompleted]);
+        const idEstudiante = Number(localStorage.getItem("idEstudiante"));
+        if (!idEstudiante) return;
+        axios.get(`http://localhost:8080/api/contenidos/estudiantes/${idEstudiante}/progreso/curso/${id}`)
+            .then(res => {
+                const reviewedFlat: { [idRecurso: number]: boolean } = {};
+                Object.values(res.data.revisados || {}).forEach((arr: number[]) => {
+                    arr.forEach(id => { reviewedFlat[id] = true; });
+                });
+                setReviewed(reviewedFlat);
+
+                const newContentCompleted = (res.data.completados || []).reduce((acc: any, id: number) => ({ ...acc, [id]: true }), {});
+                
+                // Detecta si hay un contenido recién completado o completado y nunca mostrado el logro
+                for (const idContenido in newContentCompleted) {
+                    // Solo muestra el modal si no se ha mostrado antes para este contenido
+                    if (!localStorage.getItem(`logroMostrado_${idContenido}`)) {
+                        const logro = logros.find(l => l.contenido?.idContenido === Number(idContenido));
+                        if (logro && idEstudiante) {
+                            setCurrentAchievementId(logro.idLogro);
+                            setShowModal(true);
+                            localStorage.setItem(`logroMostrado_${idContenido}`, "true");
+                            axios.post(`http://localhost:8080/api/logros/${idEstudiante}/${logro.idLogro}`)
+                                .catch(error => {
+                                    console.error("Error asignando logro:", error);
+                                });
+                        }
+                    }
+                }
+                setPrevContentCompleted(newContentCompleted);
+                setContentCompleted(newContentCompleted);
+            })
+            .catch(() => {
+                setReviewed({});
+                setContentCompleted({});
+            });
+    }, [id, logros]);
+    //cargar progreso y mostrar model del logro si corresponde
+    useEffect(() => {
+        const idEstudiante = Number(localStorage.getItem("idEstudiante"));
+        if (!idEstudiante) return;
+        axios.get(`http://localhost:8080/api/contenidos/estudiantes/${idEstudiante}/progreso/curso/${id}`)
+            .then(res => {
+                const reviewedFlat: { [idRecurso: number]: boolean } = {};
+                Object.values(res.data.revisados || {}).forEach((arr: number[]) => {
+                    arr.forEach((id:number) => { reviewedFlat[id] = true; });
+                });
+                setReviewed(reviewedFlat);
+
+                
+                const newContentCompleted = (res.data.completados || []).reduce(
+                    (acc: any, cid: number) => ({ ...acc, [cid]: true }), {}
+                );
+
+                // Mostrar modal y asignar logro si nunca se mostró para este contenido
+                for (const idContenido in newContentCompleted) {
+                    if (!localStorage.getItem(`logroMostrado_${idContenido}`)) {
+                        const logro = logros.find(l => l.contenido?.idContenido === Number(idContenido));
+                        if (logro && idEstudiante) {
+                            setCurrentAchievementId(logro.idLogro);
+                            setShowModal(true);
+                            localStorage.setItem(`logroMostrado_${idContenido}`, "true");
+                            axios.post(`http://localhost:8080/api/logros/${idEstudiante}/${logro.idLogro}`)
+                                .catch(error => {
+                                    console.error("Error asignando logro:", error);
+                                });
+                        }
+                    }
+                }
+                setPrevContentCompleted(newContentCompleted);
+                setContentCompleted(newContentCompleted);
+            })
+            .catch(() => {
+                setReviewed({});
+                setContentCompleted({});
+            });
+    }, [id]);
+
     // Función para expandir/colapsar una lección/contenido
     const handleToggle = (lessonId: number, locked?: boolean) => {
         if (!locked) { // Solo se puede expandir si no está bloqueado
@@ -83,46 +146,53 @@ export const CursoEstudianteContenido = () => {
         }
     };
 
-    useEffect(() => {
-      axios.get('http://localhost:8080/api/logros')
-        .then(res => {
-            console.log("logros cargados: ",res.data);
-            setLogros(res.data)
-        })
-        .catch(() => setLogros([]));
-    }, []);
     // Función para marcar un recurso como revisado y verificar si el contenido está completo
     const checkResourceReviewed = async (idRecurso: number, idContenido: number, idEstudiante: number) => {
-        if (!logros.length) {
-          setTimeout(() => checkResourceReviewed(idRecurso, idContenido, idEstudiante), 100);
-          return;
+        try {
+            await axios.post(`http://localhost:8080/api/contenidos/recursos/${idEstudiante}/revisado`, {
+                idRecurso,
+                idContenido
+            });
+        } catch (error) {
+            // Si ya está revisado, puedes ignorar el error 409
         }
-        const newReviewed = { ...reviewed, [idRecurso]: true };
-        setReviewed(newReviewed);
+        const reviewedFlat: { [idRecurso: number]: boolean } = {};
+        const res = await axios.get(`http://localhost:8080/api/contenidos/estudiantes/${idEstudiante}/progreso/curso/${id}`);
+        Object.values(res.data.revisados || {}).forEach((arr: number[]) => {
+            arr.forEach(id => { reviewedFlat[id] = true; });
+        });
+        setReviewed(reviewedFlat);
+        setContentCompleted(
+            (res.data.completados || []).reduce((acc: any, id: number) => ({ ...acc, [id]: true }), {})
+        );
         const currentContentResources = resources.find(r => r.idContenido === idContenido)?.recursos || [];
-        const allResourcesInContentReviewed = currentContentResources.every(r => newReviewed[r.idRecurso]);
+        const allResourcesInContentReviewed = currentContentResources.every(r => reviewedFlat[r.idRecurso]);
+
         if (allResourcesInContentReviewed && !contentCompleted[idContenido]) {
-            setContentCompleted(prev => ({ ...prev, [idContenido]: true }));
-            console.log("Logros actuales:", logros);
-            const logro = logros.find(l=>l.contenido?.idContenido === idContenido);
-            console.log("Logro encontrado:", logro, "para contednido: " ,idContenido);
-            if (!logros.length) {
-                setTimeout(() => checkResourceReviewed(idRecurso, idContenido, idEstudiante), 100);
-                return;
+            try {
+                await axios.post(`http://localhost:8080/api/contenidos/${idEstudiante}/completado`, {
+                    idContenido,
+                    idRecurso: null // si tu backend lo requiere, si no, solo idContenido
+                });
+            } catch (error) {
+                // Si ya está completado, puedes ignorar el error 409
             }
+
+            setContentCompleted(prev => ({ ...prev, [idContenido]: true }));
+
+            const logro = logros.find(l => l.contenido?.idContenido === idContenido);
             if (logro && idEstudiante) {
-                setCurrentAchievementId(logro.idLogro)
+                setCurrentAchievementId(logro.idLogro);
+                setShowModal(true);
+                localStorage.setItem(`logroMostrado_${idContenido}`, "true");
                 axios.post(`http://localhost:8080/api/logros/${idEstudiante}/${logro.idLogro}`)
-                    .then(() => {
-                        setShowModal(true);
-                        localStorage.setItem('mostrarModalLogro', 'true');
-                    })
                     .catch(error => {
                         console.error("Error asignando logro:", error);
                     });
             }
         }
     };
+    //cargar contenidos y recursos
     useEffect(() => {
         axios.get<LessonList>(`http://localhost:8080/api/contenidos/curso/${id}`)
             .then(async (response) => {
@@ -138,40 +208,23 @@ export const CursoEstudianteContenido = () => {
                     }
                 });
                 setResources(resourcesData);
-                setIsDataLoaded(true); // Marca que los datos han sido cargados exitosamente
+                setIsDataLoaded(true);
             })
-            .catch((error) => {
-                console.error("Error cargando contenidos del curso:", error);
-                setIsDataLoaded(true); // También marca como cargado para evitar un estado de carga infinito en caso de error
-            });
+            .catch(() => setIsDataLoaded(true));
     }, [id]);
 
+    // Marcar recurso como revisado desde navegación
     useEffect(() => {
         if (isDataLoaded && location.state && location.state.revisado && location.state.idRecurso && location.state.idContenido) {
-            const { idRecurso, idContenido } = location.state;
-            const idEstudiante = Number(localStorage.getItem("idEstudiante")); 
-            // Asegúrate de que el contenido con sus recursos esté realmente disponible en el estado `resources`
+            const { idRecurso, idContenido } = location.state as { idRecurso: number, idContenido: number };
+            const idEstudiante = Number(localStorage.getItem("idEstudiante"));
             const foundContentResources = resources.find(r => r.idContenido === idContenido);
             if (idEstudiante && foundContentResources) {
-                // Solo llama a checkResourceReviewed si idEstudiante existe y los recursos del contenido han sido cargados
                 checkResourceReviewed(idRecurso, idContenido, idEstudiante);
-            } else if (!idEstudiante) {
-                console.warn("idEstudiante no encontrado en localStorage. No se pudo marcar el recurso como revisado.");
-            } else if (!foundContentResources) {
-                console.warn(`Contenido ${idContenido} no encontrado en los recursos cargados. Esto puede indicar un problema de carga o datos.`);
             }
-            // Limpia el estado de navegación después de procesarlo para evitar re-ejecuciones no deseadas
             navigate(location.pathname, { replace: true, state: {} });
         }
-    }, [isDataLoaded, location.state, navigate, resources]); // 'resources' es crucial como dependencia aquí
-
-    // useEffect para mostrar el modal de logro (si se ha activado desde otro componente)
-    useEffect(() => {
-      if (localStorage.getItem('mostrarModalLogro') === 'true') {
-          setShowModal(true);
-          localStorage.removeItem('mostrarModalLogro'); // Limpiar la bandera para que no se muestre de nuevo
-      }
-    }, []);
+    }, [isDataLoaded, location.state, navigate, resources]);
 
     return (
         <div
