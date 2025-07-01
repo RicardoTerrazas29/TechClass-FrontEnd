@@ -4,6 +4,7 @@ import { Bell, LogOut, UserRound } from "lucide-react";
 import { NotificationsDropdown } from "./NotificationsDropdown";
 import { useUser } from "../Providers/UserProvider";
 import MobileMenu from "./MobileMenu";
+import Tour from "@/navegador/Tour";
 
 export const Navbar = () => {
   const [showProfileMenu, setShowProfileMenu] = useState(false);
@@ -12,7 +13,6 @@ export const Navbar = () => {
   const { role, setRole } = useUser();
   const notificationRef = useRef<HTMLDivElement>(null);
   const profileRef = useRef<HTMLDivElement>(null);
-
   const cerrarSesion = () => {
     localStorage.clear();
     setRole(null);
@@ -63,9 +63,9 @@ export const Navbar = () => {
 
         <div className="w-10" />
       </div>
-
       {/* Desktop: íconos a la derecha */}
       <div className="hidden lg:flex flex-1 justify-end items-center gap-4 pr-2">
+        <Tour />
         {/* Notifications */}
         <div className="relative" ref={notificationRef}>
           <button
@@ -87,6 +87,7 @@ export const Navbar = () => {
         {/* Botón "¿Conoces a Nuti?" solo si es estudiante */}
         {role === "ESTUDIANTE" && (
           <Link
+            id="nuti"
             to="/estudiante/conoce-a-nuti"
             className="hidden lg:flex items-center gap-2 px-4 py-2 bg-pink-300 hover:bg-pink-400 text-white font-semibold rounded-full shadow-lg transition duration-300 hover:scale-105"
             title="¡Conoce a Nuti, la ardilla curiosa!"
@@ -96,7 +97,7 @@ export const Navbar = () => {
         )}
 
         {/* Profile */}
-        <div className="relative pr-4" ref={profileRef}>
+        <div id="perfil" className="relative pr-4" ref={profileRef}>
           <button
             onClick={() => setShowProfileMenu(!showProfileMenu)}
             className="flex items-center gap-3 hover:scale-110 transition-transform duration-200"

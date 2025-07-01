@@ -7,6 +7,7 @@ import {
   studentNavigation,
 } from "../const/profile";
 import { useUser } from "../Providers/UserProvider";
+import Tour from "@/navegador/Tour"
 
 const MenuBar = () => {
   // Lógica de rol:

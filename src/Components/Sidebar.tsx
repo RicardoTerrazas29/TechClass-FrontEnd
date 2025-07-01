@@ -193,6 +193,7 @@ export const Sidebar = ({ navigation }: SidebarProps) => {
 
   return (
     <div className="w-64 bg-gradient-to-br from-yellow-200 to-lime-200 h-full fixed left-0 top-0 shadow-xl font-[Comic_Neue] border-r-4 border-lime-300">
+      {/* Tour */}
       <div className="p-6">
         <div className="flex items-center gap-3 mb-4">
           <BookOpen className="h-9 w-9 text-green-500 animate-pulse" />
@@ -210,6 +211,7 @@ export const Sidebar = ({ navigation }: SidebarProps) => {
             const Icon = item.icon;
             return (
               <Link
+                id={item.name}
                 key={item.name}
                 to={item.path}
                 className={`flex items-center gap-4 px-4 py-2 rounded-lg text-lg font-semibold transition-all duration-300 transform bg-gradient-to-r from-green-400 to-yellow-500 text-white shadow-md text-decoration-none ${
@@ -226,7 +228,7 @@ export const Sidebar = ({ navigation }: SidebarProps) => {
         </nav>
       </div>
       {/* Nube de mensaje + Hongo */}
-      <div className="absolute bottom-3 px-4 text-center">
+      <div className="absolute bottom-6 px-4 text-center" id="hongo">
         {/* Nube */}
         <div className="relative inline-block bg-white text-green-800 font-bold text-base py-3 px-6 rounded-2xl shadow-lg border border-green-300 animate-fade-in">
           {/* Mostramos el mensaje del contenido actual */}

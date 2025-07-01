@@ -79,7 +79,7 @@ const PrincipalEst = () => {
           .animate-move-squirrel { animation: move-squirrel 20s linear infinite; }
         `}
       </style>
-
+      
       <BackgroundDecor />
         <div className="absolute top-0 left-0 w-full h-full z-20 pointer-events-none">
           <div className="absolute text-7xl animate-pulse left-5 top-10 opacity-30 text-yellow-500">⚙️</div>

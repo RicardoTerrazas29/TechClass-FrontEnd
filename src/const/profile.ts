@@ -33,6 +33,6 @@ export const professorNavigation = [
 
 export const studentNavigation = [
   { name: "Dashboard", icon: LayoutDashboard, path: "/estudiante/principal" },
-  { name: "Mis Cursos", icon: BookOpen, path: "/estudiante/cursos" },
-  { name:"Mis Logros", icon: Star, path: "/estudiante/logros"}
+  { name: "MisCursos", icon: BookOpen, path: "/estudiante/cursos" },
+  { name:"MisLogros", icon: Star, path: "/estudiante/logros"}
 ];
