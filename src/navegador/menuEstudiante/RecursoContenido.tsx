@@ -87,8 +87,6 @@ function RecursoContenido() {
                         className={`absolute inset-0 w-full h-full border-none rounded-[10px] ${isLoading ? 'hidden' : 'block'}`}
                         allowFullScreen
                         onLoad={handleIframeLoad}
-                        // Sandbox para mayor seguridad, permitiendo solo lo necesario
-                        sandbox="allow-scripts allow-same-origin allow-presentation" 
                     />
                 </div>
                 <p className='text-[#004d40] text-[1.2em] mt-auto pt-2 text-center font-medium'>¡Aprender es súper divertido! 📚</p>

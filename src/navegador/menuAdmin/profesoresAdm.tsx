@@ -88,8 +88,9 @@ const ProfesoresAdm: React.FC = () => {
   const validarCampos = (profesor: Omit<Profesor, "idProfesor">) => {
     const errores: { [key: string]: string } = {};
 
-    if (!/^[a-zA-Z\s]+$/.test(profesor.name)) {
-      errores.name = "El nombre solo debe contener letras y espacios.";
+    // Modificación aquí: Se añaden las letras con tilde (áéíóú) y la ñ, tanto en minúsculas como en mayúsculas.
+    if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(profesor.name)) {
+      errores.name = "El nombre solo debe contener letras, espacios y tildes.";
     }
 
     if (!/^\d{9}$/.test(profesor.phone)) {
@@ -376,33 +377,132 @@ const ProfesoresAdm: React.FC = () => {
           {profesores.map((profesor) => (
             <div key={profesor.idProfesor} className="card mb-3 shadow-sm">
               <div className="card-body">
-                <h5 className="card-title fw-bold">{profesor.name}</h5>
                 <p className="card-text mb-1">
                   <strong>ID:</strong> {profesor.idProfesor}
                 </p>
                 <p className="card-text mb-1">
-                  <strong>DNI:</strong> {profesor.phone}
+                  <strong>Nombre:</strong> {editando?.idProfesor === profesor.idProfesor ? (
+                      <input
+                        className="form-control"
+                        value={editando.name}
+                        onChange={(e) =>
+                          setEditando({ ...editando, name: e.target.value })
+                        }
+                      />
+                    ) : (
+                      profesor.name
+                    )}
+                    {erroresEditar.name &&
+                      editando?.idProfesor === profesor.idProfesor && (
+                        <div className="text-danger small">
+                          {erroresEditar.name}
+                        </div>
+                    )}
                 </p>
-
                 <p className="card-text mb-1">
-                  <strong>Correo:</strong> {profesor.mail}
+                  <strong>Teléfono:</strong> {editando?.idProfesor === profesor.idProfesor ? (
+                      <input
+                        className="form-control"
+                        value={editando.phone}
+                        onChange={(e) =>
+                          setEditando({ ...editando, phone: e.target.value })
+                        }
+                      />
+                    ) : (
+                      profesor.phone
+                    )}
+                    {erroresEditar.phone &&
+                      editando?.idProfesor === profesor.idProfesor && (
+                        <div className="text-danger small">
+                          {erroresEditar.phone}
+                        </div>
+                      )}
+                </p>
+                <p className="card-text mb-1">
+                  <strong>Correo:</strong> {editando?.idProfesor === profesor.idProfesor ? (
+                      <input
+                        className="form-control"
+                        value={editando.mail}
+                        onChange={(e) =>
+                          setEditando({ ...editando, mail: e.target.value })
+                        }
+                      />
+                    ) : (
+                      profesor.mail
+                    )}
+                    {erroresEditar.mail &&
+                      editando?.idProfesor === profesor.idProfesor && (
+                        <div className="text-danger small">
+                          {erroresEditar.mail}
+                        </div>
+                      )}
                 </p>
                 <p className="card-text mb-3">
-                  <strong>Clave:</strong> ••••••
+                  <strong>Clave:</strong>{editando?.idProfesor === profesor.idProfesor ? (
+                      <>
+                        <input
+                          type="password"
+                          className="form-control mb-1"
+                          value={editando.clave}
+                          onChange={(e) =>
+                            setEditando({ ...editando, clave: e.target.value })
+                          }
+                        />
+                        <small className="text-danger">
+                          ⚠️ Importante: también actualice la contraseña
+                        </small>
+                      </>
+                    ) : (
+                      <span>********</span>
+                    )}
+                    {erroresEditar.clave &&
+                      editando?.idProfesor === profesor.idProfesor && (
+                        <div className="text-danger small">
+                          {erroresEditar.clave}
+                        </div>
+                      )}
                 </p>
-                <div className="d-flex gap-2 flex-column">
-                  <button
-                    className="btn btn-warning btn-sm"
-                    onClick={() => setEditando(profesor)}
-                  >
-                    ✏️ Editar
-                  </button>
-                  <button
-                    className="btn btn-danger btn-sm"
-                    onClick={() => handleEliminar(profesor.idProfesor)}
-                  >
-                    🗑️ Eliminar
-                  </button>
+                <div className="d-flex gap-2 flex-col">
+                {editando?.idProfesor === profesor.idProfesor ? (
+                        <>
+                          <div className="d-grid w-100">
+                            <button
+                              className="btn btn-success btn-sm"
+                              onClick={handleActualizar}
+                            >
+                              💾 Guardar
+                            </button>
+                            <button
+                              className="btn btn-secondary btn-sm"
+                              onClick={() => {
+                                setEditando(null);
+                                setErroresEditar({});
+                              }}
+                            >
+                              ❌ Cancelar
+                            </button>
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <div className="d-grid w-100 ">
+                            <button
+                              className="btn btn-warning btn-sm"
+                              onClick={() => setEditando(profesor)}
+                            >
+                              ✏️ Editar
+                            </button>
+                            <button
+                              className="btn btn-danger btn-sm"
+                              onClick={() =>
+                                handleEliminar(profesor.idProfesor)
+                              }
+                            >
+                              🗑️ Eliminar
+                            </button>
+                          </div>
+                        </>
+                      )}
                 </div>
               </div>
             </div>

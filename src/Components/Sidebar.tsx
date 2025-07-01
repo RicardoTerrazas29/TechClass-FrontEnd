@@ -16,6 +16,22 @@ const motivationalContent = [
   { message: "🚀 ¡Sigue así, pequeño genio!", sound: "/sonidos/v5.mp3" },
 ];
 
+const motivationalContentProfesor = [
+  { message: "¡Hola, profes! 👋 ¿Listos para un día lleno de ✨magia educativa✨?", sound: "/sonidos/" },
+  { message: "Maestros, ¡su misión de hoy es sembrar 🧠sabiduría y cosechar 😊sonrisas!", sound: "/sonidos/" },
+  { message: "¡Qué bueno verlos! 🍎 Su pasión ilumina el camino de nuestros peques. ¡A brillar! 🌟", sound: "/sonidos/" },
+  { message: "¡Profes, son unos héroes! 🦸‍♂️ Cada lección es una nueva aventura. 🚀", sound: "/sonidos/" },
+  { message: "Recuerden: con paciencia y amor, ¡cada alumno es una florecita 🌷 que espera crecer!", sound: "/sonidos/" },
+]
+
+const motivationalContentAdmin = [
+  { message: "¡Hola, Admin! 🚀 La plataforma lista y funcionando. ¡Optimicemos el aprendizaje! 📊", sound: "/sonidos/" },
+  { message: "Un día más para asegurar que todo fluya. ¡Su gestión es clave! 🔑✨", sound: "/sonidos/" },
+  { message: "Administrador, ¡su visión mantiene este barco a flote! 🚢🛠️ ¡Gracias", sound: "/sonidos/" },
+  { message: "¡Bienvenido! Su toque experto garantiza que cada detalle funcione. ✅💻", sound: "/sonidos/" },
+  { message: "Recuerde: detrás de cada logro de un estudiante, ¡está su gran trabajo! 🏆📈", sound: "/sonidos/" },
+]
+
 const hongoGif = "/imagenes/hongo.gif";
 const MESSAGE_INTERVAL_MS = 5000; // Define el intervalo de tiempo en una constante
 
@@ -146,9 +162,19 @@ export const Sidebar = ({ navigation }: SidebarProps) => {
   };
 
   const handleHongoClick = () => {
-    // Al hacer clic, el mensaje visible y el audio encolado SIEMPRE serán el del currentContentIndex actual
-    const currentSound = motivationalContent[currentContentIndex].sound;
-    const currentMessage = motivationalContent[currentContentIndex].message;
+    // Al hacer clic, el mensaje visible y el audio encolado SIEMPRE serán el del currentContentIndex 
+    let  currentSound = "";
+    let  currentMessage = ""; 
+    if (role == "ESTUDIANTE") {
+      currentSound = motivationalContent[currentContentIndex].sound;
+      currentMessage = motivationalContent[currentContentIndex].message;
+    }else if (role == "PROFESOR") {
+      currentSound = motivationalContentProfesor[currentContentIndex].sound;
+      currentMessage = motivationalContentProfesor[currentContentIndex].message;
+    }else {
+      currentSound = motivationalContentAdmin[currentContentIndex].sound;
+      currentMessage = motivationalContentAdmin[currentContentIndex].message; 
+    }
 
     console.log(`[handleHongoClick] CLICKED: Encolando "${currentMessage}" (${currentSound}). Índice ANTES del clic: ${currentContentIndex}`);
     audioQueueRef.current.push(currentSound);
@@ -163,12 +189,10 @@ export const Sidebar = ({ navigation }: SidebarProps) => {
         console.log("[handleHongoClick] INFO: Audio ya en reproducción, el nuevo audio se añade a la cola.");
     }
     
-    // *** CAMBIO CLAVE AQUÍ: NO AVANZAR currentContentIndex inmediatamente ***
-    // El avance ahora se gestiona en onEnded/onError o por el temporizador.
   };
 
   return (
-    <div className="w-64 bg-gradient-to-br from-yellow-200 to-lime-200 h-screen fixed left-0 top-0 shadow-xl font-[Comic_Neue] border-r-4 border-lime-300">
+    <div className="w-64 bg-gradient-to-br from-yellow-200 to-lime-200 h-full fixed left-0 top-0 shadow-xl font-[Comic_Neue] border-r-4 border-lime-300">
       <div className="p-6">
         <div className="flex items-center gap-3 mb-4">
           <BookOpen className="h-9 w-9 text-green-500 animate-pulse" />
@@ -206,7 +230,11 @@ export const Sidebar = ({ navigation }: SidebarProps) => {
         {/* Nube */}
         <div className="relative inline-block bg-white text-green-800 font-bold text-base py-3 px-6 rounded-2xl shadow-lg border border-green-300 animate-fade-in">
           {/* Mostramos el mensaje del contenido actual */}
-          <span>{motivationalContent[currentContentIndex].message}</span>
+          <span>
+            {role == "ESTUDIANTE" ? motivationalContent[currentContentIndex].message :
+            role == "PROFESOR" ? motivationalContentProfesor[currentContentIndex].message : 
+            motivationalContentAdmin[currentContentIndex].message}
+          </span>
           {/* Triángulo de la nube */}
           <div className="absolute bottom-[-12px] left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-8 border-r-8 border-t-8 border-l-transparent border-r-transparent border-t-white"></div>
         </div>
@@ -214,7 +242,7 @@ export const Sidebar = ({ navigation }: SidebarProps) => {
         <img
           src={hongoGif}
           alt="Hongo motivador"
-          className="w-44 h-44 mx-auto mt-6 rounded-full shadow-md"
+          className="w-36 h-36 mx-auto mt-6 rounded-full shadow-md"
           onClick={handleHongoClick}
           style={{ cursor: "pointer" }}
         />

@@ -93,35 +93,12 @@ const PrincipalAdm = () => {
 
   return (
     // CAMBIO EN EL FONDO: Usaremos un fondo estático con un overlay para mejor legibilidad.
-    // Esto es más limpio que el <style> tag y el useEffect de opacidad.
     <div
       className="relative min-h-screen p-6 font-sans overflow-hidden bg-cover bg-center"
       style={{ backgroundImage: `url(${backgroundImageURL})` }} // Fondo aplicado directamente
     >
       {/* Superposición sutil para una mejor legibilidad del texto */}
       <div className="absolute inset-0 bg-black opacity-20 z-0"></div>
-
-      {/* ELIMINA ESTE BLOQUE <style> si ya no usas el useEffect de opacidad para el fondo */}
-      {/* <style>
-        {`
-          .principal-background-container::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: url(${backgroundImageURL});
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-position: center;
-            opacity: ${backgroundOpacity};
-            transition: opacity 10s ease;
-            z-index: -1;
-          }
-        `}
-      </style> */}
-
 
       {/* Emojis decorativos (mantén si te gusta, ajusta opacidades si es necesario) */}
       <div className="absolute top-0 left-0 w-full h-full z-0 pointer-events-none">
@@ -132,9 +109,8 @@ const PrincipalAdm = () => {
         <div className="absolute text-7xl animate-bounce-fast left-1/4 bottom-10 opacity-30 text-orange-900">🧑‍💼</div>
       </div>
 
-         {/* Emojis decorativos y ahora el águila */}
+      {/* Emojis decorativos y ahora el águila */}
       <div className="absolute top-0 left-0 w-full h-full z-10 pointer-events-none">
-
         {/* ¡Aquí va el águila! */}
         <img
           src="/imagenes/aguila2.1.gif" 
@@ -182,7 +158,6 @@ const PrincipalAdm = () => {
           )}
 
           {!loading && !error && (
-            // ************ ESTA ES LA SECCIÓN CLAVE PARA USAR StatCard ************
             // Ahora se usa statsConfig y se mapea directamente al componente StatCard.
             statsConfig.map((item, index) => (
               <StatCard
@@ -198,7 +173,6 @@ const PrincipalAdm = () => {
         </div>
 
         {/* Mensaje final */}
-        {/* CAMBIO: Color de texto ajustado para el overlay de fondo, y fuente */}
         <p className="text-center max-w-4xl mx-auto text-4xl md:text-5xl mt-12 font-extrabold leading-snug drop-shadow-md text-white">
           🎉 ¡Tu trabajo es esencial para mantener a todos felices y aprendiendo!<br />
           👏 ¡Sigue así, {nombreUsuario}! 💪

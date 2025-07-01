@@ -320,29 +320,114 @@ const AdministradorPage: React.FC = () => {
           {administradores.map((admin) => (
             <div key={admin.idAdministrador} className="card mb-3 shadow-sm">
               <div className="card-body">
-                <h5 className="card-title fw-bold">{admin.name}</h5>
                 <p className="card-text mb-1">
                   <strong>ID:</strong> {admin.idAdministrador}
                 </p>
                 <p className="card-text mb-1">
-                  <strong>Correo:</strong> {admin.mail}
+                  <strong>Nombre:</strong> {editando?.idAdministrador === admin.idAdministrador ? (
+                      <input
+                        className="form-control"
+                        value={editando.name}
+                        onChange={(e) =>
+                          setEditando({ ...editando, name: e.target.value })
+                        }
+                      />
+                    ) : (
+                      admin.name
+                    )}
+                    {erroresEditar.name &&
+                      editando?.idAdministrador === admin.idAdministrador && (
+                        <div className="text-danger small">
+                          {erroresEditar.name}
+                        </div>
+                      )}
+                </p>
+                <p className="card-text mb-1">
+                  <strong>Correo:</strong> {editando?.idAdministrador === admin.idAdministrador ? (
+                      <input
+                        className="form-control"
+                        value={editando.mail}
+                        onChange={(e) =>
+                          setEditando({ ...editando, mail: e.target.value })
+                        }
+                      />
+                    ) : (
+                      admin.mail
+                    )}
+                    {erroresEditar.mail &&
+                      editando?.idAdministrador === admin.idAdministrador && (
+                        <div className="text-danger small">
+                          {erroresEditar.mail}
+                        </div>
+                      )}
                 </p>
                 <p className="card-text mb-3">
-                  <strong>Clave:</strong> ••••••
+                  <strong>Clave:</strong> {editando?.idAdministrador === admin.idAdministrador ? (
+                      <>
+                        <input
+                          type="password"
+                          className="form-control"
+                          value={editando.clave}
+                          onChange={(e) =>
+                            setEditando({ ...editando, clave: e.target.value })
+                          }
+                        />
+                        <small className="text-danger">
+                          ⚠️ Actualice también la clave
+                        </small>
+                      </>
+                    ) : (
+                      "•••••••"
+                    )}
+                    {erroresEditar.clave &&
+                      editando?.idAdministrador === admin.idAdministrador && (
+                        <div className="text-danger small">
+                          {erroresEditar.clave}
+                        </div>
+                      )}
                 </p>
                 <div className="d-flex gap-2 flex-column">
-                  <button
-                    className="btn btn-warning btn-sm"
-                    onClick={() => setEditando(admin)}
-                  >
-                    ✏️ Editar
-                  </button>
-                  <button
-                    className="btn btn-danger btn-sm"
-                    onClick={() => handleEliminar(admin.idAdministrador)}
-                  >
-                    🗑️ Eliminar
-                  </button>
+                {editando?.idAdministrador === admin.idAdministrador ? (
+                        <>
+                          <div className="d-grid w-100">
+                            <button
+                              className="btn btn-success btn-sm"
+                              onClick={handleActualizar}
+                            >
+                              💾 Guardar
+                            </button>
+                          </div>
+                          <div className="d-grid w-100">
+                            <button
+                              className="btn btn-secondary btn-sm"
+                              onClick={() => setEditando(null)}
+                            >
+                              ❌ Cancelar
+                            </button>
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <div className="d-grid w-100">
+                            <button
+                              className="btn btn-warning btn-sm"
+                              onClick={() => setEditando(admin)}
+                            >
+                              ✏️ Editar
+                            </button>
+                          </div>
+                          <div className="d-grid w-100">
+                            <button
+                              className="btn btn-danger btn-sm"
+                              onClick={() =>
+                                handleEliminar(admin.idAdministrador)
+                              }
+                            >
+                              🗑️ Eliminar
+                            </button>
+                          </div>
+                        </>
+                      )}
                 </div>
               </div>
             </div>

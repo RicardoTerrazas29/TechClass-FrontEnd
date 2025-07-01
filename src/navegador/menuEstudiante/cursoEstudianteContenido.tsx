@@ -2,6 +2,7 @@ import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { CheckCircle, Lock, ArrowLeft, Circle, ChevronDown, ChevronUp, File } from "lucide-react";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import AchievementModal from "@/Components/AchievementModal";
 
 // Definiciones de tipos para mayor claridad
 type Lesson = {
@@ -36,7 +37,6 @@ export const CursoEstudianteContenido = () => {
     const { id } = useParams(); // ID del curso
     const navigate = useNavigate();
     const location = useLocation(); // Para acceder al estado de navegación
-
     // Estado para la lista de lecciones/contenidos del curso
     const [lessons, setLessons] = useState<Lesson[]>([]);
     // Estado para los recursos agrupados por contenido
@@ -47,6 +47,7 @@ export const CursoEstudianteContenido = () => {
     const [isDataLoaded, setIsDataLoaded] = useState(false);
     const [showModal, setShowModal] = useState(false) // Para el modal de logro
     const [logros,setLogros] = useState<any[]>([]);
+    const [currentAchievementId, setCurrentAchievementId] = useState<number|null>()
     // Estado para los recursos que el estudiante ha revisado (persiste en localStorage)
     const [reviewed, setReviewed] = useState<{[idRecurso: number]: boolean}>(() => {
         try {
@@ -84,28 +85,33 @@ export const CursoEstudianteContenido = () => {
 
     useEffect(() => {
       axios.get('http://localhost:8080/api/logros')
-        .then(res => setLogros(res.data))
+        .then(res => {
+            console.log("logros cargados: ",res.data);
+            setLogros(res.data)
+        })
         .catch(() => setLogros([]));
     }, []);
     // Función para marcar un recurso como revisado y verificar si el contenido está completo
     const checkResourceReviewed = async (idRecurso: number, idContenido: number, idEstudiante: number) => {
         if (!logros.length) {
-          // Espera a que los logros estén cargados antes de continuar
           setTimeout(() => checkResourceReviewed(idRecurso, idContenido, idEstudiante), 100);
           return;
         }
         const newReviewed = { ...reviewed, [idRecurso]: true };
         setReviewed(newReviewed);
-
-        // Verifica si todos los recursos del contenido están revisados
         const currentContentResources = resources.find(r => r.idContenido === idContenido)?.recursos || [];
         const allResourcesInContentReviewed = currentContentResources.every(r => newReviewed[r.idRecurso]);
-
         if (allResourcesInContentReviewed && !contentCompleted[idContenido]) {
             setContentCompleted(prev => ({ ...prev, [idContenido]: true }));
-            const logro = logros.find(l=>l.contenido && l.contenido.idContenido === idContenido);
-            if (!logros.length) return
+            console.log("Logros actuales:", logros);
+            const logro = logros.find(l=>l.contenido?.idContenido === idContenido);
+            console.log("Logro encontrado:", logro, "para contednido: " ,idContenido);
+            if (!logros.length) {
+                setTimeout(() => checkResourceReviewed(idRecurso, idContenido, idEstudiante), 100);
+                return;
+            }
             if (logro && idEstudiante) {
+                setCurrentAchievementId(logro.idLogro)
                 axios.post(`http://localhost:8080/api/logros/${idEstudiante}/${logro.idLogro}`)
                     .then(() => {
                         setShowModal(true);
@@ -117,13 +123,11 @@ export const CursoEstudianteContenido = () => {
             }
         }
     };
-    // useEffect para cargar los contenidos del curso al montar el componente o cambiar el ID del curso
     useEffect(() => {
         axios.get<LessonList>(`http://localhost:8080/api/contenidos/curso/${id}`)
             .then(async (response) => {
                 const lessonsData = response.data || { contenidos: [] };
                 setLessons(lessonsData.contenidos); 
-                
                 const resourcesData: ResourceList[] = [];
                 lessonsData.contenidos.forEach((lesson) => {
                     if (lesson.recursos && lesson.recursos.length > 0) {
@@ -148,7 +152,6 @@ export const CursoEstudianteContenido = () => {
             const idEstudiante = Number(localStorage.getItem("idEstudiante")); 
             // Asegúrate de que el contenido con sus recursos esté realmente disponible en el estado `resources`
             const foundContentResources = resources.find(r => r.idContenido === idContenido);
-
             if (idEstudiante && foundContentResources) {
                 // Solo llama a checkResourceReviewed si idEstudiante existe y los recursos del contenido han sido cargados
                 checkResourceReviewed(idRecurso, idContenido, idEstudiante);
@@ -176,113 +179,103 @@ export const CursoEstudianteContenido = () => {
             style={{backgroundImage:"url('https://img.freepik.com/free-photo/top-view-geometric-forms-with-copy-space_23-2148830233.jpg')",}}
         >
             <div className="p-6 max-w-4xl mx-auto bg-white bg-opacity-90 rounded-xl shadow-lg">
-                <button
-                    onClick={() => navigate('/estudiante/cursos')}
-                    className="mb-6 inline-flex items-center px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-300 ease-in-out shadow-md"
-                >
-                    <ArrowLeft className="h-4 w-4 mr-2" />
-                    Volver a cursos
-                </button>
+            <button
+                onClick={() => navigate('/estudiante/cursos')}
+                className="mb-6 inline-flex items-center px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-300 ease-in-out shadow-md"
+            >
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Volver a cursos
+            </button>
 
-                <h2 className="text-3xl font-bold mb-4 text-center text-indigo-700">
-                    📚 Contenido del Curso
-                </h2>
-                <p className="text-gray-700 mb-8 text-center">
-                    Explora las lecciones, completa actividades y gana experiencia.
-                </p>
+            <h2 className="text-3xl font-bold mb-4 text-center text-indigo-700">
+                📚 Contenido del Curso
+            </h2>
+            <p className="text-gray-700 mb-8 text-center">
+                Explora las lecciones, completa actividades y gana experiencia.
+            </p>
 
-                <div className="space-y-4">
-                    {lessons.map((lesson: Lesson) => {
-                        const isExpanded = expandedLesson === lesson.idContenido;
-                        const isLocked = lesson.locked;
-                        const isCompleted = contentCompleted[lesson.idContenido]; // Usar el estado persistente
+            <div className="space-y-4">
+                {lessons.map((lesson: Lesson) => {
+                const isExpanded = expandedLesson === lesson.idContenido;
+                const isLocked = lesson.locked;
+                const isCompleted = contentCompleted[lesson.idContenido];
 
-                        return (
-                            <div
-                                key={lesson.idContenido}
-                                className={`rounded-lg border shadow-md transition-all duration-300 ease-in-out ${
-                                    isLocked
-                                        ? "bg-gray-100 border-gray-300 opacity-60 cursor-not-allowed"
-                                        : "bg-white hover:shadow-lg cursor-pointer"
-                                }`}
-                            >
-                                <div 
-                                    className="flex items-center justify-between p-4 hover:bg-gray-50 rounded-t-lg" 
-                                    onClick={() => handleToggle(lesson.idContenido, lesson.locked)}
-                                >
-                                    <div className="flex items-center gap-3">
-                                        {isCompleted ? (
-                                            <CheckCircle className="h-5 w-5 text-green-500" />
-                                        ) : isLocked ? (
-                                            <Lock className="h-5 w-5 text-gray-400" />
-                                        ) : (
-                                            <Circle className="h-5 w-5 text-gray-300" />
-                                        )}
-                                        <div className="flex-1">
-                                            <h3 className="font-semibold text-lg text-gray-800">{lesson.titulo}</h3>
-                                            <p className="text-gray-600 text-sm">{lesson.descripcion}</p>
-                                        </div>
-                                    </div>
-                                    {!isLocked && (
-                                        <button className="text-sm text-gray-500 hover:text-gray-700" aria-label={isExpanded ? "Contraer" : "Expandir"}>
-                                            {isExpanded ? <ChevronUp/> : <ChevronDown/>}
-                                        </button>
-                                    )}
-                                </div>
-
-                                {/* Contenido de la lección - recursos */}
-                                {!isLocked && isExpanded && (
-                                    <div className="bg-blue-50 px-4 py-4 text-sm text-gray-700 space-y-3 border-t border-blue-200 rounded-b-lg">
-                                        {resources.map((resourceGroup) => {
-                                            if (resourceGroup.idContenido === lesson.idContenido) {
-                                                return resourceGroup.recursos.map((res) => {
-                                                    return(
-                                                        <div key={res.idRecurso} className="flex-col">
-                                                            <div 
-                                                                className="flex w-full text-left text-decoration-none hover:bg-blue-100 p-3 rounded-lg items-center gap-2 transition duration-200 ease-in-out"
-                                                                onClick={()=>navigate(`recurso/${res.idRecurso}`,{state:{url: res.url, nombre:res.nombre, idRecurso: res.idRecurso, idContenido: lesson.idContenido}})}
-                                                            >
-                                                                <div className="text-blue-600"><File className="h-5 w-5"/></div>
-                                                                <div className="flex-1 flex flex-col">
-                                                                    <span className="text-gray-600 text-xs">
-                                                                        Material . {res.tipoContenido || 'Desconocido'}
-                                                                    </span>
-                                                                    <p className="text-lg hover:underline text-blue-800 font-medium">Ver {res.nombre}</p>
-                                                                </div>
-                                                                <span className={`ml-auto px-3 py-1 rounded-full text-xs font-semibold ${reviewed[res.idRecurso] ? 'bg-green-200 text-green-800' : 'bg-gray-200 text-gray-600'}`}>
-                                                                    {reviewed[res.idRecurso] ? 'Revisado' : 'No revisado'}
-                                                                </span>
-                                                            </div>
-                                                        </div>
-                                                    );
-                                                });
-                                            }
-                                            return null; 
-                                        })}
-                                    </div>
-                                )}
-                            </div>
-                        );
-                    })}
-                </div>
-            </div>
-            {/* Modal de Logro (opcional, si quieres que se muestre aquí) */}
-            {showModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-                    <div className="bg-white p-6 rounded-lg shadow-xl text-center max-w-sm w-full">
-                        <h3 className="text-2xl font-bold text-green-600 mb-4">¡Logro Desbloqueado! 🎉</h3>
-                        <p className="text-gray-700 mb-6">¡Felicidades, has completado un contenido y ganado un logro!</p>
-                        <button
-                            onClick={() => {
-                              setShowModal(false);
-                              localStorage.removeItem('mostrarModalLogro');
-                            }}
-                            className="bg-green-500 text-white px-5 py-2 rounded-md hover:bg-green-600 transition"
-                        >
-                            ¡Genial!
+                return (
+                    <div
+                    key={lesson.idContenido}
+                    className={`rounded-lg border shadow-md transition-all duration-300 ease-in-out ${
+                        isLocked
+                        ? "bg-gray-100 border-gray-300 opacity-60 cursor-not-allowed"
+                        : "bg-white hover:shadow-lg cursor-pointer"
+                    }`}
+                    >
+                    <div 
+                        className="flex items-center justify-between p-4 hover:bg-gray-50 rounded-t-lg" 
+                        onClick={() => handleToggle(lesson.idContenido, lesson.locked)}
+                    >
+                        <div className="flex items-center gap-3">
+                        {isCompleted ? (
+                            <CheckCircle className="h-5 w-5 text-green-500" />
+                        ) : isLocked ? (
+                            <Lock className="h-5 w-5 text-gray-400" />
+                        ) : (
+                            <Circle className="h-5 w-5 text-gray-300" />
+                        )}
+                        <div className="flex-1">
+                            <h3 className="font-semibold text-lg text-gray-800">{lesson.titulo}</h3>
+                            <p className="text-gray-600 text-sm">{lesson.descripcion}</p>
+                        </div>
+                        </div>
+                        {!isLocked && (
+                        <button className="text-sm text-gray-500 hover:text-gray-700" aria-label={isExpanded ? "Contraer" : "Expandir"}>
+                            {isExpanded ? <ChevronUp/> : <ChevronDown/>}
                         </button>
+                        )}
                     </div>
-                </div>
+
+                    {/* Contenido de la lección - recursos */}
+                    {!isLocked && isExpanded && (
+                        <div className="bg-blue-50 px-4 py-4 text-sm text-gray-700 space-y-3 border-t border-blue-200 rounded-b-lg">
+                        {resources.map((resourceGroup) => {
+                            if (resourceGroup.idContenido === lesson.idContenido) {
+                            return resourceGroup.recursos.map((res) => {
+                                return(
+                                <div key={res.idRecurso} className="flex-col">
+                                    <div 
+                                    className="flex w-full text-left text-decoration-none hover:bg-blue-100 p-3 rounded-lg items-center gap-2 transition duration-200 ease-in-out"
+                                    onClick={()=>navigate(`recurso/${res.idRecurso}`,{state:{url: res.url, nombre:res.nombre, idRecurso: res.idRecurso, idContenido: lesson.idContenido}})}
+                                    >
+                                    <div className="text-blue-600"><File className="h-5 w-5"/></div>
+                                    <div className="flex-1 flex flex-col">
+                                        <span className="text-gray-600 text-xs">
+                                        Material . {res.tipoContenido || 'Desconocido'}
+                                        </span>
+                                        <p className="text-lg hover:underline text-blue-800 font-medium">Ver {res.nombre}</p>
+                                    </div>
+                                    <span className={`ml-auto px-3 py-1 rounded-full text-xs font-semibold ${reviewed[res.idRecurso] ? 'bg-green-200 text-green-800' : 'bg-gray-200 text-gray-600'}`}>
+                                        {reviewed[res.idRecurso] ? 'Revisado' : 'No revisado'}
+                                    </span>
+                                    </div>
+                                </div>
+                                );
+                            });
+                            }
+                            return null; 
+                        })}
+                        </div>
+                    )}
+                    </div>
+                );
+                })}
+            </div>
+            </div>
+            {/* Modal de Logro */}
+            {showModal && currentAchievementId &&(
+            <AchievementModal
+                isOpen={true}
+                onClose={() => setShowModal(false)}
+                idLogro={currentAchievementId ?? 0}
+            />
             )}
         </div>
     );

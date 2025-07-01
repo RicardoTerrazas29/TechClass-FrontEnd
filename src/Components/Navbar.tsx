@@ -54,6 +54,7 @@ export const Navbar = () => {
         <div className="flex-1 text-center">
           <Link
             to={`/${role?.toLowerCase()}/principal`}
+            style={{textDecoration:"none"}}
             className="text-2xl font-extrabold text-green-700 tracking-wide hover:text-green-500 transition duration-300"
           >
             AprendeGenial

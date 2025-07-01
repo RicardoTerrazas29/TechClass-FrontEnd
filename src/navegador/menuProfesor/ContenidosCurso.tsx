@@ -38,6 +38,9 @@ const ContenidosCurso: React.FC = () => {
     tipoContenido: "",
   })
   const [recursosVisibles, setRecursosVisibles] = useState<number|null>(null);
+  //validacion de campos
+  const [erroresContenido, setErroresContenido] = useState<{[key: string]: string}>({});
+  const [erroresRecurso, setErroresRecurso] = useState<{[key: string]: string}>({});
 
   const toggleRecursos = (idContenido: number) => {
     setRecursosVisibles(recursosVisibles === idContenido ? null : idContenido);
@@ -52,9 +55,19 @@ const ContenidosCurso: React.FC = () => {
   const handleResource =(e:React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const {name, value} = e.target;
     setNuevoRecurso({...nuevoRecurso, [name]: value});
+    setErroresRecurso(prev => ({ ...prev, [name]: "" }));
   }
 
   const guardarRecurso = (idContenido: number) => {
+    const errores: {[key: string]: string} = {};
+    if (!nuevoRecurso.nombre) errores.nombre = "El nombre es obligatorio.";
+    if (!nuevoRecurso.url) errores.url = "La URL es obligatoria.";
+    if (!nuevoRecurso.tipoContenido) errores.tipoContenido = "Selecciona un tipo de recurso.";
+
+    setErroresRecurso(errores);
+
+    if (Object.keys(errores).length > 0) return;
+
     if (nuevoRecurso.idRecurso) {
     // Editar recurso existente
     axios
@@ -124,12 +137,21 @@ const ContenidosCurso: React.FC = () => {
   ) => {
     const { name, value } = e.target;
     setNuevoContenido({ ...nuevoContenido, [name]: value });
+    setErroresContenido(prev => ({ ...prev, [name]: "" }));
   };
 
   const guardarContenido = () => {
     if (!idCurso) return; // Asegurarse de tener un idCurso
-    const contenidoDTO = { ...nuevoContenido, idCurso: Number(idCurso) }; // Asegurarse de que idCurso sea un número
+    const errores: {[key: string]: string} = {};
+    if (!nuevoContenido.titulo) errores.titulo = "El título es obligatorio.";
+    if (!nuevoContenido.tipoContenido) errores.tipoContenido = "Selecciona un tipo de contenido.";
+    if (!nuevoContenido.descripcion) errores.descripcion = "La descripción es obligatoria.";
 
+    setErroresContenido(errores);
+
+    if (Object.keys(errores).length > 0) return;
+
+    const contenidoDTO = { ...nuevoContenido, idCurso: Number(idCurso) }; // Asegurarse de que idCurso sea un número
     const endpoint = editandoContenido
       ? `http://localhost:8080/api/contenidos/${editandoContenido.idContenido}`
       : "http://localhost:8080/api/contenidos";
@@ -210,6 +232,7 @@ const ContenidosCurso: React.FC = () => {
             value={nuevoContenido.titulo || ""}
             onChange={manejarCambioContenido}
           />
+          {erroresContenido.titulo && <span className="text-red-500 text-sm">{erroresContenido.titulo}</span>}
         </div>
         <div className="col-12 col-md-6">
           <select
@@ -224,6 +247,7 @@ const ContenidosCurso: React.FC = () => {
             <option value="Evaluación">📝 Evaluación</option>
             <option value="Foro">💬 Foro</option>
           </select>
+          {erroresContenido.tipoContenido && <span className="text-red-500 text-sm">{erroresContenido.tipoContenido}</span>}
         </div>
         <div className="col-12">
           <textarea
@@ -235,6 +259,7 @@ const ContenidosCurso: React.FC = () => {
             value={nuevoContenido.descripcion || ""}
             onChange={manejarCambioContenido}
           ></textarea>
+          {erroresContenido.descripcion && <span className="text-red-500 text-sm">{erroresContenido.descripcion}</span>}
         </div>
         <div className="col-12 d-flex flex-column flex-sm-row gap-2">
           <button
@@ -285,7 +310,7 @@ const ContenidosCurso: React.FC = () => {
             }}
           >
             <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2">
-              <div className="flex-grow-1">
+              <div className="flex-grow-1 max-w-[900px]">
                 <h5 style={{ color: "#f77f00", fontWeight: "bold" }}>
                   {contenido.titulo}
                 </h5>
@@ -437,6 +462,7 @@ const ContenidosCurso: React.FC = () => {
                     onChange={handleResource}
                     required
                   />
+                  {erroresRecurso.nombre && <span className="text-red-500 text-sm">{erroresRecurso.nombre}</span>}
                 </div>
                 <div className="mb-2">
                   <input
@@ -449,6 +475,7 @@ const ContenidosCurso: React.FC = () => {
                     onChange={handleResource}
                     required
                   />
+                  {erroresRecurso.url && <span className="text-red-500 text-sm">{erroresRecurso.url}</span>}
                 </div>
                 <div className="mb-2">
                   <select
@@ -467,6 +494,7 @@ const ContenidosCurso: React.FC = () => {
                     </option>
                     <option value="Quiz">❓ Quiz</option>
                   </select>
+                  {erroresRecurso.tipoContenido && <span className="text-red-500 text-sm">{erroresRecurso.tipoContenido}</span>}
                 </div>
                 <div className="d-flex flex-column flex-sm-row gap-2">
                   <button

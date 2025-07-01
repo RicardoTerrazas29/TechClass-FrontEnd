@@ -54,12 +54,12 @@ const SubjectCard = ({ title, grade, icon: Icon, color }: SubjectCardProps) => {
         <div
             className={`p-5 rounded-2xl text-white shadow-2xl border-2 border-white/30 transition-all duration-300 transform hover:scale-105 hover:shadow-[0_0_25px_rgba(255,255,255,0.3)] hover:border-yellow-400 animate-fade-in ${color}`}
         >
-            <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-3 group">
+            <div className="flex items-center justify-center mb-4">
+                <div className="flex items-end gap-2 group">
                     <Icon className="w-6 h-6 group-hover:animate-spin-slow" />
-                    <h3 className="text-lg font-bold">{title}</h3>
+                    <h3 className="text-lg font-bold mb-0" style={{fontSize:"24px"}}>{title}</h3>
+                    <span className="text-lg font-extrabold">{grade}%</span>
                 </div>
-                <span className="text-lg font-extrabold">{grade}%</span>
             </div>
             <div className="w-full bg-white/30 rounded-full h-2">
                 <div
@@ -169,21 +169,19 @@ const PrincipalPro = () => {
                 `}
             </style>
             <div className="absolute top-0 left-0 w-full h-full z-20 pointer-events-none">
-                    {/* ¡Aquí va el águila! */}
-                    <img
+                {/* ¡Aquí va el águila! */}
+                <img
                     src="/imagenes/aguila2.1.gif" 
                     alt="Águila volando"
                     className="animate-move-eagle"
-                    />
-
-                    {/* Opcional: Otra águila volando en dirección contraria */}
-                    <img
+                />
+                {/* Opcional: Otra águila volando en dirección contraria */}
+                <img
                     src="/imagenes/aguila2.1.gif" // 
                     alt="Águila volando inversa"
                     className="animate-move-eagle reverse" // Aplica la clase 'reverse' para la animación inversa
-                    />
-
-                </div>
+                />
+            </div>
             <div className="relative z-10 text-center text-Green-700">
                 <h1 className="text-3xl md:text-4xl font-bold py-4">
                     ¡Bienvenido Profesor, {nombreUsuario}!
@@ -194,7 +192,7 @@ const PrincipalPro = () => {
             </div>
 
             <div className="relative z-10 p-6">
-                <h2 className="text-2xl font-bold mb-6 text-Green-700 text-center">
+                <h2 className="text-2xl font-bold mb-6 text-center">
                     Aprendizaje de mis estudiantes
                 </h2>
 
