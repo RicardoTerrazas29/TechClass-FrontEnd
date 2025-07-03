@@ -17,23 +17,23 @@ const motivationalContent = [
 ];
 
 const motivationalContentProfesor = [
-  { message: "¡Hola, profes! 👋 ¿Listos para un día lleno de ✨magia educativa✨?", sound: "/sonidos/" },
-  { message: "Maestros, ¡su misión de hoy es sembrar 🧠sabiduría y cosechar 😊sonrisas!", sound: "/sonidos/" },
-  { message: "¡Qué bueno verlos! 🍎 Su pasión ilumina el camino de nuestros peques. ¡A brillar! 🌟", sound: "/sonidos/" },
-  { message: "¡Profes, son unos héroes! 🦸‍♂️ Cada lección es una nueva aventura. 🚀", sound: "/sonidos/" },
-  { message: "Recuerden: con paciencia y amor, ¡cada alumno es una florecita 🌷 que espera crecer!", sound: "/sonidos/" },
-]
+  { message: "¡Hola, profes! 👋 ¿Listos para un día lleno de ✨magia educativa✨?", sound: "/sonidos/v2.1.mp3" },
+  { message: "Maestros, ¡su misión de hoy es sembrar 🧠sabiduría y cosechar 😊sonrisas!", sound: "/sonidos/v2.2.mp3" },
+  { message: "¡Qué bueno verlos! 🍎 Su pasión ilumina el camino de nuestros peques. ¡A brillar! 🌟", sound: "/sonidos/v2.3.mp3" },
+  { message: "¡Profes, son unos héroes! 🦸‍♂️ Cada lección es una nueva aventura. 🚀", sound: "/sonidos/v2.4.mp3" },
+  { message: "Recuerden: con paciencia y amor, ¡cada alumno es una florecita 🌷 que espera crecer!", sound: "/sonidos/v2.5.mp3" },
+];
 
 const motivationalContentAdmin = [
-  { message: "¡Hola, Admin! 🚀 La plataforma lista y funcionando. ¡Optimicemos el aprendizaje! 📊", sound: "/sonidos/" },
-  { message: "Un día más para asegurar que todo fluya. ¡Su gestión es clave! 🔑✨", sound: "/sonidos/" },
-  { message: "Administrador, ¡su visión mantiene este barco a flote! 🚢🛠️ ¡Gracias", sound: "/sonidos/" },
-  { message: "¡Bienvenido! Su toque experto garantiza que cada detalle funcione. ✅💻", sound: "/sonidos/" },
-  { message: "Recuerde: detrás de cada logro de un estudiante, ¡está su gran trabajo! 🏆📈", sound: "/sonidos/" },
-]
+  { message: "¡Hola, Admin! 🚀 La plataforma lista y funcionando. ¡Optimicemos el aprendizaje! 📊", sound: "/sonidos/v3.1.mp3" },
+  { message: "Un día más para asegurar que todo fluya. ¡Su gestión es clave! 🔑✨", sound: "/sonidos/v3.2.mp3" },
+  { message: "Administrador, ¡su visión mantiene este barco a flote! 🚢🛠️ ¡Gracias", sound: "/sonidos/v3.3.mp3" },
+  { message: "¡Bienvenido! Su toque experto garantiza que cada detalle funcione. ✅💻", sound: "/sonidos/v3.4.mp3" },
+  { message: "Recuerde: detrás de cada logro de un estudiante, ¡está su gran trabajo! 🏆📈", sound: "/sonidos/v3.5.mp3" },
+];
 
 const hongoGif = "/imagenes/hongo.gif";
-const MESSAGE_INTERVAL_MS = 5000; // Define el intervalo de tiempo en una constante
+const MESSAGE_INTERVAL_MS = 5000;
 
 export const Sidebar = ({ navigation }: SidebarProps) => {
   const location = useLocation();
@@ -46,51 +46,55 @@ export const Sidebar = ({ navigation }: SidebarProps) => {
 
   const intervalIdRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Función para avanzar al siguiente mensaje/audio.
-  // Será llamada por el temporizador y por la función de finalización de audio.
-  const advanceContentIndex = useCallback(() => {
-    setCurrentContentIndex((prevIndex) => (prevIndex + 1) % motivationalContent.length);
-  }, []);
+  const getCurrentMotivationalContent = useCallback(() => {
+    if (role === "ESTUDIANTE") {
+      return motivationalContent;
+    } else if (role === "PROFESOR") {
+      return motivationalContentProfesor;
+    } else if (role === "ADMIN") {
+      return motivationalContentAdmin;
+    }
+    return motivationalContent;
+  }, [role]);
 
-  // Función para reiniciar el temporizador de los mensajes
-  const resetMessageTimer = useCallback(() => {
+  const advanceContentIndex = useCallback(() => {
+    const contentArray = getCurrentMotivationalContent();
+    setCurrentContentIndex((prevIndex) => (prevIndex + 1) % contentArray.length);
+  }, [getCurrentMotivationalContent]);
+
+  const stopMessageTimer = useCallback(() => {
     if (intervalIdRef.current) {
       clearInterval(intervalIdRef.current);
+      intervalIdRef.current = null;
     }
+  }, []);
+
+  const resetMessageTimer = useCallback(() => {
+    stopMessageTimer();
     intervalIdRef.current = setInterval(() => {
-      advanceContentIndex(); // Llama a la función para avanzar el índice
+      advanceContentIndex();
     }, MESSAGE_INTERVAL_MS);
-  }, [advanceContentIndex]); // Dependencia advanceContentIndex
-
-  // useEffect para el cambio automático de mensajes
-  useEffect(() => {
-    resetMessageTimer(); // Inicia el temporizador al montar
-    return () => {
-      // Limpia el temporizador al desmontar el componente
-      if (intervalIdRef.current) {
-        clearInterval(intervalIdRef.current);
-      }
-    };
-  }, [resetMessageTimer]);
+  }, [advanceContentIndex, stopMessageTimer]);
 
 
-  const playNextAudioInQueue = async () => {
+  const playNextAudioInQueue = useCallback(async () => {
     console.log(`[playNextAudioInQueue] START: isPlayingRef: ${isPlayingRef.current}, Cola Length: ${audioQueueRef.current.length}`);
 
     if (isPlayingRef.current) {
-        console.log("[playNextAudioInQueue] INFO: Ya hay un audio en reproducción. Esperando a que termine.");
-        return;
+      console.log("[playNextAudioInQueue] INFO: Ya hay un audio en reproducción. Esperando a que termine.");
+      return;
     }
-    
+
     if (audioQueueRef.current.length === 0) {
-        console.log("[playNextAudioInQueue] INFO: Cola de audios vacía. No hay nada que reproducir.");
-        isPlayingRef.current = false;
-        currentAudioInstanceRef.current = null;
-        return;
+      console.log("[playNextAudioInQueue] INFO: Cola de audios vacía. No hay nada que reproducir.");
+      isPlayingRef.current = false;
+      currentAudioInstanceRef.current = null;
+      resetMessageTimer();
+      return;
     }
 
     isPlayingRef.current = true;
-    const nextSoundUrl = audioQueueRef.current.shift(); // Saca el audio de la cola
+    const nextSoundUrl = audioQueueRef.current.shift();
 
     if (!nextSoundUrl) {
       console.warn("[playNextAudioInQueue] WARN: nextSoundUrl es nulo inesperadamente después de shift(). Reintentando cola.");
@@ -100,44 +104,47 @@ export const Sidebar = ({ navigation }: SidebarProps) => {
     }
 
     console.log(`[playNextAudioInQueue] ATTEMPTING: Reproducir ${nextSoundUrl}. Quedan en cola: ${audioQueueRef.current.length}`);
-    
+
     if (currentAudioInstanceRef.current) {
-        console.log(`[playNextAudioInQueue] INFO: Deteniendo audio anterior (${currentAudioInstanceRef.current.src}) antes de empezar ${nextSoundUrl}.`);
-        currentAudioInstanceRef.current.pause();
-        currentAudioInstanceRef.current.currentTime = 0;
-        currentAudioInstanceRef.current = null;
+      console.log(`[playNextAudioInQueue] INFO: Deteniendo audio anterior (${currentAudioInstanceRef.current.src}) antes de empezar ${nextSoundUrl}.`);
+      currentAudioInstanceRef.current.pause();
+      currentAudioInstanceRef.current.currentTime = 0;
+      currentAudioInstanceRef.current = null;
     }
+
+    stopMessageTimer();
 
     const audio = new Audio(nextSoundUrl);
     currentAudioInstanceRef.current = audio;
 
     const onEnded = () => {
-        console.log(`[playNextAudioInQueue] ENDED: Audio ${nextSoundUrl} TERMINADO. Quedan en cola: ${audioQueueRef.current.length}`);
-        audio.removeEventListener('ended', onEnded);
-        audio.removeEventListener('error', onError);
-        isPlayingRef.current = false;
-        currentAudioInstanceRef.current = null;
-        
-        // *** CAMBIO CLAVE AQUÍ: Avanza el índice solo cuando el audio ha terminado ***
-        advanceContentIndex(); 
-        // Y reinicia el temporizador para que el siguiente ciclo comience desde este nuevo índice
-        resetMessageTimer();
+      console.log(`[playNextAudioInQueue] ENDED: Audio ${nextSoundUrl} TERMINADO. Quedan en cola: ${audioQueueRef.current.length}`);
+      audio.removeEventListener('ended', onEnded);
+      audio.removeEventListener('error', onError);
+      isPlayingRef.current = false;
+      currentAudioInstanceRef.current = null;
 
-        playNextAudioInQueue(); // Intenta reproducir el siguiente de la cola
+      if (audioQueueRef.current.length === 0) {
+        advanceContentIndex();
+      }
+      resetMessageTimer();
+
+      playNextAudioInQueue();
     };
 
     const onError = (e: Event) => {
-        console.error(`[playNextAudioInQueue] ERROR: Error al reproducir ${nextSoundUrl}:`, e);
-        audio.removeEventListener('ended', onEnded);
-        audio.removeEventListener('error', onError);
-        isPlayingRef.current = false;
-        currentAudioInstanceRef.current = null;
-        
-        // Si hay un error, también avanzamos el índice para no quedarnos atascados
-        advanceContentIndex();
-        resetMessageTimer();
+      console.error(`[playNextAudioInQueue] ERROR: Error al reproducir ${nextSoundUrl}:`, e);
+      audio.removeEventListener('ended', onEnded);
+      audio.removeEventListener('error', onError);
+      isPlayingRef.current = false;
+      currentAudioInstanceRef.current = null;
 
-        playNextAudioInQueue(); // Intenta el siguiente a pesar del error
+      if (audioQueueRef.current.length === 0) {
+        advanceContentIndex();
+      }
+      resetMessageTimer();
+
+      playNextAudioInQueue();
     };
 
     audio.addEventListener('ended', onEnded);
@@ -152,35 +159,27 @@ export const Sidebar = ({ navigation }: SidebarProps) => {
       audio.removeEventListener('error', onError);
       isPlayingRef.current = false;
       currentAudioInstanceRef.current = null;
-      
-      // Si play() falla inmediatamente, avanza el índice y reinicia el timer
-      advanceContentIndex();
+
+      if (audioQueueRef.current.length === 0) {
+        advanceContentIndex();
+      }
       resetMessageTimer();
 
       playNextAudioInQueue();
     }
-  };
+  }, [advanceContentIndex, resetMessageTimer, stopMessageTimer]);
 
-  const handleHongoClick = () => {
-    // Al hacer clic, el mensaje visible y el audio encolado SIEMPRE serán el del currentContentIndex 
-    let  currentSound = "";
-    let  currentMessage = ""; 
-    if (role == "ESTUDIANTE") {
-      currentSound = motivationalContent[currentContentIndex].sound;
-      currentMessage = motivationalContent[currentContentIndex].message;
-    }else if (role == "PROFESOR") {
-      currentSound = motivationalContentProfesor[currentContentIndex].sound;
-      currentMessage = motivationalContentProfesor[currentContentIndex].message;
-    }else {
-      currentSound = motivationalContentAdmin[currentContentIndex].sound;
-      currentMessage = motivationalContentAdmin[currentContentIndex].message; 
-    }
+  const handleHongoClick = useCallback(() => {
+    const contentArray = getCurrentMotivationalContent();
+    const currentItem = contentArray[currentContentIndex];
+
+    let currentSound = currentItem.sound;
+    let currentMessage = currentItem.message;
 
     console.log(`[handleHongoClick] CLICKED: Encolando "${currentMessage}" (${currentSound}). Índice ANTES del clic: ${currentContentIndex}`);
     audioQueueRef.current.push(currentSound);
-    
-    // Al hacer clic, siempre reiniciamos el temporizador para darle prioridad al clic
-    resetMessageTimer();
+
+    stopMessageTimer();
 
     if (!isPlayingRef.current) {
         console.log("[handleHongoClick] INFO: No hay audio sonando, iniciando playNextAudioInQueue.");
@@ -188,8 +187,32 @@ export const Sidebar = ({ navigation }: SidebarProps) => {
     } else {
         console.log("[handleHongoClick] INFO: Audio ya en reproducción, el nuevo audio se añade a la cola.");
     }
-    
-  };
+  }, [currentContentIndex, getCurrentMotivationalContent, playNextAudioInQueue, stopMessageTimer]);
+
+
+  // --- useEffect principal para inicialización y reinicio del temporizador ---
+  useEffect(() => {
+    setCurrentContentIndex(0); // Reinicia el índice al cambiar de rol
+    resetMessageTimer(); // Siempre inicia el temporizador automático de mensajes
+
+    // ELIMINAMOS la lógica de reproducción automática del primer audio aquí.
+    // Ahora, solo el click en el hongo lo activará.
+
+    return () => {
+      stopMessageTimer(); // Limpia el temporizador al desmontar el componente
+      // Asegurarse de que cualquier audio en curso se detenga al cambiar de rol o desmontar
+      if (currentAudioInstanceRef.current) {
+        currentAudioInstanceRef.current.pause();
+        currentAudioInstanceRef.current.currentTime = 0;
+        currentAudioInstanceRef.current = null;
+        isPlayingRef.current = false;
+      }
+      audioQueueRef.current = []; // Limpiar la cola de audios
+    };
+  }, [role, resetMessageTimer, stopMessageTimer]); // playNextAudioInQueue y getCurrentMotivationalContent ya no son dependencias aquí
+
+
+  const displayedContent = getCurrentMotivationalContent();
 
   return (
     <div className="w-64 bg-gradient-to-br from-yellow-200 to-lime-200 h-full fixed left-0 top-0 shadow-xl font-[Comic_Neue] border-r-4 border-lime-300">
@@ -233,9 +256,7 @@ export const Sidebar = ({ navigation }: SidebarProps) => {
         <div className="relative inline-block bg-white text-green-800 font-bold text-base py-3 px-6 rounded-2xl shadow-lg border border-green-300 animate-fade-in">
           {/* Mostramos el mensaje del contenido actual */}
           <span>
-            {role == "ESTUDIANTE" ? motivationalContent[currentContentIndex].message :
-            role == "PROFESOR" ? motivationalContentProfesor[currentContentIndex].message : 
-            motivationalContentAdmin[currentContentIndex].message}
+            {displayedContent[currentContentIndex]?.message}
           </span>
           {/* Triángulo de la nube */}
           <div className="absolute bottom-[-12px] left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-8 border-r-8 border-t-8 border-l-transparent border-r-transparent border-t-white"></div>
