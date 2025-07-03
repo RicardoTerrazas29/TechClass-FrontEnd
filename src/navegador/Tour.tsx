@@ -24,6 +24,48 @@ const steps = [
         placement:"right-start"
     },
     {
+      target: "#Admins",
+      content: "Aqui puedes gestionar tus usuarios con rol de administradores.",
+      title: 'Administradores',
+      placement:"right-start"
+    },
+    {
+      target: "#Teachers",
+      content: "Aqui puedes gestionar los profesores que tendrán acceso a la plataforma educativa.",
+      title: 'Mis estudiantes',
+      placement:"right-start"
+    },
+    {
+      target: "#Students",
+      content: "Aqui puedes gestionar tus estudiantes.",
+      title: 'Mis estudiantes',
+      placement:"right-start"
+    },
+    {
+      target: "#Courses",
+      content: "Aqui puedes gestionar los cursos que brindarás a tus estudiantes.",
+      title: 'Gestión de cursos',
+      placement:"right-start"
+    },
+    {
+      target: "#Asignaciones",
+      content: "Aqui puedes asignar los cursos que tomarán tus estudiantes.",
+      title: 'Gestor de asignación de cursos',
+      placement:"right-start"
+    },
+    {
+      target: "#Monitor",
+      content: "Aqui puedes asignar ver los indicadores respecto al avance de tus estuiantes.",
+      title: 'Monitoreo de estudiantes',
+      placement:"right-start"
+    },
+    {
+      target: "#Logros",
+      content: "Aqui puedes crear logros para el contenido de tus cursos y mantener a tus estudiantes motivados.",
+      title: 'Creador de logros',
+      placement:"right-start"
+    },
+    {
         target: "#MisCursos",
         content: "Aquí puedes ver tus cursos y los contenidos.",
         title: "Mis Cursos",
@@ -38,18 +80,17 @@ const steps = [
     {
         target: "#hongo",
         title: "Motívate con Toad",
-        content: "Interactua con Toad para sentirte motivado. Hazle click para ver y escuchar el mensaje.",
+        content: "Interactua con Toad para sentirte motivado. Hazle click para ver y escuchar el mensaje."
     },
     {
         target: "#nuti",
         content: (
-            <div>
+          <div>
             <h3>Juega con Nuti</h3>
             <img className="max-w-32 mx-auto" src="/public/imagenes/ardilla.png" alt="" />
             <p>Conoce a Nuti y diviértete con ella.</p>
           </div>
-          )
-        
+        )   
     },
     {
         target: "#perfil",
@@ -86,7 +127,7 @@ function Tour() {
                 back: "Atrás",
                 close: "Cerrar",
                 last: "Finalizar",
-                nextLabelWithProgress: 'Siguiente (Paso {step} de {steps})',
+                nextLabelWithProgress: 'Siguiente',
                 skip: "Saltar"
             }}
             styles={{

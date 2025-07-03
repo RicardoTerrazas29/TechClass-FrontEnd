@@ -324,11 +324,11 @@ export const CursoEstudianteContenido = () => {
             </div>
             {/* Modal de Logro */}
             {showModal && currentAchievementId &&(
-            <AchievementModal
-                isOpen={true}
-                onClose={() => setShowModal(false)}
-                idLogro={currentAchievementId ?? 0}
-            />
+                <AchievementModal
+                    isOpen={true}
+                    onClose={() => setShowModal(false)}
+                    idLogro={currentAchievementId ?? 0}
+                />
             )}
         </div>
     );
