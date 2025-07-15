@@ -131,6 +131,17 @@ const EstudiantesPro: React.FC = () => {
           👩‍💼 Gestión de Estudiantes 👨‍💼
         </h2>
 
+        <div className="text-end mb-4">
+          <button
+            className="btn btn-outline-success fw-bold"
+            onClick={() =>
+              window.open("http://localhost:8080/api/reportes/estudiantes", "_blank")
+            }
+          >
+            🎓 Exportar PDF Estudiantes
+          </button>
+        </div>
+
         {/* Formulario */}
         <div className="card shadow-lg mb-4">
           <div className="card-header bg-success text-white">

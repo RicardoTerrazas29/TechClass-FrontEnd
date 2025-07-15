@@ -114,6 +114,18 @@ const AdministradorPage: React.FC = () => {
           👩‍💼 Administradores 👨‍💼
         </h2>
 
+        <div className="text-end mb-4">
+          <button
+            className="btn btn-outline-primary fw-bold"
+            onClick={() =>
+              window.open("http://localhost:8080/api/reportes/administradores", "_blank")
+            }
+          >
+            📄 Exportar PDF
+          </button>
+        </div>
+
+
         <div className="card shadow-lg mb-4">
           <div className="card-header bg-success text-white">
             <h5 className="mb-0">➕ Agregar Nuevo Administrador</h5>
